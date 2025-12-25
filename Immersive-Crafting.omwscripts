@@ -1,0 +1,3 @@
+# Script that will be automatically attached to the player
+GLOBAL: scripts/Immersive-Crafting/init.lua
+

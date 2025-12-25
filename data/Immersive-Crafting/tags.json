@@ -1,0 +1,12 @@
+{
+  "Twig": ["misc_twig_01", "misc_twig_02"],
+  "Small rock": ["misc_rock_small"],
+  "Cooking pot": ["misc_pot", "misc_cauldron"],
+  "Frying pan": ["misc_frying_pan"],
+  "Meat": ["ingred_rat_meat", "ingred_guar_meat"],
+  "Vegetable": ["ingred_potato_01"],
+  "Water": ["misc_water"],
+  "Stew": ["misc_stew_bowl"],
+  "Wood": ["misc_wood"],
+  "Kindling": ["misc_kindling"]
+}

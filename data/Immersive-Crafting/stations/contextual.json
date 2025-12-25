@@ -1,0 +1,8 @@
+[
+  {
+    "id": "campfire",
+    "mode": "contextual",
+    "scan": { "shape": "sphere", "radius": 150 },
+    "uiTemplate": "contextual_overlay"
+  }
+]

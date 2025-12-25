@@ -1,0 +1,11 @@
+{
+  "contextual_overlay": {
+    "type": "contextual_overlay",
+    "regions": ["title", "prompt"]
+  },
+  "shaped_grid_3x3": {
+    "type": "shaped_grid",
+    "rows": 3,
+    "columns": 3
+  }
+}

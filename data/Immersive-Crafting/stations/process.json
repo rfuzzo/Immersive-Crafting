@@ -1,0 +1,8 @@
+[
+  {
+    "id": "tanning_rack",
+    "mode": "process",
+    "uiTemplate": "contextual_overlay",
+    "process": "tanning_rack"
+  }
+]
