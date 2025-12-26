@@ -1,17 +1,24 @@
 local io = require('scripts.Immersive-Crafting.io')
 local constants = require('scripts.Immersive-Crafting.constants')
 local lib = require('scripts.Immersive-Crafting.lib')
+local log = require('scripts.Immersive-Crafting.log')
 
 local vfs = require('openmw.vfs')
 
 local this = {}
 
-local DATA_ROOT = constants.DATA_ROOT
+---@class Registries
+---@field tags table<Id, string[]>
+---@field uiTemplates table<Id, table>
+---@field actions table<Id, ActionDef>
+---@field stations table<Id, StationDef>
+---@field containers table<Id, ContainerDef>
+---@field recipes table<string, table<Id, RecipeDef>>
+---@field processes table<Id, ProcessDef>
 
--- === Data Registries ===
 
 ---@type Registries
-this.registries = {
+GRegistries = {
     tags = {},
     uiTemplates = {},
     actions = {},
@@ -24,20 +31,11 @@ this.registries = {
     processes = {},
 }
 
-local registries = this.registries
+local DATA_ROOT = constants.DATA_ROOT
 
----@return Registries
-function this.getRegistries()
-    return this.registries
-end
+-- === Data Registries ===
 
-local function len(t)
-    local count = 0
-    for _ in pairs(t) do
-        count = count + 1
-    end
-    return count
-end
+local len = lib.len
 
 -- === Data domain loaders ===
 
@@ -56,28 +54,28 @@ local function mergeById(target, data)
 end
 
 local function loadTags()
-    registries.tags = io.loadJsonFile('tags.json') or {}
-    lib.info(('Loaded %d tags'):format(len(registries.tags)))
+    GRegistries.tags = io.loadJsonFile('tags.json') or {}
+    log.info(('Loaded %d tags'):format(len(GRegistries.tags)))
 end
 
 local function loadUiTemplates()
-    registries.uiTemplates = io.loadJsonFile('ui_templates.json') or {}
-    lib.info(('Loaded %d UI templates'):format(len(registries.uiTemplates)))
+    GRegistries.uiTemplates = io.loadJsonFile('ui_templates.json') or {}
+    log.info(('Loaded %d UI templates'):format(len(GRegistries.uiTemplates)))
 end
 
 local function loadActions()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "actions/") do
         local data = io.loadJsonFile(filename)
         if data then
-            lib.info(('Loading actions from %s'):format(filename))
-            mergeById(registries.actions, data)
+            log.info(('Loading actions from %s'):format(filename))
+            mergeById(GRegistries.actions, data)
         end
     end
 
     -- logging
-    lib.info(('Loaded %d actions'):format(len(registries.actions)))
-    for a in pairs(registries.actions) do
-        lib.info((' - %s'):format(a))
+    log.info(('Loaded %d actions'):format(len(GRegistries.actions)))
+    for a in pairs(GRegistries.actions) do
+        log.info((' - %s'):format(a))
     end
 end
 
@@ -85,15 +83,15 @@ local function loadStations()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "stations/") do
         local data = io.loadJsonFile(filename)
         if data then
-            lib.info(('Loading stations from %s'):format(filename))
-            mergeById(registries.stations, data)
+            log.info(('Loading stations from %s'):format(filename))
+            mergeById(GRegistries.stations, data)
         end
     end
 
     -- logging
-    lib.info(('Loaded %d stations'):format(len(registries.stations)))
-    for s in pairs(registries.stations) do
-        lib.info((' - %s'):format(s))
+    log.info(('Loaded %d stations'):format(len(GRegistries.stations)))
+    for s in pairs(GRegistries.stations) do
+        log.info((' - %s'):format(s))
     end
 end
 
@@ -101,15 +99,15 @@ local function loadContainers()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "containers/") do
         local data = io.loadJsonFile(filename)
         if data then
-            lib.info(('Loading containers from %s'):format(filename))
-            mergeById(registries.containers, data)
+            log.info(('Loading containers from %s'):format(filename))
+            mergeById(GRegistries.containers, data)
         end
     end
 
     -- logging
-    lib.info(('Loaded %d containers'):format(len(registries.containers)))
-    for c in pairs(registries.containers) do
-        lib.info((' - %s'):format(c))
+    log.info(('Loaded %d containers'):format(len(GRegistries.containers)))
+    for c in pairs(GRegistries.containers) do
+        log.info((' - %s'):format(c))
     end
 end
 
@@ -117,15 +115,15 @@ local function loadProcesses()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "processes/") do
         local data = io.loadJsonFile(filename)
         if data then
-            lib.info(('Loading processes from %s'):format(filename))
-            mergeById(registries.processes, data)
+            log.info(('Loading processes from %s'):format(filename))
+            mergeById(GRegistries.processes, data)
         end
     end
 
     -- logging
-    lib.info(('Loaded %d processes'):format(len(registries.processes)))
-    for p in pairs(registries.processes) do
-        lib.info((' - %s'):format(p))
+    log.info(('Loaded %d processes'):format(len(GRegistries.processes)))
+    for p in pairs(GRegistries.processes) do
+        log.info((' - %s'):format(p))
     end
 end
 
@@ -134,30 +132,30 @@ local function loadRecipes()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "recipes/shaped/") do
         local data = io.loadJsonFile(filename)
         if data then
-            lib.info(('Loading shaped recipes from %s'):format(filename))
-            mergeById(registries.recipes.shaped, data)
+            log.info(('Loading shaped recipes from %s'):format(filename))
+            mergeById(GRegistries.recipes.shaped, data)
         end
     end
 
     -- logging
-    lib.info(('Loaded %d shaped recipes'):format(len(registries.recipes.shaped)))
-    for r in pairs(registries.recipes.shaped) do
-        lib.info((' - %s'):format(r))
+    log.info(('Loaded %d shaped recipes'):format(len(GRegistries.recipes.shaped)))
+    for r in pairs(GRegistries.recipes.shaped) do
+        log.info((' - %s'):format(r))
     end
 
     -- Contextual recipes
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "recipes/contextual/") do
         local data = io.loadJsonFile(filename)
         if data then
-            lib.info(('Loading contextual recipes from %s'):format(filename))
-            mergeById(registries.recipes.contextual, data)
+            log.info(('Loading contextual recipes from %s'):format(filename))
+            mergeById(GRegistries.recipes.contextual, data)
         end
     end
 
     -- logging
-    lib.info(('Loaded %d contextual recipes'):format(len(registries.recipes.contextual)))
-    for r in pairs(registries.recipes.contextual) do
-        lib.info((' - %s'):format(r))
+    log.info(('Loaded %d contextual recipes'):format(len(GRegistries.recipes.contextual)))
+    for r in pairs(GRegistries.recipes.contextual) do
+        log.info((' - %s'):format(r))
     end
 end
 
@@ -171,7 +169,7 @@ function this.loadAllData()
     loadProcesses()
     loadRecipes()
 
-    lib.info('All data loaded successfully.')
+    log.info('All data loaded successfully.')
 end
 
 return this

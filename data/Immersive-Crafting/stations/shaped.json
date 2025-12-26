@@ -1,7 +1,13 @@
 [
   {
-    "id": "workbench",
+    "id": "workbench_shaped",
     "mode": "shaped",
-    "uiTemplate": "shaped_grid_3x3"
+    "recordIds": [
+      "furn_de_bar_01",
+      "furn_com_table_01"
+    ],
+    "gridSize": "3x3",
+    "uiTemplate": "shaped_grid_3x3",
+    "proximityRange": 150
   }
 ]

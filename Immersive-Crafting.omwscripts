@@ -1,3 +1,5 @@
-# Script that will be automatically attached to the player
+# Global script for data loading and management
 GLOBAL: scripts/Immersive-Crafting/init.lua
 
+# Player script for contextual overlay and proximity detection
+PLAYER: scripts/Immersive-Crafting/player.lua

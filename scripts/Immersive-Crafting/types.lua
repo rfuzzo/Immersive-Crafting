@@ -17,7 +17,10 @@
 
 ---@class StationDef
 ---@field id Id
----@field mode string
+---@field mode string "shaped", "contextual", or "process"
+---@field recordIds string[]|nil List of game object record IDs that act as this station
+---@field gridSize string|nil For shaped: "2x2", "3x3", etc
+---@field proximityRange number|nil Distance in units to detect station (default 150)
 ---@field scan table|nil
 ---@field uiTemplate Id
 ---@field process Id|nil
@@ -43,12 +46,3 @@
 ---@field id Id
 ---@field initial string
 ---@field states table<string, table>
-
----@class Registries
----@field tags table<Id, string[]>
----@field uiTemplates table<Id, table>
----@field actions table<Id, ActionDef>
----@field stations table<Id, StationDef>
----@field containers table<Id, ContainerDef>
----@field recipes table<string, table<Id, RecipeDef>>
----@field processes table<Id, ProcessDef>
