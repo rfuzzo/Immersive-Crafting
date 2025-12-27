@@ -1,0 +1,43 @@
+[
+  {
+    "id": "workbench",
+    "recordIds": [
+      "furn_de_bar_01",
+      "furn_com_table_01"
+    ],
+    "activationRange": 150,
+    "actions": [
+      {
+        "id": "crafting",
+        "mode": "staticUI",
+        "uiTemplate": "workbench",
+        "inputAction": "ContextualAction"
+      }
+    ]
+  },
+  {
+    "id": "campfire",
+    "activationRange": 150,
+    "recordIds": [
+      "Any fire"
+    ],
+    "actions": [
+      "cooking"
+    ]
+  },
+  {
+    "id": "tanning_rack",
+    "activationRange": 150,
+    "recordIds": [
+      "Any tanning rack"
+    ],
+    "actions": [
+      {
+        "id": "tanning",
+        "mode": "process",
+        "uiTemplate": "contextual",
+        "inputAction": "ContextualAction"
+      }
+    ]
+  }
+]

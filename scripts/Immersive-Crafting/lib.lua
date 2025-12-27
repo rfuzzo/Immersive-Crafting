@@ -14,7 +14,7 @@ function this.len(t)
 end
 
 ---@class ProximityResult
----@field station StationDef The station definition
+---@field station CStation The station definition
 ---@field object GameObject The actual game object
 ---@field distance number Distance to the object
 
@@ -40,7 +40,7 @@ function this.findNearbyStations(registries, maxRange)
                     for _, id in ipairs(stationDef.recordIds) do
                         -- Case-insensitive comparison
                         if id:lower() == recordId:lower() then
-                            local stationRange = stationDef.proximityRange or 150
+                            local stationRange = stationDef.activationRange or 150
 
                             if distance <= stationRange then
                                 -- -- Found a matching station

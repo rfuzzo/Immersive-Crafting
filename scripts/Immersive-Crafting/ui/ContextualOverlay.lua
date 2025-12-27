@@ -5,30 +5,19 @@ local ui = require('openmw.ui')
 local util = require('openmw.util')
 local I = require('openmw.interfaces')
 local async = require('openmw.async')
+local input = require('openmw.input')
 
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
 local this = {}
 
----@class ContextualAction
----@field id string Unique identifier for this action
----@field label string Display text (e.g. "Craft", "Forage")
----@field key KEY Key bining
----@field onKeyRelease function? Called on simple press (if no hold)
----@field onHoldStart function? Called when hold begins
----@field onHoldProgress function? Called during hold (receives progress 0-1)
----@field onHoldComplete function? Called when hold completes
----@field onHoldCancel function? Called if hold is cancelled
----@field holdDuration number? Seconds to hold (default 0.5 for opening interfaces)
-
 local currentStationId = nil ---@type Id?
-local currentActions = {} ---@type ContextualAction[]?
+local currentActions = {} ---@type CAction[]?
 local overlayElement = nil
 
 ---Create or update the overlay UI element
 local function updateOverlayUI()
-
     log.trace('Updating contextual overlay UI')
 
     -- Destroy existing overlay if present
@@ -40,7 +29,7 @@ local function updateOverlayUI()
     if not currentActions then return end
 
     log.trace(('Creating overlay with %s actions'):format(
-                  lib.len(currentActions)))
+        lib.len(currentActions)))
 
     -- Create the overlay container
     local overlay = {
@@ -59,7 +48,7 @@ local function updateOverlayUI()
     local mainSizer = {
         type = ui.TYPE.Flex,
         name = 'mainLayout',
-        props = {size = util.vector2(220, 100)},
+        props = { size = util.vector2(220, 100) },
         content = ui.content {}
     }
     overlay.content:add(mainSizer)
@@ -91,7 +80,7 @@ local function updateOverlayUI()
     local lineBreak = {
         type = ui.TYPE.Image,
         template = I.MWUI.templates.horizontalLine,
-        props = {size = util.vector2(200, 2)}
+        props = { size = util.vector2(200, 2) }
     }
     mainSizer.content:add(lineBreak)
 
@@ -106,27 +95,20 @@ local function updateOverlayUI()
     -- action button
     for actionId, action in pairs(currentActions) do
         log.trace(('Adding overlay button for action: %s at %s'):format(
-                      action.label, actionId))
+            action.id, actionId))
 
         local buttonSizer = {
             type = ui.TYPE.Container,
             template = I.MWUI.templates.boxSolid,
-            props = {autoSize = true, horizontal = true},
+            props = { autoSize = true, horizontal = true },
             content = ui.content {}
-        }
-        buttonSizer.events = {
-            keyRelease = async:callback(function(_, elem)
-                log.info(('Overlay action button pressed: %s'):format(
-                             action.label))
-                if action.onKeyRelease then action.onKeyRelease() end
-            end)
         }
 
         local button = {
             type = ui.TYPE.Text,
             template = I.MWUI.templates.textNormal,
             props = {
-                text = '[F] ' .. action.label,
+                text = 'Press [F] to start',
                 textSize = 20,
                 relativePosition = util.vector2(0, 0)
             }
@@ -144,7 +126,7 @@ end
 
 ---Register an action that should be shown in the overlay
 ---@param id Id StationId this action is associated with
----@param action ContextualAction
+---@param action CAction
 function this.registerAction(id, action)
     currentStationId = id
     if not currentActions then currentActions = {} end
@@ -163,14 +145,7 @@ function this.clearAllActions()
     updateOverlayUI()
 end
 
----Main update function called every frame
-function this.onUpdate(dt)
-
-    -- For now, nothing to update per-frame
-end
-
----@param key KeyboardEvent 
-function this.onKeyRelease(key)
+function this.onContextualAction()
     -- early outs
     if not overlayElement then return end
     if not currentStationId then return end
@@ -179,11 +154,6 @@ function this.onKeyRelease(key)
     -- for all actions
     for _, action in pairs(currentActions or {}) do
         -- if the key matches the action (for now, we assume 'F' key)
-        if key.code == action.key then
-            log.info(('Overlay action key %s released: %s'):format(action.key,
-                                                                   action.label))
-            if action.onKeyRelease then action.onKeyRelease() end
-        end
     end
 end
 

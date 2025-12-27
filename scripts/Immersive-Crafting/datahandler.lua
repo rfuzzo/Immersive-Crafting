@@ -3,6 +3,9 @@ local constants = require('scripts.Immersive-Crafting.constants')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
+local CStation = require('scripts.Immersive-Crafting.models.station')
+local CAction = require('scripts.Immersive-Crafting.models.action')
+
 local vfs = require('openmw.vfs')
 
 local this = {}
@@ -10,12 +13,10 @@ local this = {}
 ---@class Registries
 ---@field tags table<Id, string[]>
 ---@field uiTemplates table<Id, table>
----@field actions table<Id, ActionDef>
----@field stations table<Id, StationDef>
+---@field actions table<Id, CAction>
+---@field stations table<Id, CStation>
 ---@field containers table<Id, ContainerDef>
 ---@field recipes table<string, table<Id, RecipeDef>>
----@field processes table<Id, ProcessDef>
-
 
 ---@type Registries
 GRegistries = {
@@ -54,21 +55,52 @@ local function mergeById(target, data)
 end
 
 local function loadTags()
-    GRegistries.tags = io.loadJsonFile('tags.json') or {}
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "tags/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then
+                log.info(('Loading tags from %s'):format(filename))
+                mergeById(GRegistries.tags, data)
+            end
+        end
+    end
+
+    -- logging
     log.info(('Loaded %d tags'):format(len(GRegistries.tags)))
+    for a in pairs(GRegistries.tags) do
+        log.info((' - %s'):format(a))
+    end
 end
 
 local function loadUiTemplates()
-    GRegistries.uiTemplates = io.loadJsonFile('ui_templates.json') or {}
-    log.info(('Loaded %d UI templates'):format(len(GRegistries.uiTemplates)))
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "uiTemplates/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then
+                log.info(('Loading uiTemplates from %s'):format(filename))
+                mergeById(GRegistries.uiTemplates, data)
+            end
+        end
+    end
+
+    -- logging
+    log.info(('Loaded %d uiTemplates'):format(len(GRegistries.uiTemplates)))
+    for a in pairs(GRegistries.uiTemplates) do
+        log.info((' - %s'):format(a))
+    end
 end
 
 local function loadActions()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "actions/") do
-        local data = io.loadJsonFile(filename)
-        if data then
-            log.info(('Loading actions from %s'):format(filename))
-            mergeById(GRegistries.actions, data)
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then
+                local a = CAction:fromTable(data)
+                if a then
+                    log.info(('Loading actions from %s'):format(filename))
+                    mergeById(GRegistries.actions, a)
+                end
+            end
         end
     end
 
@@ -81,10 +113,15 @@ end
 
 local function loadStations()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "stations/") do
-        local data = io.loadJsonFile(filename)
-        if data then
-            log.info(('Loading stations from %s'):format(filename))
-            mergeById(GRegistries.stations, data)
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then
+                local s = CStation:fromTable(data)
+                if s then
+                    log.info(('Loading stations from %s'):format(filename))
+                    mergeById(GRegistries.stations, s)
+                end
+            end
         end
     end
 
@@ -97,10 +134,12 @@ end
 
 local function loadContainers()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "containers/") do
-        local data = io.loadJsonFile(filename)
-        if data then
-            log.info(('Loading containers from %s'):format(filename))
-            mergeById(GRegistries.containers, data)
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then
+                log.info(('Loading containers from %s'):format(filename))
+                mergeById(GRegistries.containers, data)
+            end
         end
     end
 
@@ -108,22 +147,6 @@ local function loadContainers()
     log.info(('Loaded %d containers'):format(len(GRegistries.containers)))
     for c in pairs(GRegistries.containers) do
         log.info((' - %s'):format(c))
-    end
-end
-
-local function loadProcesses()
-    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "processes/") do
-        local data = io.loadJsonFile(filename)
-        if data then
-            log.info(('Loading processes from %s'):format(filename))
-            mergeById(GRegistries.processes, data)
-        end
-    end
-
-    -- logging
-    log.info(('Loaded %d processes'):format(len(GRegistries.processes)))
-    for p in pairs(GRegistries.processes) do
-        log.info((' - %s'):format(p))
     end
 end
 
@@ -166,7 +189,6 @@ function this.loadAllData()
     loadActions()
     loadStations()
     loadContainers()
-    loadProcesses()
     loadRecipes()
 
     log.info('All data loaded successfully.')
