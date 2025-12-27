@@ -1,26 +1,12 @@
 [
   {
     "id": "cooking",
-    "mode": "contextual",
-    "uiTemplate": "contextual",
-    "initial": "idle",
-    "states": {
-      "idle": {
-        "action": {
-          "label": "Start cooking",
-          "next": "cooking"
-        }
-      },
-      "cooking": {
-        "timerFromRecipe": true,
-        "next": "done"
-      },
-      "done": {
-        "action": {
-          "label": "Take meal",
-          "next": "idle"
-        }
-      }
-    }
+    "label": "Cook",
+    "handler": "mixing"
+  },
+  {
+    "id": "mixing",
+    "label": "Mix",
+    "handler": "cooking"
   }
 ]

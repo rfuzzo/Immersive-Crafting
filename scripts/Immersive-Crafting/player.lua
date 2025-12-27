@@ -3,7 +3,7 @@
 local input = require('openmw.input')
 local async = require('openmw.async')
 
-local dataHandler = require('scripts.Immersive-Crafting.datahandler')
+local dataHandler = require('scripts.Immersive-Crafting.dataManager')
 local contextManager = require('scripts.Immersive-Crafting.contextManager')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local log = require('scripts.Immersive-Crafting.log')

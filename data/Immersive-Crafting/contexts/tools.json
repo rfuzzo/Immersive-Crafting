@@ -1,0 +1,12 @@
+[
+  {
+    "id": "mixing_bowl",
+    "recordIds": [
+      "mixing_bowl_01"
+    ],
+    "activationRange": 100,
+    "actions": [
+      "mixing"
+    ]
+  }
+]

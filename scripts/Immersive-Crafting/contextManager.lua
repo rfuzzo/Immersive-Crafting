@@ -2,12 +2,20 @@ local log = require('scripts.Immersive-Crafting.log')
 local lib = require('scripts.Immersive-Crafting.lib')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 
+local nearby = require('openmw.nearby')
+local self = require('openmw.self')
+
 local this = {}
 
-local updateInterval = 0.25 -- Check for nearby stations every 0.25 seconds
+local updateInterval = 0.25 -- Check for nearby context every 0.25 seconds
+
+---@class ProximityResult
+---@field context CContext The context definition
+---@field object GameObject The actual game object
+---@field distance number Distance to the object
 
 ---@type ProximityResult|nil
-this.nearbyStation = nil
+this.nearbyContext = nil
 ---@type number
 this.timeSinceLastUpdate = 0
 
@@ -24,62 +32,102 @@ local function resolveAction(actionDef)
     end
 end
 
----Update overlay actions based on nearby stations
+---Update overlay actions based on nearby context
 local function updateOverlay()
-    log.trace('Updating overlay actions for nearby stations')
+    log.trace('Updating overlay actions for nearby context')
 
     -- Clear existing actions
     overlay.clearAllActions()
 
-    local result = this.nearbyStation
+    local result = this.nearbyContext
     if not result then return end
 
-    local station = result.station
-    local stationId = station.id
+    local context = result.context
+    local contextId = context.id
 
-    for _, action in ipairs(station.actions or {}) do
-        overlay.registerAction(stationId, resolveAction(action))
+    for _, action in ipairs(context.actions or {}) do
+        overlay.registerAction(contextId, resolveAction(action))
     end
 end
 
----Update nearby stations and overlay actions
-local function updateNearbyStations()
+---Find all nearby contexts or containers within range
+---@param registries Registries The data registries
+---@param maxRange number Maximum search range
+---@return table<string, ProximityResult> Map of ID to proximity result
+local function findNearbyContexts(registries, maxRange)
+    maxRange = maxRange or 200
+
+    local results = {}
+    local playerPos = self.position
+
+    -- Scan all nearby objects
+    for _, obj in ipairs(nearby.activators) do
+        local recordId = obj.recordId
+        local distance = (obj.position - playerPos):length()
+
+        if distance <= maxRange then
+            -- Check if this object is a registered context
+            for id, def in pairs(registries.contexts) do
+                for _, rid in ipairs(def.recordIds) do
+                    -- Case-insensitive comparison
+                    if rid:lower() == recordId:lower() then
+                        local range = def.activationRange or 150
+
+                        if distance <= range then
+                            -- -- Found a match
+                            results[id] = {
+                                context = def,
+                                object = obj,
+                                distance = distance,
+                            }
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    return results
+end
+
+---Update nearby contexts and overlay actions
+local function updatenearbyContexts()
     if not GRegistries then
         log.error('GRegistries not initialized yet')
         return
     end
 
-    -- Find all nearby shaped crafting stations
-    local previousStation = this.nearbyStation
-    local nearbyStations = lib.findNearbyStations(GRegistries, 200)
+    -- Find all nearby shaped crafting contexts
+    local previousContext = this.nearbyContext
+    local nearbyContexts = findNearbyContexts(GRegistries, 200)
 
-    -- get the closest station
-    local closestStation = nil
+    -- get the closest context
+    local closestContext = nil
     local closestDistance = math.huge
-    for stationId, result in pairs(nearbyStations) do
+    for contextId, result in pairs(nearbyContexts) do
         if result.distance < closestDistance then
             closestDistance = result.distance
-            closestStation = result
+            closestContext = result
         end
     end
 
-    if not closestStation then
-        this.nearbyStation = nil
-        if previousStation ~= nil then updateOverlay() end
+    if not closestContext then
+        this.nearbyContext = nil
+        if previousContext ~= nil then updateOverlay() end
         return
     end
 
-    this.nearbyStation = closestStation
-    if previousStation ~= this.nearbyStation then updateOverlay() end
+    this.nearbyContext = closestContext
+    if previousContext ~= this.nearbyContext then updateOverlay() end
 end
 
 ---Main update function called every frame
 function this.onUpdate(dt)
     this.timeSinceLastUpdate = this.timeSinceLastUpdate + dt
 
-    -- Periodically update nearby stations
+    -- Periodically update nearby contexts
     if this.timeSinceLastUpdate >= updateInterval then
-        updateNearbyStations()
+        updatenearbyContexts()
         this.timeSinceLastUpdate = 0
     end
 end

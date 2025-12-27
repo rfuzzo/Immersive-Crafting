@@ -1,0 +1,10 @@
+[
+  {
+    "id": "cooking_pot",
+    "requiresStation": "campfire",
+    "recordIds": [
+      "furn_de_bar_01",
+      "furn_com_table_01"
+    ]
+  }
+]

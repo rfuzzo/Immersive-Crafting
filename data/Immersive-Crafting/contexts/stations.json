@@ -7,12 +7,7 @@
     ],
     "activationRange": 150,
     "actions": [
-      {
-        "id": "crafting",
-        "mode": "staticUI",
-        "uiTemplate": "workbench",
-        "inputAction": "ContextualAction"
-      }
+      "crafting"
     ]
   },
   {
@@ -32,12 +27,7 @@
       "Any tanning rack"
     ],
     "actions": [
-      {
-        "id": "tanning",
-        "mode": "process",
-        "uiTemplate": "contextual",
-        "inputAction": "ContextualAction"
-      }
+      "tanning"
     ]
   }
 ]

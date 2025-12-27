@@ -1,7 +1,0 @@
-[
-  {
-    "id": "cooking_pot",
-    "requiresStation": "campfire",
-    "process": "cooking_pot"
-  }
-]

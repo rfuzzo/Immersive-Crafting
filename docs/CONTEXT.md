@@ -1,285 +1,63 @@
 # Immersive Crafting – Design Context & Architecture Summary
 
-This document summarizes the design decisions, architecture, and data model
-for the **Immersive Crafting** OpenMW Lua mod.
+## Cooking
 
-It is intended to be used as **persistent context** for local LLM tooling
-(Codex / Continue / Cursor / etc.) during implementation.
+Cooking is a contextual action that can be performed at either a cooking station (e.g. campfire) or using a cooking tool (e.g. mixing bowl). Both need to be placed in the world, the ingredients must be placed around it and are detected by the contextual UI.
 
-OpenMW LUA overview: <https://openmw.readthedocs.io/en/latest/reference/lua-scripting/overview.html>
+The UI is a HUD overlay that shows the detected station or tool, if there are multiple tools or stations nearby, then it choses the closest one or the last focused one with the cursor. The overlay UI shows all detected containers, tools and ingredients in the vicinity but no action prompt.
 
----
+Hovering over any container shows its state (like temperature) and shows an action prompt like "create stew" if the right ingredients are present.
 
-## 1. Core Design Goals
+Example process flow:
 
-- Native to **Morrowind / OpenMW**, not Minecraft-style UI-first crafting
-- **World-first, contextual interaction**
-- Data-driven (JSON) wherever possible
-- Minimal, reusable Lua logic
-- No MWSE (`tes3`) APIs — **OpenMW Lua only**
-- Avoid dynamic clutter spawning in the world
+1. Player approaches a campfire.
+2. The contextual overlay UI appears, showing the campfire as the station. Since the player has not placed any pots or ingredients yet, those sections are empty.
+3. Player places a pot on the campfire.
+4. The overlay UI updates to show the pot as a detected container.
+5. Player places ingredients (e.g. meat, onions, salt) near the campfire
+6. The overlay UI updates to show the detected ingredients. Water must be added by action, e.g. "Fill pot with water" before cooking can start.
+7. If I hover over the pot, I see an action prompt "Make stew" because all required ingredients are present.
+8. When I press the action prompt, the cooking process starts, consuming the ingredients.
+9. The overlay UI of the pot shows the cooking progress: not heated / simmering / cooked / burnt.
+10. When cooking is complete, I can hover over the pot again to see an action prompt "Take stew".
 
----
+### Station cooking
 
-## 2. Interaction Paradigms
+Recipes must specify all of these three compoenents to be valid:
 
-There are **three crafting paradigms**, each used only where appropriate.
+- a station as the cooking environment (e.g. a campfire)
+- then we detect all containers, e.g. pots in the environment
+- same as all ingredients placed in the world
 
-### 2.1 Shaped Crafting (Proximity-based)
+Examples
 
-- Classic grid-based crafting (2x2, 3x3)
-- Contextual overlay shows "Craft" button when near station
-- Hold-to-act opens crafting grid UI
-- Stateless
-- Example: workbench, crafting table
+- Stew: Fire + pot + Any meat + onions + salt
+- Boiled egg: Fire + pot + water + egg + salt
+- Fish stew: Fire + pot + Any fish + water + salt + herbs
+- Roasted fish: Fire + Any grill + Any fish + salt + lemon
+- Steak: Fire + Any grill + Any meat + salt + pepper
+- Bread: Fire + oven + dough + water
 
-### 2.2 Contextual Crafting (World-based)
+### Tool cooking
 
-- No grid UI
-- Contextual overlay UI (CP2077-style)
-- Uses **hold-to-act** for direct transformation
-- Inputs detected from:
-  - nearby world items
-  - focused container/tool
-- Example: cooking at a campfire
+Some recipes don't require a station, e.g. making dough from flour and water, but they may require a tool, e.g. a mixing bowl.
 
-### 2.3 Process Crafting (State-based)
+Recipes must specify both of these two components to be valid:
 
-- Long-running, multi-step processes
-- Explicit **data-driven states**
-- No generic FSM framework; simple state descriptors
-- World owns time, not UI
-- Example: tanning rack, drying rack, fermenting
+- a tool as the cooking environment (e.g. mixing bowl)
+- ingredients placed in the tool
 
----
+Examples
 
-## 3. Key Interaction Grammar
+- Dough: Mixing bowl + flour + water
+- Batter: Mixing bowl + flour + egg + milk
+- Marinade: Mixing bowl + oil + herbs + spices + acid
+- Juice: Juicer + fruit + water + sugar
 
-This grammar is reused everywhere:
+Example process flow:
 
-- **Contextual overlay**, always present when relevant
-- **Hold-to-act** (cancelable)
-- Time passes in the world
-- UI reflects state, never controls logic
-
-Foraging is the **introductory feature** that teaches this grammar.
-
-### Overlay Interaction Patterns
-
-1. **Direct action**: Hold → immediate effect (foraging, simple crafting)
-2. **Open interface**: Hold → opens specialized UI (shaped crafting grid)
-3. **Process toggle**: Hold → start/stop/interact with process (tanning rack)
-
----
-
-## 4. Foraging (First Vertical Slice)
-
-### Why Foraging
-
-- No stations
-- No recipes
-- Stateless
-- Teaches:
-  - contextual availability
-  - hold-to-act
-  - time passing
-  - fuzzy outcomes
-
-### Behavior
-
-- Available outdoors, safe, not swimming, not in combat
-- Overlay shows:
-
-Wilderness
-[ Hold ] Forage
-
-- Holding completes action:
-- time advances (e.g. 1 hour)
-- small chance-based rewards (twigs, rocks)
-- No world spawning
-
-Foraging is a **global contextual action**, not crafting.
-
----
-
-## 5. Cooking Model (Important Insight)
-
-Cooking ambiguity (meat + veg → soup OR fry) is solved via **intent by focus**:
-
-- Campfire = station (provides heat)
-- Containers express intent:
-- cooking pot → stew/soup
-- frying pan → fried food
-- Overlay switches based on **cursor focus**
-- No recipe lists or scrolling
-
-Cooking pot is a **parametrized process container**:
-
-- idle → cooking → done
-- Recipe injects cook time + output
-- Heat pauses/resumes process
-
----
-
-## 6. Tanning Rack Model
-
-- Purely contextual, **no OnActivate**
-- Hide becomes part of the station (visual + state)
-- Liquid added contextually (using container)
-- Long-running process (in-game day or more)
-- Interaction only when state allows (attach hide, remove leather)
-
-This uses a **simple data-driven state machine**, not a generic FSM.
-
----
-
-## 7. Data Architecture (Very Important)
-
-> Data never calls data.  
-> Data references by **string IDs only**.  
-> Lua resolves everything at runtime.
-
-### 7.1 Data Domains
-
-| Domain       | Purpose                                  |
-|-------------|-------------------------------------------|
-| tags        | Abstract item categories → game IDs       |
-| stations    | Where crafting happens                    |
-| containers  | How intent/state is expressed             |
-| recipes     | What transformations are possible         |
-| processes   | How things evolve over time               |
-| actions     | Stateless contextual actions (foraging)   |
-| ui_templates| Semantic UI regions (not layout)          |
-
----
-
-## 8. Intended Data Layout
-
-```
-data/
-├── tags.json
-├── ui_templates.json
-├── actions/
-│   └── foraging.json
-├── stations/
-│   ├── shaped.json
-│   ├── contextual.json
-│   └── process.json
-├── containers/
-│   ├── cooking.json
-│   └── tools.json
-├── recipes/
-│   ├── shaped/
-│   │   └── woodworking.json
-│   └── contextual/
-│       └── cooking.json
-├── processes/
-│   ├── tanning.json
-│   └── cooking.json
-```
-
----
-
-## 9. Dependency Rules (No Cycles in Data)
-
-- `tags.json` is the base vocabulary
-- Recipes reference:
-  - station IDs
-  - container IDs
-  - tag IDs
-- Containers reference:
-  - station IDs
-  - process IDs
-- Stations reference:
-  - UI template IDs
-- Processes reference nothing else
-- Actions reference:
-  - abstract contexts
-  - tag IDs (for results)
-
-All resolution happens in Lua registries.
-
----
-
-## 10. Lua Architecture (Current State)
-
-Modules already sketched / implemented:
-
-interaction/
-HoldAction.lua        – reusable hold-to-act logic
-
-context/
-ForagingContext.lua  – availability checks
-
-features/
-Foraging.lua         – gameplay effect (time + rewards)
-
-ui/
-ContextualOverlay.lua – generic overlay UI
-
-main.lua / player.lua
-– wires everything together
-
-All code uses **OpenMW Lua APIs only**:
-
-- `openmw.world`
-- `openmw.ui`
-- `openmw.input`
-- `openmw.core`
-
-No**Contextual overlay is always present** when player is in valid context
-
-- UI never owns time
-- UI never owns logic
-- World state is authoritative
-- Processes are explicit, linear, readable
-- If something has memory or phases → process
-- If something is ambiguous → intent via focus
-- If something is early-game bootstrap → contextual action
-- **All crafting entry points use hold-to-act**, whether for direct action or opening interfaces
-- UI never owns logic
-- World state is authoritative
-- Processes are explicit, linear, readable
-- If something has memory or phases → process
-- If something is ambiguous → intent via focus
-
-### Shaped Crafting (First)
-
-1. Implement JSON loading (file IO + JSON decode)
-2. Populate:
-   - `tags.json`
-   - `stations/shaped.json`
-   - `recipes/shaped/woodworking.json`
-3. Implement proximity detection for shaped stations
-4. Add "Craft" button to contextual overlay when near station
-5. Hold-to-act opens shaped crafting grid UI
-6. Validate end-to-end
-
-### Foraging & Contextual Crafting (After)
-
-1. Populate `actions/foraging.json`
-2. Validate foraging end-to-end
-3. Add first contextual station: campfire
-4. Add first container: cooking pot
-5. Populate:
-   - `tags.json`
-   - `actions/foraging.json`
-6. Validate foraging end-to-end
-7. Add first contextual station: campfire
-8. Add first container: cooking pot
-9. Reuse HoldAction + Overlay unchanged
-
----
-
-## 13. Philosophy (Why This Matters)
-
-This framework:
-
-- leverages what Morrowind already does well
-- avoids UI-heavy crafting
-- scales to other mods cleanly
-- is explainable to other modders
-- minimizes hardcoded logic
-
-The goal is not “Minecraft in Morrowind”,
-but **immersive, world-native interaction**.
+1. Player places a mixing bowl on the ground.
+2. The contextual overlay UI appears, showing the mixing bowl as the tool. Since the player has not placed any ingredients yet, that section is empty.
+3. Player places ingredients (e.g. flour, water) near the mixing bowl.
+4. Hovering over the mixing bowl shows an action prompt "Make dough" because all required ingredients are present.
+5. When I press the action prompt, the cooking process starts, consuming the ingredients.
