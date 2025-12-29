@@ -1,24 +1,20 @@
 local log = require('scripts.Immersive-Crafting.log')
-local lib = require('scripts.Immersive-Crafting.lib')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 
 local nearby = require('openmw.nearby')
 local self = require('openmw.self')
 
-local this = {}
-
 local updateInterval = 0.25 -- Check for nearby context every 0.25 seconds
 
+local this = {}
+
 ---@class ProximityResult
----@field context CContext The context definition
+---@field context CContext? The context definition
 ---@field object GameObject The actual game object
 ---@field distance number Distance to the object
 
----@type ProximityResult|nil
-this.nearbyContext = nil
----@type number
-this.timeSinceLastUpdate = 0
-
+this.currentContext = nil ---@type ProximityResult|nil
+this.timeSinceLastUpdate = 0 ---@type number
 
 --- Resolve an action definition, whether by ID or direct reference
 ---@param actionDef CAction|string
@@ -39,14 +35,14 @@ local function updateOverlay()
     -- Clear existing actions
     overlay.clearAllActions()
 
-    local result = this.nearbyContext
+    local result = this.currentContext
     if not result then return end
 
     local context = result.context
-    local contextId = context.id
+    if not context then return end
 
     for _, action in ipairs(context.actions or {}) do
-        overlay.registerAction(contextId, resolveAction(action))
+        overlay.registerAction(context, resolveAction(action))
     end
 end
 
@@ -54,7 +50,7 @@ end
 ---@param registries Registries The data registries
 ---@param maxRange number Maximum search range
 ---@return table<string, ProximityResult> Map of ID to proximity result
-local function findNearbyContexts(registries, maxRange)
+local function findcurrentContexts(registries, maxRange)
     maxRange = maxRange or 200
 
     local results = {}
@@ -91,20 +87,20 @@ local function findNearbyContexts(registries, maxRange)
 end
 
 ---Update nearby contexts and overlay actions
-local function updatenearbyContexts()
+local function updatecurrentContexts()
     if not GRegistries then
         log.error('GRegistries not initialized yet')
         return
     end
 
     -- Find all nearby shaped crafting contexts
-    local previousContext = this.nearbyContext
-    local nearbyContexts = findNearbyContexts(GRegistries, 200)
+    local previousContext = this.currentContext
+    local currentContexts = findcurrentContexts(GRegistries, 200)
 
     -- get the closest context
     local closestContext = nil
     local closestDistance = math.huge
-    for contextId, result in pairs(nearbyContexts) do
+    for _, result in pairs(currentContexts) do
         if result.distance < closestDistance then
             closestDistance = result.distance
             closestContext = result
@@ -112,22 +108,21 @@ local function updatenearbyContexts()
     end
 
     if not closestContext then
-        this.nearbyContext = nil
+        this.currentContext = nil
         if previousContext ~= nil then updateOverlay() end
         return
     end
 
-    this.nearbyContext = closestContext
-    if previousContext ~= this.nearbyContext then updateOverlay() end
+    this.currentContext = closestContext
+    if previousContext ~= this.currentContext then updateOverlay() end
 end
 
 ---Main update function called every frame
 function this.onUpdate(dt)
-    this.timeSinceLastUpdate = this.timeSinceLastUpdate + dt
-
     -- Periodically update nearby contexts
+    this.timeSinceLastUpdate = this.timeSinceLastUpdate + dt
     if this.timeSinceLastUpdate >= updateInterval then
-        updatenearbyContexts()
+        updatecurrentContexts()
         this.timeSinceLastUpdate = 0
     end
 end

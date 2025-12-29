@@ -7,19 +7,22 @@ local I = require('openmw.interfaces')
 local async = require('openmw.async')
 local input = require('openmw.input')
 
+local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
+local updateInterval = 0.25 -- Check for nearby context every 0.25 seconds
+
 local this = {}
 
-local currentStationId = nil ---@type Id?
+this.timeSinceLastUpdate = 0 ---@type number
+
+local currentContext = nil ---@type CContext?
 local currentActions = {} ---@type CAction[]?
 local overlayElement = nil
 
 ---Create or update the overlay UI element
 local function updateOverlayUI()
-    log.trace('Updating contextual overlay UI')
-
     -- Destroy existing overlay if present
     if overlayElement then
         overlayElement:destroy()
@@ -27,9 +30,7 @@ local function updateOverlayUI()
     end
 
     if not currentActions then return end
-
-    log.trace(('Creating overlay with %s actions'):format(
-        lib.len(currentActions)))
+    if not currentContext then return end
 
     -- Create the overlay container
     local overlay = {
@@ -53,70 +54,113 @@ local function updateOverlayUI()
     }
     overlay.content:add(mainSizer)
 
-    -- display the station name
-    local headerSizer = {
-        type = ui.TYPE.Container,
-        template = I.MWUI.templates.padding,
-        props = {
-            -- size = util.vector2(200, 50),
-            -- center horizontally
-            anchor = util.vector2(0.5, 0),
-            relativePosition = util.vector2(0.5, 0)
-        },
-        content = ui.content {}
-    }
-    local stationNameWidget = {
-        type = ui.TYPE.Text,
-        template = I.MWUI.templates.textHeader,
-        props = {
-            text = ('Station: %s'):format(currentStationId or "Unknown"),
-            textAlignH = ui.ALIGNMENT.Center
-        }
-    }
-    headerSizer.content:add(stationNameWidget)
-    mainSizer.content:add(headerSizer)
-
-    -- line break
-    local lineBreak = {
-        type = ui.TYPE.Image,
-        template = I.MWUI.templates.horizontalLine,
-        props = { size = util.vector2(200, 2) }
-    }
-    mainSizer.content:add(lineBreak)
-
-    -- -- Actions
-    -- local stationLabel = ui.create({
-    --     type = ui.TYPE.Text,
-    --     template = I.MWUI.templates.textHeader,
-    --     props = {text = "Available Actions"}
-    -- })
-    -- mainSizer.content:add(stationLabel)
-
-    -- action button
-    for actionId, action in pairs(currentActions) do
-        log.trace(('Adding overlay button for action: %s at %s'):format(
-            action.id, actionId))
-
-        local buttonSizer = {
-            type = ui.TYPE.Container,
-            template = I.MWUI.templates.boxSolid,
-            props = { autoSize = true, horizontal = true },
-            content = ui.content {}
-        }
-
-        local button = {
-            type = ui.TYPE.Text,
-            template = I.MWUI.templates.textNormal,
-            props = {
-                text = 'Press [F] to start',
-                textSize = 20,
-                relativePosition = util.vector2(0, 0)
+    for _, action in pairs(currentActions) do
+        -- render the viewmodel
+        local handler = dataManager.resolveHandler(action.handler)
+        if handler then
+            ---@type HandlerContext
+            local ctx =
+            {
+                action = action,
+                context = currentContext
             }
+            local viewModel = handler:present(ctx)
 
-        }
-        buttonSizer.content:add(button)
+            if viewModel then
+                -- render the viewmodel
 
-        mainSizer.content:add(buttonSizer)
+                -- first the header
+                local headerSizer = {
+                    type = ui.TYPE.Container,
+                    template = I.MWUI.templates.padding,
+                    props = {
+                        anchor = util.vector2(0.5, 0),
+                        relativePosition = util.vector2(0.5, 0)
+                    },
+                    content = ui.content {}
+                }
+                local stationNameWidget = {
+                    type = ui.TYPE.Text,
+                    template = I.MWUI.templates.textHeader,
+                    props = {
+                        text = viewModel.header,
+                        textAlignH = ui.ALIGNMENT.Center
+                    }
+                }
+                headerSizer.content:add(stationNameWidget)
+                mainSizer.content:add(headerSizer)
+
+                -- line break
+                mainSizer.content:add({
+                    type = ui.TYPE.Image,
+                    template = I.MWUI.templates.horizontalLine,
+                    props = { size = util.vector2(200, 2) }
+                })
+
+                -- then the status
+                if viewModel.status then
+                    local statusWidget = {
+                        type = ui.TYPE.Text,
+                        template = I.MWUI.templates.textNormal,
+                        props = {
+                            text = "Status: " .. viewModel.status,
+                            textAlignH = ui.ALIGNMENT.Start
+                        }
+                    }
+                    mainSizer.content:add(statusWidget)
+
+                    -- line break
+                    mainSizer.content:add({
+                        type = ui.TYPE.Image,
+                        template = I.MWUI.templates.horizontalLine,
+                        props = { size = util.vector2(200, 2) }
+                    })
+                end
+
+                -- the action
+                if viewModel.action then
+                    local buttonSizer = {
+                        type = ui.TYPE.Container,
+                        template = I.MWUI.templates.boxSolid,
+                        props = { autoSize = true, horizontal = true },
+                        content = ui.content {}
+                    }
+
+                    local template = I.MWUI.templates.textButtonNormal
+                    if not viewModel.action.enabled then
+                        template = I.MWUI.templates.disabled
+                    end
+                    local button = {
+                        type = ui.TYPE.Text,
+                        template = template,
+                        props = {
+                            text = 'Press [F] to ' .. viewModel.action.label,
+                            textSize = 20,
+                            relativePosition = util.vector2(0, 0)
+                        }
+                    }
+
+                    buttonSizer.content:add(button)
+                    mainSizer.content:add(buttonSizer)
+                end
+
+
+                -- then details if any
+                if viewModel.details then
+                    for _, detail in pairs(viewModel.details) do
+                        local detailWidget = {
+                            type = ui.TYPE.Text,
+                            template = I.MWUI.templates.textNormal,
+                            props = {
+                                text = detail,
+                                textAlignH = ui.ALIGNMENT.Start
+                            }
+                        }
+                        mainSizer.content:add(detailWidget)
+                    end
+                end
+            end
+        end
     end
 
     -- Create and store the overlay element
@@ -124,11 +168,13 @@ local function updateOverlayUI()
     overlayElement:update()
 end
 
+--#region Public API
+
 ---Register an action that should be shown in the overlay
----@param id Id StationId this action is associated with
+---@param context CContext
 ---@param action CAction
-function this.registerAction(id, action)
-    currentStationId = id
+function this.registerAction(context, action)
+    currentContext = context
     if not currentActions then currentActions = {} end
     table.insert(currentActions, action)
 
@@ -140,21 +186,53 @@ end
 ---Clear all registered actions
 function this.clearAllActions()
     currentActions = nil
-    currentStationId = nil
+    currentContext = nil
 
     updateOverlayUI()
 end
 
+--#endregion
+
+--#region Events
+
 function this.onContextualAction()
     -- early outs
     if not overlayElement then return end
-    if not currentStationId then return end
+    if not currentContext then return end
     if not currentActions then return end
 
     -- for all actions
     for _, action in pairs(currentActions or {}) do
-        -- if the key matches the action (for now, we assume 'F' key)
+        local handler = dataManager.resolveHandler(action.handler)
+        if handler then
+            handler:OnActivate()
+        end
     end
 end
+
+--#endregion
+
+--#region Parent
+
+---Main update function called every frame
+function this.onUpdate(dt)
+    -- Periodically update UI
+    this.timeSinceLastUpdate = this.timeSinceLastUpdate + dt
+    if this.timeSinceLastUpdate >= updateInterval then
+        updateOverlayUI()
+        this.timeSinceLastUpdate = 0
+    end
+
+
+    -- delegate to handlers
+    for _, action in pairs(currentActions or {}) do
+        local handler = dataManager.resolveHandler(action.handler)
+        if handler then
+            handler:onUpdate(dt)
+        end
+    end
+end
+
+--#endregion
 
 return this

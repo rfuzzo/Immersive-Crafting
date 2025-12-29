@@ -1,0 +1,12 @@
+---@class ViewModel
+---@field header string?
+---@field status string?
+---@field details string[]|nil
+---@field action ViewModel.ActionInfo|nil
+---@field progress number|nil
+
+---@class ViewModel.ActionInfo
+---@field id Id
+---@field label string
+---@field enabled boolean
+---@field disabledReason string|nil

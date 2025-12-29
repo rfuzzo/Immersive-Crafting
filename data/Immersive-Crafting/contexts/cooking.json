@@ -1,7 +1,7 @@
 [
   {
     "id": "cooking_pot",
-    "requiresStation": "campfire",
+    "label": "Cooking Pot",
     "recordIds": [
       "furn_de_bar_01",
       "furn_com_table_01"

@@ -1,0 +1,48 @@
+[
+  {
+    "id": "seasoned_meat",
+    "label": "Seasoned Meat",
+    "context": "mixing_bowl",
+    "action": "mixing",
+    "ingredients": [
+      {
+        "id": "Any Meat",
+        "count": 1
+      },
+      {
+        "id": "Any Spices",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "SeasonedMeat",
+      "count": 1
+    }
+  },
+  {
+    "id": "simple_stew",
+    "label": "Simple Stew",
+    "context": "cooking_pot",
+    "action": "cooking",
+    "requires": "heat",
+    "ingredients": [
+      {
+        "id": "Any Meat",
+        "count": 1
+      },
+      {
+        "id": "Any Vegetable",
+        "count": 1
+      },
+      {
+        "id": "Water",
+        "count": 1
+      }
+    ],
+    "cookTime": 10,
+    "output": {
+      "id": "Stew",
+      "count": 1
+    }
+  }
+]

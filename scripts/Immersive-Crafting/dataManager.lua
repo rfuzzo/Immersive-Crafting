@@ -3,7 +3,7 @@ local constants = require('scripts.Immersive-Crafting.constants')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
-local CContext = require('scripts.Immersive-Crafting.models.station')
+local CContext = require('scripts.Immersive-Crafting.models.context')
 local CAction = require('scripts.Immersive-Crafting.models.action')
 
 local vfs = require('openmw.vfs')
@@ -13,20 +13,19 @@ local this = {}
 ---@class Registries
 ---@field tags table<Id, string[]>
 ---@field uiTemplates table<Id, table>
+---@field handlers table<Id, table>
 ---@field actions table<Id, CAction>
 ---@field contexts table<Id, CContext>
----@field recipes table<string, table<Id, RecipeDef>>
+---@field recipes table<string, CRecipe>
 
 ---@type Registries
 GRegistries = {
     tags = {},
     uiTemplates = {},
+    handlers = {},
     actions = {},
     contexts = {},
-    recipes = {
-        shaped = {},
-        contextual = {},
-    },
+    recipes = {},
     processes = {},
 }
 
@@ -132,33 +131,18 @@ end
 
 local function loadRecipes()
     -- Shaped recipes
-    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "recipes/shaped/") do
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "recipes/") do
         local data = io.loadJsonFile(filename)
         if data then
-            log.info(('Loading shaped recipes from %s'):format(filename))
-            mergeById(GRegistries.recipes.shaped, data)
+            log.info(('Loading recipes from %s'):format(filename))
+            mergeById(GRegistries.recipes, data)
         end
     end
 
     -- logging
-    log.info(('Loaded %d shaped recipes'):format(len(GRegistries.recipes.shaped)))
-    for r in pairs(GRegistries.recipes.shaped) do
-        log.info((' - %s'):format(r))
-    end
-
-    -- Contextual recipes
-    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "recipes/contextual/") do
-        local data = io.loadJsonFile(filename)
-        if data then
-            log.info(('Loading contextual recipes from %s'):format(filename))
-            mergeById(GRegistries.recipes.contextual, data)
-        end
-    end
-
-    -- logging
-    log.info(('Loaded %d contextual recipes'):format(len(GRegistries.recipes.contextual)))
-    for r in pairs(GRegistries.recipes.contextual) do
-        log.info((' - %s'):format(r))
+    log.info(('Loaded %d recipes'):format(len(GRegistries.recipes)))
+    for a in pairs(GRegistries.recipes) do
+        log.info((' - %s'):format(a))
     end
 end
 
@@ -171,6 +155,22 @@ function this.loadAllData()
     loadRecipes()
 
     log.info('All data loaded successfully.')
+end
+
+---
+---@param handlerId Id
+---@return CAbstractHandler?
+function this.resolveHandler(handlerId)
+    -- resolve from /handlers/ folder
+    local handlerModulePath = 'scripts.Immersive-Crafting.handlers.' .. handlerId
+    local status, handlerModule = pcall(require, handlerModulePath)
+    if status and handlerModule then
+        log.info(('Resolved handler %s from module %s'):format(
+            handlerId, handlerModulePath))
+        return handlerModule
+    end
+
+    return nil
 end
 
 return this

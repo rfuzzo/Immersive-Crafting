@@ -61,3 +61,13 @@ Example process flow:
 3. Player places ingredients (e.g. flour, water) near the mixing bowl.
 4. Hovering over the mixing bowl shows an action prompt "Make dough" because all required ingredients are present.
 5. When I press the action prompt, the cooking process starts, consuming the ingredients.
+
+## Ingredient resolving
+
+In a recipe you can specify ingredients in a flexible way, the actual game object is match in order of priority:
+
+1. Specific item by exact record ID, e.g. "ingred_meat_01"
+2. Item by tag, e.g. "Meat" matches any ingredient that has the "meat" category tag, defined in `data/Immersive-Crafting/tags/*.json`
+3. Item by wildcard: "ingred_meat_*" matches any ingredient whose record ID starts with "ingred_meat_"
+
+When multiple recipes are valid based on the detected ingredients, the recipe with the highest complexity (most ingredients) is chosen.

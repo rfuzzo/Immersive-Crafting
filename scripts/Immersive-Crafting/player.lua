@@ -3,12 +3,12 @@
 local input = require('openmw.input')
 local async = require('openmw.async')
 
-local dataHandler = require('scripts.Immersive-Crafting.dataManager')
+local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local contextManager = require('scripts.Immersive-Crafting.contextManager')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local log = require('scripts.Immersive-Crafting.log')
 
--- TODO save ids for json validation later
+
 input.registerAction {
     key = 'ContextualAction',
     type = input.ACTION_TYPE.Boolean,
@@ -23,7 +23,7 @@ local function onInit() log.info('Immersive Crafting player script initialized')
 
 ---Called after loading a save
 local function onLoad(data)
-    dataHandler.loadAllData()
+    dataManager.loadAllData()
 
     log.info('Immersive Crafting player script loaded from save')
 end
