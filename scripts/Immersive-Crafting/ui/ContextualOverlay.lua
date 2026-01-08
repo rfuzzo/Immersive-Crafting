@@ -1,6 +1,25 @@
----Contextual Overlay UI
----Always-present UI that shows available actions based on player context
----Displays buttons that can be held to trigger actions or open interfaces
+--[[
+    Contextual Overlay UI Module
+
+    This module manages the contextual overlay UI that appears when the player is near
+    an interactive crafting station. It displays available actions and their statuses.
+
+    It provides functions to register actions, clear actions, and update the overlay UI.
+
+    Example Overlay Layout:
+
+    ┌─────────────────────────────┐
+    │ Mixing Bowl                 │   ← header
+    │                             │
+    │ Ready                       │   ← status
+    │                             │
+    │ [F] Mix Dough               │   ← action (if enabled)
+    │                             │
+    │ Missing: Water              │   ← details (optional)
+    └─────────────────────────────┘
+]]
+
+-- Module imports
 local ui = require('openmw.ui')
 local util = require('openmw.util')
 local I = require('openmw.interfaces')
@@ -11,10 +30,12 @@ local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
+-- Configuration
 local updateInterval = 0.25 -- Check for nearby context every 0.25 seconds
 
 local this = {}
 
+-- State variables
 this.timeSinceLastUpdate = 0 ---@type number
 
 local currentContext = nil ---@type CContext?

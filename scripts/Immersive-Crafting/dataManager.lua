@@ -31,11 +31,7 @@ GRegistries = {
 
 local DATA_ROOT = constants.DATA_ROOT
 
--- === Data Registries ===
-
 local len = lib.len
-
--- === Data domain loaders ===
 
 ---@param target table
 ---@param data table
@@ -174,3 +170,5 @@ function this.resolveHandler(handlerId)
 end
 
 return this
+
+-- unit tests
