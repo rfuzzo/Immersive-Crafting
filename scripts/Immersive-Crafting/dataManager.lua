@@ -113,6 +113,8 @@ local function loadContexts()
                 if s then
                     log.info(('Loading contexts from %s'):format(filename))
                     mergeById(GRegistries.contexts, s)
+                else
+                    log.error(('Failed to load context from %s'):format(filename))
                 end
             end
         end
@@ -170,5 +172,3 @@ function this.resolveHandler(handlerId)
 end
 
 return this
-
--- unit tests

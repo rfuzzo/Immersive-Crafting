@@ -5,7 +5,7 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field label string
 ---@field recordIds string[] List of game object record IDs that act as this station
 ---@field activationRange number|nil Distance in units to detect station (default 150)
----@field actions CAction|Id[] List of actions available at this station
+---@field actions CAction[]|Id[] List of actions available at this station
 local CContext = {}
 
 --- Deserialize from table
@@ -17,7 +17,6 @@ function CContext:fromTable(tbl)
         not tbl.id
         or not tbl.label
         or not tbl.recordIds
-        or not tbl.activationRange
         or not tbl.actions then
         log.error('Invalid CContext table: missing required fields')
         return nil
