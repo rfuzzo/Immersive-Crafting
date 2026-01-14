@@ -9,14 +9,6 @@ local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local log = require('scripts.Immersive-Crafting.log')
 
 
-input.registerAction {
-    key = 'ContextualAction',
-    type = input.ACTION_TYPE.Boolean,
-    l10n = 'none',
-    name = 'ContextualAction',
-    description = 'Button to trigger overlay action',
-    defaultValue = false
-}
 
 ---Called when the script is first loaded
 local function onInit() log.info('Immersive Crafting player script initialized') end

@@ -5,6 +5,7 @@ local log = require('scripts.Immersive-Crafting.log')
 
 local CContext = require('scripts.Immersive-Crafting.models.context')
 local CAction = require('scripts.Immersive-Crafting.models.action')
+local AbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 
 local vfs = require('openmw.vfs')
 
@@ -13,10 +14,10 @@ local this = {}
 ---@class Registries
 ---@field tags table<Id, string[]>
 ---@field uiTemplates table<Id, table>
----@field handlers table<Id, table>
 ---@field actions table<Id, CAction>
 ---@field contexts table<Id, CContext>
 ---@field recipes table<string, CRecipe>
+---@field handlers table<string, CAbstractHandler>
 
 ---@type Registries
 GRegistries = {
@@ -30,6 +31,7 @@ GRegistries = {
 }
 
 local DATA_ROOT = constants.DATA_ROOT
+local LUA_ROOT = constants.LUA_ROOT
 
 local len = lib.len
 
@@ -88,10 +90,15 @@ local function loadActions()
         if filename:match("%.json$") then
             local data = io.loadJsonFile(filename)
             if data then
-                local a = CAction:fromTable(data)
-                if a then
-                    log.info(('Loading actions from %s'):format(filename))
-                    mergeById(GRegistries.actions, a)
+                -- data should be in the form of table[]
+                for _, entry in ipairs(data) do
+                    local a = CAction:fromTable(entry)
+                    if a then
+                        log.info(('Loading actions from %s'):format(filename))
+                        mergeById(GRegistries.actions, a)
+                    else
+                        log.error(('Failed to load action from %s'):format(filename))
+                    end
                 end
             end
         end
@@ -109,12 +116,16 @@ local function loadContexts()
         if filename:match("%.json$") then
             local data = io.loadJsonFile(filename)
             if data then
-                local s = CContext:fromTable(data)
-                if s then
-                    log.info(('Loading contexts from %s'):format(filename))
-                    mergeById(GRegistries.contexts, s)
-                else
-                    log.error(('Failed to load context from %s'):format(filename))
+                -- data should be in the form of table[]
+                for _, entry in ipairs(data) do
+                    local s = CContext:fromTable(entry)
+                    if s then
+                        log.info(('Loading contexts from %s'):format(filename))
+                        mergeById(GRegistries
+                            .contexts, s)
+                    else
+                        log.error(('Failed to load context from %s'):format(filename))
+                    end
                 end
             end
         end
@@ -144,6 +155,30 @@ local function loadRecipes()
     end
 end
 
+local function loadHandlers()
+    -- go through all files in handlers folder and check for .lua files
+    for filename in vfs.pathsWithPrefix(LUA_ROOT .. "handlers/") do
+        if filename:match("%.lua$") then
+            local name = filename:match("handlers/(.+)%.lua$")
+            local handlerModulePath = 'scripts.Immersive-Crafting.handlers.' .. name
+            local status, handlerModule = pcall(require, handlerModulePath)
+            if status and handlerModule then
+                log.info(('Loading handler from %s'):format(filename))
+                GRegistries.handlers[name] = handlerModule
+            else
+                log.error(('Error loading handler module %s: %s'):format(
+                    handlerModulePath, handlerModule))
+            end
+        end
+    end
+
+    -- logging
+    log.info(('Loaded %d handlers'):format(len(GRegistries.handlers)))
+    for h in pairs(GRegistries.handlers) do
+        log.info((' - %s'):format(h))
+    end
+end
+
 ---Load all data domains.
 function this.loadAllData()
     loadTags()
@@ -151,6 +186,7 @@ function this.loadAllData()
     loadActions()
     loadContexts()
     loadRecipes()
+    loadHandlers()
 
     log.info('All data loaded successfully.')
 end
@@ -159,16 +195,16 @@ end
 ---@param handlerId Id
 ---@return CAbstractHandler?
 function this.resolveHandler(handlerId)
-    -- resolve from /handlers/ folder
-    local handlerModulePath = 'scripts.Immersive-Crafting.handlers.' .. handlerId
-    local status, handlerModule = pcall(require, handlerModulePath)
-    if status and handlerModule then
-        log.info(('Resolved handler %s from module %s'):format(
-            handlerId, handlerModulePath))
-        return handlerModule
+    -- resolve from registry
+    local handlerClass = GRegistries.handlers[handlerId]
+    if not handlerClass then
+        log.error('Handler not found: ' .. handlerId)
+        return nil
     end
 
-    return nil
+    -- instantiate
+    local handlerInstance = handlerClass:new()
+    return handlerInstance
 end
 
 return this

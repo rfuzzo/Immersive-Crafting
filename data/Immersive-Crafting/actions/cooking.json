@@ -2,11 +2,11 @@
   {
     "id": "cooking",
     "label": "Cook",
-    "handler": "mixing"
+    "handler": "cooking"
   },
   {
     "id": "mixing",
     "label": "Mix",
-    "handler": "cooking"
+    "handler": "mixing"
   }
 ]

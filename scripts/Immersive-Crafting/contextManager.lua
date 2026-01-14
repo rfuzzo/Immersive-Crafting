@@ -18,11 +18,18 @@ this.timeSinceLastUpdate = 0 ---@type number
 
 --- Resolve an action definition, whether by ID or direct reference
 ---@param actionDef CAction|string
----@return CAction
+---@return CAction?
 local function resolveAction(actionDef)
     -- if actionDef is a string, look up the action definition
     if type(actionDef) == 'string' then
-        return GRegistries.actions[actionDef]
+        local a = GRegistries.actions[actionDef]
+
+        if not a then
+            log.error('Action not found: ' .. actionDef)
+            return nil
+        end
+
+        return a
     else
         return actionDef
     end

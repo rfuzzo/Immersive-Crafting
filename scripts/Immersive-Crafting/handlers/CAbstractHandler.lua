@@ -23,7 +23,6 @@ end
 ---@param ctx HandlerContext
 ---@return ViewModel?
 function CAbstractHandler:present(ctx)
-    -- override in child classes
     local result = self:evaluate(ctx)
     if result then
         ---@type ViewModel

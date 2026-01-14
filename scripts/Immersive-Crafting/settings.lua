@@ -1,5 +1,14 @@
-local storage = require('openmw.storage')
 local interfaces = require('openmw.interfaces')
+local input = require('openmw.input')
+
+input.registerAction {
+    key = 'ContextualAction',
+    type = input.ACTION_TYPE.Boolean,
+    l10n = 'none',
+    name = 'ContextualAction',
+    description = 'Button to trigger overlay action',
+    defaultValue = false
+}
 
 interfaces.Settings.registerPage {
     key = 'ImmersiveCrafting',
@@ -18,7 +27,7 @@ interfaces.Settings.registerGroup {
     permanentStorage = true,
     settings = {
         {
-            key = 'ContextualActionHotekey',
+            key = 'ContextualActionHotkey',
             renderer = 'inputBinding',
             name = 'Choose hotkey for contextual actions',
             description = 'Click and press a key to bind the contextual action overlay',
@@ -30,3 +39,5 @@ interfaces.Settings.registerGroup {
         }
     },
 }
+
+return

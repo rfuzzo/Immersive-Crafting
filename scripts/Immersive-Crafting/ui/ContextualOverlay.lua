@@ -53,6 +53,8 @@ local function updateOverlayUI()
     if not currentActions then return end
     if not currentContext then return end
 
+    log.trace('Updating contextual overlay UI')
+
     -- Create the overlay container
     local overlay = {
         type = ui.TYPE.Container,
@@ -89,6 +91,8 @@ local function updateOverlayUI()
 
             if viewModel then
                 -- render the viewmodel
+
+                log.trace('Rendering overlay for action: ' .. action.id)
 
                 -- first the header
                 local headerSizer = {
@@ -181,6 +185,8 @@ local function updateOverlayUI()
                     end
                 end
             end
+        else
+            log.error('No handler found for action: ' .. action.id)
         end
     end
 
@@ -193,8 +199,13 @@ end
 
 ---Register an action that should be shown in the overlay
 ---@param context CContext
----@param action CAction
+---@param action CAction?
 function this.registerAction(context, action)
+    if not action then
+        log.error('Cannot register nil action to overlay')
+        return
+    end
+
     currentContext = context
     if not currentActions then currentActions = {} end
     table.insert(currentActions, action)

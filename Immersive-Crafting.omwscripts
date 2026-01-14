@@ -3,3 +3,6 @@ GLOBAL: scripts/Immersive-Crafting/init.lua
 
 # Player script for contextual overlay and proximity detection
 PLAYER: scripts/Immersive-Crafting/player.lua
+
+# Settings
+MENU: scripts/Immersive-Crafting/settings.lua
