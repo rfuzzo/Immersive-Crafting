@@ -1,51 +1,42 @@
 # Ingredient tagging tools
 
-Scripts that build the Tagger ingredient tag file
+Generate the Tagger ingredient tag file
 (`../ModTags/ImmersiveCrafting_Ingredients.yaml`) from a reviewable CSV.
 
 **Source of truth is [`../ingredients_tags.csv`](../ingredients_tags.csv)**
 (columns: `id,name,tags,comment`). Edit the CSV, then regenerate the YAML.
-All scripts are GNU awk (`gawk`); on Windows run them from Git Bash.
 
-## Day-to-day: regenerate the YAML after editing the CSV
+## Regenerate the YAML after editing the CSV
 
-```bash
-gawk -f tools/csv2yaml.awk ingredients_tags.csv > ModTags/ImmersiveCrafting_Ingredients.yaml
+From the repo root, in PowerShell:
+
+```powershell
+./tools/csv2yaml.ps1
 ```
 
-`csv2yaml.awk` reads only the `id` and `tags` columns, dedupes ids (union of
-tags), skips untagged rows, and emits Tagger-schema YAML. The `comment` column
-is editor-only metadata and is **not** written to the YAML. The canonical tag
-list and emission order are defined by the `ORDER` variable at the top of the
-script — add new tags there.
+Optional explicit paths:
 
-## One-off: re-bootstrapping the CSV from a fresh record dump
-
-These were used to create the initial CSV and are kept for reproducibility.
-
-- `classify.awk` — keyword classifier. Input: TSV of `id<TAB>name<TAB>mod`
-  (dumped ingredient records). Output: `id<TAB>name<TAB>tags`. Edit the
-  per-category keyword rules here to change classifications.
-- `parse_wiki.awk` — parses a saved UESP `*:Ingredients` HTML page into
-  `game<TAB>id<TAB>name<TAB>description<TAB>effects`. Run per page with
-  `-v GAME=<name>`. The `description` field feeds the CSV `comment` column.
-
-Rough bootstrap flow (see git history of the CSV for the exact joins):
-
-```bash
-# 1. classify the dump
-gawk -f tools/classify.awk ingredients.tsv > classified.tsv
-# 2. parse each downloaded UESP page for descriptions
-for g in morrowind tribunal bloodmoon tamriel_data tamriel_rebuilt; do
-  gawk -v GAME=$g -f tools/parse_wiki.awk wiki/$g.html
-done > wiki_ingredients.tsv
-# 3. join descriptions in as the comment column, dedupe by id -> ingredients_tags.csv
-# 4. tools/csv2yaml.awk ingredients_tags.csv -> the YAML
+```powershell
+./tools/csv2yaml.ps1 -CsvPath ingredients_tags.csv -OutPath ModTags/ImmersiveCrafting_Ingredients.yaml
 ```
+
+`csv2yaml.ps1` reads only the `id` and `tags` columns, dedupes ids (union of
+tags), skips untagged rows, and writes Tagger-schema YAML (UTF-8, no BOM). The
+`comment` column is editor-only metadata and is **not** written to the YAML.
+
+The full tag set is **derived from the CSV**, so adding a new tag in the CSV
+needs no script change. The `$Order` array near the top of the script only
+controls display grouping; any tag not listed there is still emitted, appended
+after the listed ones in alphabetical order (and reported as a hint when the
+script runs). Add a new tag to `$Order` only if you want it grouped in a
+specific spot.
 
 ## Notes
 
-- Classification is keyword-based and imperfect; the CSV is meant to be
-  hand-corrected. After any manual CSV edit, just re-run step "Day-to-day".
+- Classification is hand-maintained in the CSV. After any edit, just re-run the
+  command above.
 - Tagger lowercases tag names and record ids, so casing in the CSV/YAML is
   cosmetic. Multiple tags per record are supported (e.g. a clam is `Meat,Fish`).
+- The original awk bootstrap scripts (`classify.awk`, `parse_wiki.awk`,
+  `csv2yaml.awk`) that built the first CSV from a record dump + UESP pages were
+  removed; they remain available in git history if a re-bootstrap is ever needed.

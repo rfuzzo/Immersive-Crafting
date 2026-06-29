@@ -1,5 +1,5 @@
 # Immersive-Crafting ingredient tag definitions for the Tagger framework (S3cret St4sh).
-# GENERATED from ingredients_tags.csv — edit the CSV, then regenerate. Do not hand-edit.
+# GENERATED from ingredients_tags.csv by tools/csv2yaml.ps1 - edit the CSV, then regenerate. Do not hand-edit.
 # Tagger lowercases tag names and record ids; multiple tags per record are allowed.
 tags:
   - "Meat"
@@ -11,31 +11,45 @@ tags:
   - "Dairy"
   - "Grain"
   - "Spice"
+  - "Seed"
   - "Sweet"
   - "Liquid"
-  - "Gem"
-  - "Ore"
-  - "Mineral"
+  - "Tea"
+  - "Meal"
+  - "Plant"
+  - "Flower"
+  - "Pulp"
+  - "Resin"
+  - "Slime"
   - "CreaturePart"
   - "Pelt"
   - "Hide"
   - "Leather"
   - "Feather"
   - "Claw"
-  - "Plant"
+  - "Scale"
+  - "Venom"
+  - "Gem"
+  - "Ore"
+  - "Mineral"
+  - "Salt"
+  - "Dust"
 applied_tags:
   "TR_m3_q_OE_MG_Dae_Gems": ["Gem"]
   "TR_m3_q_OE_MG_Dae_Sapphire": ["Gem"]
   "T_IngCrea_AebisFeathers_01": ["CreaturePart", "Feather"]
+  "T_IngFlor_AlchemistsGlobe_01": ["Plant"]
   "ingred_alit_hide_01": ["CreaturePart", "Hide"]
   "T_IngFood_MeatAlit_01": ["Meat"]
   "T_IngFlor_Alkanet_01": ["Plant"]
-  "T_IngFlor_AloeVeraPulp_01": ["Plant"]
+  "T_IngFlor_AloeVeraPulp_01": ["Plant", "Pulp"]
   "T_IngCrea_AlphynClaw_01": ["CreaturePart", "Claw"]
   "T_IngFood_AltachiPear_01": ["Fruit"]
   "AB_IngMine_Amber_01": ["Gem"]
   "T_IngMine_AmberDae_01": ["Gem"]
   "T_IngMine_Amber_01": ["Gem"]
+  "T_IngCrea_Ambergris": ["Gem"]
+  "T_IngCrea_Ambergris_float": ["Gem"]
   "T_IngCrea_ButterflyWingSky_03": ["CreaturePart"]
   "AB_IngMine_Amethyst_01": ["Gem"]
   "TR_m7_q_Ns_IC8_gem5": ["Gem"]
@@ -45,50 +59,53 @@ applied_tags:
   "T_IngMine_Ametrine_01": ["Gem"]
   "ingred_bc_ampoule_pod": ["Plant"]
   "T_IngCrea_MothWingCyr_02": ["CreaturePart"]
-  "TR_m2_q_22_Dust": ["Mineral"]
-  "T_IngFlor_AnemicTwinstipe_01": ["Plant"]
+  "TR_m2_q_22_Dust": ["Mineral", "Dust"]
+  "T_IngFlor_AnemicTwinstipe_01": ["Mushroom"]
   "T_IngCrea_Angelfish_01": ["Fish"]
-  "T_IngSpice_Anise_01": ["Spice", "Plant"]
-  "T_IngMine_Antimony_01": ["Ore", "Mineral"]
+  "T_IngSpice_Anise_01": ["Spice", "Seed", "Plant"]
+  "T_IngMine_Antimony_01": ["Ore"]
   "T_IngCrea_MothWingSky_03": ["CreaturePart"]
   "T_IngFood_AppleSkyrim_01": ["Fruit"]
   "T_IngFood_Apple_01": ["Fruit"]
   "T_IngMine_AquamarineDae_01": ["Gem"]
   "T_IngMine_Aquamarine_01": ["Gem"]
-  "T_IngFlor_Aquilegia_01": ["Plant"]
-  "T_IngFood_MeatArenthJerky_01": ["Meat"]
+  "T_IngFlor_Aquilegia_01": ["Plant", "Pulp"]
+  "T_IngFood_MeatArenthJerky_01": ["Meat", "Meal"]
   "T_IngCrea_ArmunHide_01": ["CreaturePart", "Hide"]
   "T_IngCrea_MothWingCyr_04": ["CreaturePart"]
-  "T_IngFlor_Arrowroot_01": ["Vegetable"]
-  "T_IngFlor_ArrowrootFlower_01": ["Vegetable", "Plant"]
+  "T_IngFlor_Arrowroot_01": ["Plant"]
+  "T_IngFlor_ArrowrootFlower_01": ["Plant", "Flower"]
   "T_IngCrea_MothWingMw_02": ["CreaturePart"]
-  "ingred_ash_salts_01": ["Mineral"]
+  "ingred_ash_salts_01": ["Salt"]
   "ingred_ash_yam_01": ["Vegetable"]
-  "T_IngCrea_AspisGland": ["CreaturePart"]
-  "T_IngFlor_AspyrTea_01": ["Plant"]
-  "T_IngFlor_Asteria_01": ["Gem"]
+  "T_IngCrea_AspisGland": ["CreaturePart", "Venom"]
+  "T_IngFlor_AspyrTea_01": ["Tea", "Plant"]
+  "T_IngFood_TeaAltmer_02": ["Meal"]
+  "T_IngFlor_Asteria_01": ["Vegetable", "Plant"]
   "T_IngCrea_AstralJellyfish_01": ["Fish"]
   "T_IngCrea_AtavisticEye_01": ["CreaturePart"]
-  "T_IngCrea_BarkHeart_01": ["CreaturePart", "Plant"]
-  "T_IngCrea_BarkScale_01": ["CreaturePart", "Plant"]
+  "T_IngCrea_BarkHeart_01": ["Meat", "CreaturePart"]
+  "T_IngCrea_BarkScale_01": ["CreaturePart", "Scale"]
   "T_IngCrea_BarracudaSteak_01": ["Fish"]
   "T_IngCrea_BarracudaTailfin_01": ["Fish"]
   "TR_m7_NVA8_ingred_bear_pelt": ["CreaturePart", "Pelt"]
   "ingred_bear_pelt": ["CreaturePart", "Pelt"]
-  "T_IngFlor_Bearclaw_01": ["Plant"]
+  "T_IngFlor_Bearclaw_01": ["Plant", "Flower"]
   "T_IngFood_MeatBeef_01": ["Meat"]
-  "T_IngCrea_BeetleResin_01": ["Plant"]
+  "T_IngCrea_BeetleResin_01": ["Resin"]
   "TR_m4_AA_SehutuHeart": ["CreaturePart"]
-  "T_IngCrea_ShellMolecrab_01": ["Fish", "CreaturePart"]
-  "T_IngFood_Cookie_01": ["Grain"]
-  "T_IngFood_Cookie_02": ["Grain"]
-  "TR_m2_q_9_BGPetals": ["Plant"]
-  "TR_m4_TT_SpawnBittergreen": ["Plant"]
-  "ingred_bittergreen_petals_01": ["Plant"]
-  "AB_IngFlor_BgSlime_01": ["Plant"]
-  "T_IngFlor_Bitterstar_01": ["Spice", "Plant"]
+  "T_IngFlor_BertpodSlice_01": ["Fruit"]
+  "T_IngCrea_BezoarStone_01": ["CreaturePart"]
+  "T_IngCrea_ShellMolecrab_01": ["CreaturePart", "Scale"]
+  "T_IngFood_Cookie_01": ["Meal"]
+  "T_IngFood_Cookie_02": ["Meal"]
+  "TR_m2_q_9_BGPetals": ["Plant", "Flower"]
+  "TR_m4_TT_SpawnBittergreen": ["Plant", "Flower"]
+  "ingred_bittergreen_petals_01": ["Plant", "Flower"]
+  "AB_IngFlor_BgSlime_01": ["Plant", "Slime"]
+  "T_IngFlor_Bitterstar_01": ["Spice", "Seed", "Plant"]
   "T_IngMine_OreBitterstone_01": ["Ore"]
-  "T_IngFlor_BjoulsaeRose_01": ["Plant"]
+  "T_IngFlor_BjoulsaeRose_01": ["Plant", "Flower"]
   "ingred_black_anther_01": ["Plant"]
   "T_IngCrea_BearpeltBlack_01": ["CreaturePart", "Pelt"]
   "ingred_black_lichen_01": ["Plant"]
@@ -99,7 +116,7 @@ applied_tags:
   "T_IngFlor_BlackrosePetal_01": ["Plant"]
   "TR_m1_Q_Ingred_BlackRose": ["Plant"]
   "TR_m1_Q_BlackRose_Stationary": ["Plant"]
-  "T_IngFlor_BlacksporeCap_01": ["Mushroom", "Plant"]
+  "T_IngFlor_BlacksporeCap_01": ["Mushroom"]
   "AB_IngMine_BlackTourmaline_01": ["Gem"]
   "T_IngFood_Blackberry_01": ["Fruit"]
   "T_IngFlor_Bleakbell_01": ["Plant"]
@@ -110,15 +127,15 @@ applied_tags:
   "AB_IngFlor_Fomentarius": ["Mushroom"]
   "T_IngFlor_BlisteringFoment_01": ["Mushroom"]
   "ingred_bloat_01": ["Mushroom"]
-  "T_IngFlor_BloodlilyFlower_01": ["CreaturePart", "Plant"]
-  "T_IngFlor_BloodlilyPod_01": ["CreaturePart", "Plant"]
+  "T_IngFlor_BloodlilyFlower_01": ["Plant", "CreaturePart"]
+  "T_IngFlor_BloodlilyPod_01": ["Plant", "CreaturePart"]
   "ingred_blood_innocent_unique": ["CreaturePart"]
   "TR_i3-685_OutlawsBlood": ["CreaturePart"]
   "AB_IngFlor_Bloodgrass_01": ["Plant"]
   "T_IngFlor_Bloodgrass_01": ["Plant"]
   "T_IngMine_BloodstoneDae_01": ["Gem"]
   "T_IngMine_Bloodstone_01": ["Gem"]
-  "T_IngCrea_ButterflyWingCyr_02": ["Mineral", "CreaturePart"]
+  "T_IngCrea_ButterflyWingCyr_02": ["CreaturePart", "Mineral"]
   "AB_IngMine_BlueDiamond": ["Gem"]
   "T_IngMine_DiamondBlue_01": ["Gem"]
   "T_IngFlor_FlaxFlower_01": ["Plant"]
@@ -267,7 +284,7 @@ applied_tags:
   "AB_IngCrea_DungCake": ["Sweet"]
   "T_IngCrea_DurzogHide_01": ["CreaturePart", "Hide"]
   "T_IngCrea_DuskyParrotfish_01": ["Fish"]
-  "T_IngCrea_BeetleShell_01": ["Mineral", "CreaturePart"]
+  "T_IngCrea_BeetleShell_01": ["CreaturePart", "Mineral"]
   "AB_IngFlor_Dustcap": ["Mushroom"]
   "TR_m2_q_38_ectoplasm": ["CreaturePart"]
   "ingred_ectoplasm_01": ["CreaturePart"]
@@ -322,10 +339,10 @@ applied_tags:
   "TR_m7_NVA8_IngCrea_GoatPelt_01": ["CreaturePart"]
   "T_IngCrea_GoatPelt_01": ["CreaturePart"]
   "T_IngFood_MeatGoat_01": ["Meat"]
-  "ingred_gold_kanet_01": ["Ore", "Plant"]
+  "ingred_gold_kanet_01": ["Plant", "Ore"]
   "T_IngMine_OreGoldDae_01": ["Ore"]
   "T_IngMine_OreGold_01": ["Ore"]
-  "T_IngCrea_GoldTanthaBeak_01": ["Ore", "CreaturePart"]
+  "T_IngCrea_GoldTanthaBeak_01": ["CreaturePart", "Ore"]
   "AB_IngMine_GoldPearl_01": ["Gem"]
   "T_IngFlor_GoldWatcSeed_01": ["Spice", "Plant"]
   "T_IngFlor_GoldenRod_01": ["Spice", "Plant"]
@@ -391,7 +408,7 @@ applied_tags:
   "T_IngCrea_IcewraithTeeth_01": ["CreaturePart"]
   "T_IngFlor_IcyShell01": ["Mushroom", "CreaturePart"]
   "T_IngDye_ImperialPurple_01": ["Mineral"]
-  "T_IngCrea_IronToadHide": ["Ore", "CreaturePart", "Hide"]
+  "T_IngCrea_IronToadHide": ["CreaturePart", "Hide", "Ore"]
   "T_IngMine_OreIron_01": ["Ore"]
   "T_IngFood_Ironrye_01": ["Grain"]
   "T_IngFlor_IronwoodNut_01": ["Plant"]
@@ -455,7 +472,7 @@ applied_tags:
   "ingred_6th_corprusmeat_03": ["Meat"]
   "T_IngMine_OreMercury_01": ["Mineral"]
   "TR_m2_meteor_i2-383-ind": ["Mineral"]
-  "ingred_scrib_jelly_02": ["Mineral", "Plant"]
+  "ingred_scrib_jelly_02": ["Plant", "Mineral"]
   "T_IngMine_Agate_03": ["Gem"]
   "T_IngFlor_Milkthistle_01": ["Plant"]
   "T_IngFlor_Mindcap_01": ["Mushroom"]
@@ -537,7 +554,7 @@ applied_tags:
   "T_IngMine_OrePlatinum_01": ["Ore"]
   "T_IngFood_Plum_01": ["Fruit"]
   "poison_goop00": ["CreaturePart"]
-  "T_IngFlor_PBloomBulb_01": ["CreaturePart", "Plant"]
+  "T_IngFlor_PBloomBulb_01": ["Plant", "CreaturePart"]
   "TR_m3_OE_RatMeatPoison": ["Meat"]
   "AB_IngFlor_Pomegranate01": ["Fruit"]
   "AB_IngFlor_Pomegranate02": ["Fruit"]
@@ -598,7 +615,7 @@ applied_tags:
   "ingred_roobrush_01": ["Plant"]
   "T_IngFlor_RedrosePetalDae_01": ["Plant"]
   "T_IngFlor_RedrosePetal_01": ["Plant"]
-  "T_IngMine_RoseQuartz_01": ["Gem", "Plant"]
+  "T_IngMine_RoseQuartz_01": ["Plant", "Gem"]
   "T_IngCrea_MothWingCyr_06": ["CreaturePart"]
   "TR_m4_ing_rotten_guar_meat": ["Meat"]
   "TR_m7_q_Ns_IC8_gem2": ["Gem"]
