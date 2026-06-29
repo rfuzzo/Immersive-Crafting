@@ -44,8 +44,8 @@ def main():
     tag_list = sorted(all_tags, key=str.lower)
 
     lines = [
-        "# Immersive-Crafting ingredient tag definitions for the Tagger framework (S3cret St4sh).",
-        "# GENERATED from ingredients_tags.csv by tools/csv2yaml.py - edit the CSV, then regenerate. Do not hand-edit.",
+        "# Immersive-Crafting tag definitions for the Tagger framework (S3cret St4sh).",
+        f"# GENERATED from {os.path.basename(csv_path)} by tools/csv2yaml.py - edit the CSV, then regenerate. Do not hand-edit.",
         "# Tagger lowercases tag names and record ids; multiple tags per record are allowed.",
         "tags:",
     ]
