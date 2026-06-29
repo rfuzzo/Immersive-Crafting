@@ -1,56 +1,56 @@
 # Immersive-Crafting ingredient tag definitions for the Tagger framework (S3cret St4sh).
-# GENERATED from ingredients_tags.csv by tools/csv2yaml.ps1 - edit the CSV, then regenerate. Do not hand-edit.
+# GENERATED from ingredients_tags.csv by tools/csv2yaml.py - edit the CSV, then regenerate. Do not hand-edit.
 # Tagger lowercases tag names and record ids; multiple tags per record are allowed.
 tags:
-  - "Meat"
-  - "Fish"
-  - "Vegetable"
-  - "Fruit"
-  - "Mushroom"
-  - "Egg"
-  - "Dairy"
-  - "Grain"
-  - "Spice"
-  - "Seed"
-  - "Sweet"
-  - "Liquid"
-  - "Tea"
-  - "Meal"
-  - "Plant"
-  - "Flower"
-  - "Pulp"
-  - "Resin"
-  - "Slime"
-  - "CreaturePart"
-  - "Pelt"
-  - "Hide"
-  - "Leather"
-  - "Feather"
-  - "Claw"
-  - "Scale"
-  - "Gem"
-  - "Ore"
-  - "Mineral"
-  - "Salt"
-  - "Dust"
   - "Bread"
   - "Chitin"
+  - "Claw"
   - "Clay"
+  - "CreaturePart"
+  - "Dairy"
   - "Dough"
+  - "Dust"
+  - "Egg"
   - "Fat"
+  - "Feather"
+  - "Fish"
   - "Flour"
+  - "Flower"
+  - "Fruit"
+  - "Gem"
+  - "Grain"
+  - "Hide"
   - "Honey"
+  - "Leather"
   - "Leaves"
+  - "Liquid"
+  - "Meal"
+  - "Meat"
   - "Metal"
+  - "Mineral"
+  - "Mushroom"
   - "Oil"
+  - "Ore"
   - "Paste"
+  - "Pelt"
+  - "Plant"
   - "Poison"
   - "Powder"
+  - "Pulp"
+  - "Resin"
   - "Root"
+  - "Salt"
+  - "Scale"
+  - "Seed"
   - "Shell"
   - "Silk"
+  - "Slime"
   - "Soap"
+  - "Spice"
+  - "Sweet"
+  - "Tea"
   - "Teeth"
+  - "Vegetable"
   - "Wax"
   - "Wool"
 applied_tags:
@@ -216,16 +216,16 @@ applied_tags:
   "ingred_raw_Stalhrim_01": ["Ore"]
   "ingred_red_lichen_01": ["Plant"]
   "ingred_resin_01": ["Resin"]
-  "ingred_roobrush_01": ["Tea", "Plant"]
+  "ingred_roobrush_01": ["Plant", "Tea"]
   "ingred_ruby_01": ["Gem"]
   "ingred_russula_01": ["Mushroom"]
-  "ingred_saltrice_01": ["Grain", "Plant"]
+  "ingred_saltrice_01": ["Plant", "Grain"]
   "ingred_scales_01": ["Scale"]
   "ingred_scamp_skin_01": ["Hide"]
   "ingred_scathecraw_01": ["Plant"]
   "ingred_scrap_metal_01": ["Metal"]
   "ingred_scrib_jelly_01": ["Sweet"]
-  "ingred_scrib_jelly_02": ["Plant", "Mineral"]
+  "ingred_scrib_jelly_02": ["Mineral", "Plant"]
   "ingred_scrib_jerky_01": ["Meat"]
   "ingred_scuttle_01": ["Meat"]
   "ingred_shalk_resin_01": ["Resin"]
@@ -233,12 +233,12 @@ applied_tags:
   "ingred_snowbear_pelt_unique": ["Pelt"]
   "ingred_snowwolf_pelt_unique": ["Pelt"]
   "ingred_stoneflower_petals_01": ["Plant"]
-  "ingred_trama_root_01": ["Vegetable", "Plant"]
+  "ingred_trama_root_01": ["Plant", "Vegetable"]
   "ingred_treated_bittergreen_uniq": ["Plant"]
   "ingred_udyrfrykte_heart": ["Meat"]
   "ingred_vampire_dust_01": ["Dust"]
   "ingred_void_salts_01": ["Salt"]
-  "ingred_wickwheat_01": ["Grain", "Plant"]
+  "ingred_wickwheat_01": ["Plant", "Grain"]
   "ingred_willow_anther_01": ["Plant"]
   "ingred_wolf_heart": ["Meat"]
   "ingred_wolf_pelt": ["Pelt"]
@@ -346,7 +346,7 @@ applied_tags:
   "T_IngCrea_PrawnTail": ["Fish"]
   "T_IngCrea_PrismaticDust_01": ["Dust"]
   "T_IngCrea_RakiTeeth_01": ["Claw"]
-  "T_IngCrea_RedoranHoundChitin_01": ["Chitin", "Shell"]
+  "T_IngCrea_RedoranHoundChitin_01": ["Shell", "Chitin"]
   "T_IngCrea_RedSharkMeat_01": ["Meat"]
   "T_IngCrea_RocEgg_01": ["Egg"]
   "T_IngCrea_RocFeather": ["Feather"]
@@ -387,11 +387,11 @@ applied_tags:
   "T_IngFlor_Arrowroot_01": ["Plant"]
   "T_IngFlor_ArrowrootFlower_01": ["Plant", "Flower"]
   "T_IngFlor_Ashdew_01": ["Plant"]
-  "T_IngFlor_AspyrTea_01": ["Tea", "Plant"]
-  "T_IngFlor_Asteria_01": ["Vegetable", "Plant"]
+  "T_IngFlor_AspyrTea_01": ["Plant", "Tea"]
+  "T_IngFlor_Asteria_01": ["Plant", "Vegetable"]
   "T_IngFlor_Bearclaw_01": ["Plant", "Flower"]
   "T_IngFlor_BertpodSlice_01": ["Fruit"]
-  "T_IngFlor_Bitterstar_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_Bitterstar_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_BjoulsaeRose_01": ["Plant", "Flower"]
   "T_IngFlor_BlackrosePetal_01": ["Plant", "Flower"]
   "T_IngFlor_BlackrosePetalDae_01": ["Plant", "Flower"]
@@ -414,7 +414,7 @@ applied_tags:
   "T_IngFlor_Cabbage_02": ["Vegetable", "Plant"]
   "T_IngFlor_CairnBolete_01": ["Mushroom"]
   "T_IngFlor_CanisRoot_01": ["Plant"]
-  "T_IngFlor_CarlineTh_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_CarlineTh_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_CFungus_01": ["Mushroom"]
   "T_IngFlor_Chokeberry_01": ["Fruit"]
   "T_IngFlor_CinnabarPolypore_01": ["Mushroom"]
@@ -437,7 +437,7 @@ applied_tags:
   "T_IngFlor_DryadSaddle_01": ["Mushroom"]
   "T_IngFlor_Elfcup_01": ["Mushroom"]
   "T_IngFlor_EmeticRussula_01": ["Mushroom"]
-  "T_IngFlor_FennelSeed_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_FennelSeed_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_Fireflower_01": ["Plant", "Flower"]
   "T_IngFlor_FlaxFlower_01": ["Plant", "Flower"]
   "T_IngFlor_FlaxFlower_02": ["Plant", "Flower"]
@@ -453,8 +453,8 @@ applied_tags:
   "T_IngFlor_Glasswort_01": ["Plant"]
   "T_IngFlor_Gloomtear_01": ["Plant"]
   "T_IngFlor_Glowshroom": ["Mushroom"]
-  "T_IngFlor_GoldenRod_01": ["Spice", "Seed", "Plant"]
-  "T_IngFlor_GoldWatcSeed_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_GoldenRod_01": ["Spice", "Plant", "Seed"]
+  "T_IngFlor_GoldWatcSeed_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_GrassPod01": ["Plant"]
   "T_IngFlor_Greenstain_01": ["Mushroom"]
   "T_IngFlor_GreyTickPowder_01": ["Spice", "Powder"]
@@ -463,7 +463,7 @@ applied_tags:
   "T_IngFlor_Hamumroot_03": ["Plant"]
   "T_IngFlor_Harrada_01": ["Plant"]
   "T_IngFlor_Hellebore_01": ["Spice", "Powder"]
-  "T_IngFlor_Hemlock_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_Hemlock_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_Hibiscus_01": ["Plant", "Flower"]
   "T_IngFlor_HoneyLily_01": ["Plant", "Flower"]
   "T_IngFlor_HoneyLily_02": ["Plant", "Flower"]
@@ -471,20 +471,20 @@ applied_tags:
   "T_IngFlor_IcyShell01": ["Mushroom"]
   "T_IngFlor_Indulcet_01": ["Plant"]
   "T_IngFlor_InkCone_01": ["Plant"]
-  "T_IngFlor_IronwoodNut_01": ["Spice", "Plant"]
-  "T_IngFlor_Jarmush_01": ["Tea", "Plant"]
+  "T_IngFlor_IronwoodNut_01": ["Plant", "Spice"]
+  "T_IngFlor_Jarmush_01": ["Plant", "Tea"]
   "T_IngFlor_KingBolete_01": ["Mushroom"]
   "T_IngFlor_KingThistle_01": ["Plant", "Flower"]
-  "T_IngFlor_LadysMantle_01": ["Tea", "Plant"]
-  "T_IngFlor_LadysSmock_01": ["Tea", "Plant"]
+  "T_IngFlor_LadysMantle_01": ["Plant", "Tea"]
+  "T_IngFlor_LadysSmock_01": ["Plant", "Tea"]
   "T_IngFlor_Lavender_01": ["Plant"]
   "T_IngFlor_LichenBlue_01": ["Plant"]
   "T_IngFlor_LichenOrange_01": ["Plant"]
   "T_IngFlor_LichenWhite_01": ["Plant"]
   "T_IngFlor_LichenYellow_01": ["Plant"]
   "T_IngFlor_LizardFootExtract_01": ["Poison"]
-  "T_IngFlor_LotusPoppyHead_01": ["Spice", "Plant"]
-  "T_IngFlor_LotusSeed_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_LotusPoppyHead_01": ["Plant", "Spice"]
+  "T_IngFlor_LotusSeed_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_LoversRaflesiaPistil": ["Plant"]
   "T_IngFlor_MaceFruit_01": ["Fruit"]
   "T_IngFlor_Maidenhair_01": ["Mushroom"]
@@ -494,14 +494,14 @@ applied_tags:
   "T_IngFlor_Milkthistle_01": ["Plant", "Flower"]
   "T_IngFlor_Mindcap_01": ["Mushroom"]
   "T_IngFlor_Mistletoe_01": ["Fruit"]
-  "T_IngFlor_MonardaSeed_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_MonardaSeed_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_Monkshood_01": ["Plant", "Flower"]
   "T_IngFlor_MonkshoodRootPulp_01": ["Plant", "Pulp"]
   "T_IngFlor_Moosebite_01": ["Mushroom"]
   "T_IngFlor_MorningGlory_01": ["Plant", "Flower"]
   "T_IngFlor_Motherwort_01": ["Plant", "Flower"]
   "T_IngFlor_MountainDamask": ["Plant", "Flower"]
-  "T_IngFlor_Mustard_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_Mustard_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_NgopRoot_01": ["Plant", "Root"]
   "T_IngFlor_Nightshade_01": ["Plant", "Flower"]
   "T_IngFlor_NightshadeDae_01": ["Plant", "Flower"]
@@ -512,11 +512,11 @@ applied_tags:
   "T_IngFlor_Orcscrown": ["Plant", "Flower"]
   "T_IngFlor_PadomaicSage_01": ["Plant", "Leaves"]
   "T_IngFlor_PBloomBulb_01": ["Plant", "Poison"]
-  "T_IngFlor_Peony_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_Peony_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_Persarine_01": ["Plant", "Flower"]
   "T_IngFlor_PilgrimPetals_01": ["Plant", "Flower"]
   "T_IngFlor_Pitcher_01": ["Plant"]
-  "T_IngFlor_PLotusLeaf_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_PLotusLeaf_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_PorousExidia_01": ["Mushroom"]
   "T_IngFlor_PricklyPear_01": ["Fruit"]
   "T_IngFlor_Primrose_01": ["Plant", "Leaves"]
@@ -529,7 +529,7 @@ applied_tags:
   "T_IngFlor_RockburstClaw_01": ["Plant"]
   "T_IngFlor_RockburstPod_01": ["Plant"]
   "T_IngFlor_RougeCamillea_01": ["Mushroom"]
-  "T_IngFlor_RustblossomSeed_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_RustblossomSeed_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_RustRussula_01": ["Mushroom"]
   "T_IngFlor_SaltCrocusPetal_01": ["Spice", "Plant", "Leaves"]
   "T_IngFlor_SaltstrapLeaf_01": ["Plant", "Leaves"]
@@ -546,7 +546,7 @@ applied_tags:
   "T_IngFlor_SomberWidow_01": ["Plant", "Flower"]
   "T_IngFlor_SomnaliusFrond_01": ["Plant"]
   "T_IngFlor_Spiddal_01": ["Plant", "Flower"]
-  "T_IngFlor_SpongeLotusSeed_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_SpongeLotusSeed_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_Steelblue_01": ["Mushroom"]
   "T_IngFlor_Stinkhorn_01": ["Mushroom"]
   "T_IngFlor_StJahnsWort_01": ["Plant"]
@@ -583,7 +583,7 @@ applied_tags:
   "T_IngFlor_WhitePoppyPod_01": ["Plant"]
   "T_IngFlor_WidowkissPowder_01": ["Powder"]
   "T_IngFlor_WispStalk_01": ["Plant"]
-  "T_IngFlor_Woadfl_01": ["Spice", "Seed", "Plant"]
+  "T_IngFlor_Woadfl_01": ["Spice", "Plant", "Seed"]
   "T_IngFlor_WormWh01": ["Meal"]
   "T_IngFlor_Wormwood_01": ["Plant", "Leaves"]
   "T_IngFlor_WtLillyPink_01": ["Plant"]
@@ -726,8 +726,8 @@ applied_tags:
   "T_IngFood_TrinityFruit_01": ["Fruit"]
   "T_IngFood_UNI_ChocoMuffin": ["Meal"]
   "T_IngFood_Vinegar_01": ["Liquid"]
-  "T_IngFood_WasabiRoot_01": ["Spice", "Tea", "Plant"]
-  "T_IngFood_Wheat_01": ["Grain", "Plant"]
+  "T_IngFood_WasabiRoot_01": ["Plant", "Spice", "Tea"]
+  "T_IngFood_Wheat_01": ["Plant", "Grain"]
   "T_IngMine_Agate_01": ["Gem"]
   "T_IngMine_Agate_02": ["Gem"]
   "T_IngMine_Agate_03": ["Gem"]
@@ -802,7 +802,7 @@ applied_tags:
   "T_IngMine_Realgar_01": ["Mineral"]
   "T_IngMine_Rockcrystal_01": ["Gem"]
   "T_IngMine_RockCrystalDae_01": ["Gem"]
-  "T_IngMine_RoseQuartz_01": ["Plant", "Gem"]
+  "T_IngMine_RoseQuartz_01": ["Gem", "Plant"]
   "T_IngMine_RubyDeTomb_01": ["Gem"]
   "T_IngMine_Salt_01": ["Salt"]
   "T_IngMine_Sapphire_01": ["Gem"]
@@ -818,14 +818,14 @@ applied_tags:
   "T_IngMine_TopazDae_01": ["Gem"]
   "T_IngMine_Turquoise_01": ["Gem"]
   "T_IngMine_TurquoiseDae_01": ["Gem"]
-  "T_IngSpice_Anise_01": ["Spice", "Seed", "Plant"]
+  "T_IngSpice_Anise_01": ["Spice", "Plant", "Seed"]
   "T_IngSpice_Cardamon_01": ["Spice"]
   "T_IngSpice_Cinnamon_01": ["Spice", "Plant"]
   "T_IngSpice_Curcuma_01": ["Spice"]
-  "T_IngSpice_Drumpear_01": ["Spice", "Seed", "Plant"]
+  "T_IngSpice_Drumpear_01": ["Spice", "Plant", "Seed"]
   "T_IngSpice_Hibiscus_01": ["Plant", "Leaves"]
   "T_IngSpice_Muscat_01": ["Spice"]
-  "T_IngSpice_Nigella_01": ["Spice", "Seed", "Plant"]
+  "T_IngSpice_Nigella_01": ["Spice", "Plant", "Seed"]
   "T_IngSpice_OliveOil_01": ["Liquid", "Oil"]
   "T_IngSpice_Pepper_01": ["Spice"]
   "T_IngSpice_Pricklespice_01": ["Spice"]
@@ -843,7 +843,7 @@ applied_tags:
   "TR_m1_Q_NobleSedge_Stationary": ["Plant"]
   "TR_m1_Q_Topaz_Stationary": ["Plant", "Flower"]
   "TR_m1_Q59_PR_disease_meat": ["Meat", "Poison"]
-  "TR_m1_q67_Fa1_Seeds": ["Spice", "Seed", "Plant"]
+  "TR_m1_q67_Fa1_Seeds": ["Spice", "Plant", "Seed"]
   "TR_m2_meteor_i2-383-ind": ["Mineral"]
   "TR_m2_q_22_Dust": ["Dust"]
   "TR_m2_q_29_4_silk": ["Silk"]
@@ -881,7 +881,7 @@ applied_tags:
   "TR_m7_Kalk_Evenfall_Sapphire": ["Gem"]
   "TR_m7_Kalk_Orc_Flesh": ["Meat"]
   "TR_m7_Ns_JNS_3_TombAD": ["Dust"]
-  "TR_m7_Ns_MG_Hemlock_01": ["Spice", "Seed", "Plant"]
+  "TR_m7_Ns_MG_Hemlock_01": ["Spice", "Plant", "Seed"]
   "TR_m7_NVA8_boar_leather": ["Leather"]
   "TR_m7_NVA8_IngCrea_GoatPelt_01": ["Pelt"]
   "TR_m7_NVA8_ingred_bear_pelt": ["Pelt"]

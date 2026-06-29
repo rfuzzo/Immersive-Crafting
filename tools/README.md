@@ -8,28 +8,26 @@ Generate the Tagger ingredient tag file
 
 ## Regenerate the YAML after editing the CSV
 
-From the repo root, in PowerShell:
+From the repo root:
 
-```powershell
-./tools/csv2yaml.ps1
+```sh
+py tools/csv2yaml.py
 ```
 
 Optional explicit paths:
 
-```powershell
-./tools/csv2yaml.ps1 -CsvPath ingredients_tags.csv -OutPath ModTags/ImmersiveCrafting_Ingredients.yaml
+```sh
+py tools/csv2yaml.py ingredients_tags.csv ModTags/ImmersiveCrafting_Ingredients.yaml
 ```
 
-`csv2yaml.ps1` reads only the `id` and `tags` columns, dedupes ids (union of
-tags), skips untagged rows, and writes Tagger-schema YAML (UTF-8, no BOM). The
-`comment` column is editor-only metadata and is **not** written to the YAML.
+`csv2yaml.py` reads only the `id` and `tags` columns, dedupes ids (union of
+tags), skips untagged rows, and writes Tagger-schema YAML (UTF-8, no BOM, LF
+endings). The `comment` column is editor-only metadata and is **not** written
+to the YAML.
 
-The full tag set is **derived from the CSV**, so adding a new tag in the CSV
-needs no script change. The `$Order` array near the top of the script only
-controls display grouping; any tag not listed there is still emitted, appended
-after the listed ones in alphabetical order (and reported as a hint when the
-script runs). Add a new tag to `$Order` only if you want it grouped in a
-specific spot.
+The tag list is **extracted directly from the CSV** (sorted alphabetically), so
+adding a new tag in the CSV needs no script change. Tag order within each record
+follows the CSV cell; ordering is cosmetic since Tagger stores tags as a set.
 
 ## Notes
 
@@ -37,6 +35,6 @@ specific spot.
   command above.
 - Tagger lowercases tag names and record ids, so casing in the CSV/YAML is
   cosmetic. Multiple tags per record are supported (e.g. a clam is `Meat,Fish`).
-- The original awk bootstrap scripts (`classify.awk`, `parse_wiki.awk`,
-  `csv2yaml.awk`) that built the first CSV from a record dump + UESP pages were
-  removed; they remain available in git history if a re-bootstrap is ever needed.
+- Requires Python 3 (`py` launcher on Windows). Standard library only.
+- Earlier awk/PowerShell versions of this generator (and the one-off bootstrap
+  scripts) are in git history if ever needed.
