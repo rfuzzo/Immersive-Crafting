@@ -3,7 +3,7 @@
     "id": "mixing_bowl",
     "label": "Mixing Bowl",
     "recordIds": [
-      "mixing_bowl_01"
+      "bowl"
     ],
     "activationRange": 100,
     "actions": [

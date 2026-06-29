@@ -58,24 +58,24 @@ function this.scanNearbyIngredients(maxRange)
     return results
 end
 
---- Does a nearby object's record id satisfy a recipe ingredient id?
+--- Does a record id satisfy a query (a recipe ingredient id or a context entry)?
 --- Two-tier: (1) exact record id, (2) Tagger tag (S3cret St4sh). No wildcard.
----@param recordId string nearby object's record id
----@param ingredientId Id recipe ingredient id (a record id or a Tagger tag)
+---@param recordId string an object's record id
+---@param query Id a record id or a Tagger tag (e.g. "Meat", "bowl")
 ---@return boolean
-function this.matchesIngredient(recordId, ingredientId)
+function this.matchesTag(recordId, query)
     -- 1. exact record id (case-insensitive)
-    if recordId:lower() == ingredientId:lower() then
+    if recordId:lower() == query:lower() then
         return true
     end
 
     -- 2. Tagger tag. objectHasTag accepts a record id string and normalises case.
     local tagger = interfaces.TaggerL
     if tagger and tagger.objectHasTag then
-        return tagger.objectHasTag(recordId, ingredientId) and true or false
+        return tagger.objectHasTag(recordId, query) and true or false
     elseif not taggerWarned then
         taggerWarned = true
-        log.warn('Tagger (I.TaggerL) unavailable; ingredient matching limited to exact record ids')
+        log.warn('Tagger (I.TaggerL) unavailable; matching limited to exact record ids')
     end
 
     return false
@@ -128,7 +128,7 @@ function this.resolveRecipe(scan, action, context)
             local needed = ingredient.count or 1
             local available = 0
             for recordId, entry in pairs(scan) do
-                if this.matchesIngredient(recordId, ingredient.id) then
+                if this.matchesTag(recordId, ingredient.id) then
                     available = available + (entry.count or 1)
                 end
             end
@@ -181,7 +181,7 @@ function this.collectConsumption(range, recipe)
         local needed = ingredient.count or 1
         for _, cand in ipairs(candidates) do
             if needed <= 0 then break end
-            if cand.remaining > 0 and this.matchesIngredient(cand.recordId, ingredient.id) then
+            if cand.remaining > 0 and this.matchesTag(cand.recordId, ingredient.id) then
                 local take = math.min(cand.remaining, needed)
                 cand.remaining = cand.remaining - take
                 needed = needed - take

@@ -1,5 +1,6 @@
 local log = require('scripts.Immersive-Crafting.log')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
+local lib = require('scripts.Immersive-Crafting.lib')
 
 local nearby = require('openmw.nearby')
 local self = require('openmw.self')
@@ -53,40 +54,79 @@ local function updateOverlay()
     end
 end
 
----Find all nearby contexts or containers within range
+--- Gather candidate station objects (items + activators) within range.
+---@param maxRange number
+---@return { object: any, recordId: string, distance: number }[]
+local function gatherNearby(maxRange)
+    local playerPos = self.position
+    local list = {}
+    local function collect(objs)
+        for _, obj in ipairs(objs) do
+            local distance = (obj.position - playerPos):length()
+            if distance <= maxRange then
+                list[#list + 1] = { object = obj, recordId = obj.recordId, distance = distance }
+            end
+        end
+    end
+    -- stations/fires may be misc items (bowl, pot) or activators (furniture, fire pits)
+    collect(nearby.items)
+    collect(nearby.activators)
+    return list
+end
+
+--- Are all required tags present among the candidates?
+---@param candidates { recordId: string }[]
+---@param requires string[]
+---@return boolean
+local function hasRequired(candidates, requires)
+    for _, tag in ipairs(requires) do
+        local found = false
+        for _, cand in ipairs(candidates) do
+            if lib.matchesTag(cand.recordId, tag) then
+                found = true
+                break
+            end
+        end
+        if not found then return false end
+    end
+    return true
+end
+
+---Find all nearby contexts within range, matching record ids OR Tagger tags.
 ---@param registries Registries The data registries
 ---@param maxRange number Maximum search range
 ---@return table<string, ProximityResult> Map of ID to proximity result
 local function findcurrentContexts(registries, maxRange)
     maxRange = maxRange or 200
 
+    local candidates = gatherNearby(maxRange)
     local results = {}
-    local playerPos = self.position
 
-    -- Scan all nearby objects
-    for _, obj in ipairs(nearby.activators) do
-        local recordId = obj.recordId
-        local distance = (obj.position - playerPos):length()
+    for id, def in pairs(registries.contexts) do
+        local range = def.activationRange or 150
 
-        if distance <= maxRange then
-            -- Check if this object is a registered context
-            for id, def in pairs(registries.contexts) do
-                for _, rid in ipairs(def.recordIds) do
-                    -- Case-insensitive comparison
-                    if rid:lower() == recordId:lower() then
-                        local range = def.activationRange or 150
-
-                        if distance <= range then
-                            -- -- Found a match
-                            results[id] = {
-                                context = def,
-                                object = obj,
-                                distance = distance,
-                            }
+        -- closest candidate that matches any of the context's recordIds (id or tag)
+        local best = nil
+        for _, cand in ipairs(candidates) do
+            if cand.distance <= range then
+                for _, rid in ipairs(def.recordIds or {}) do
+                    if lib.matchesTag(cand.recordId, rid) then
+                        if not best or cand.distance < best.distance then
+                            best = cand
                         end
+                        break
                     end
                 end
             end
+        end
+
+        -- gate on any extra required tags nearby (e.g. cooking_pot requires "fire")
+        if best and (not def.requires or hasRequired(candidates, def.requires)) then
+            results[id] = {
+                context = def,
+                object = best.object,
+                distance = best.distance,
+            }
         end
     end
 

@@ -3,7 +3,8 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@class CContext
 ---@field id Id
 ---@field label string
----@field recordIds string[] List of game object record IDs that act as this station
+---@field recordIds string[] Record ids OR Tagger tags that identify this station (e.g. "bowl")
+---@field requires string[]|nil Extra Tagger tags that must also be present nearby (e.g. "fire")
 ---@field activationRange number|nil Distance in units to detect station (default 150)
 ---@field actions CAction[]|Id[] List of actions available at this station
 local CContext = {}
