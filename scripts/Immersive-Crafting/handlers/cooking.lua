@@ -4,22 +4,21 @@ local log = require('scripts.Immersive-Crafting.log')
 
 local ui = require('openmw.ui')
 
----@class CMixingHandler : CAbstractHandler
-local CMixingHandler = {
+---@class CCookingHandler : CAbstractHandler
+local CCookingHandler = {
 
 }
-setmetatable(CMixingHandler, { __index = CAbstractHandler })
+setmetatable(CCookingHandler, { __index = CAbstractHandler })
 
 --#region Implements
 
 ---@param ctx HandlerContext
 ---@return ViewModel
-function CMixingHandler:evaluate(ctx)
+function CCookingHandler:evaluate(ctx)
     -- 1. Scan nearby ingredients
-    -- TODO range param?
     local scan = lib.scanNearbyIngredients(200)
 
-    -- 2. Resolve best matching mixing recipe
+    -- 2. Resolve best matching cooking recipe
     local recipe, missing = lib.resolveRecipe(scan, ctx.action, ctx.context)
 
     -- 3. No valid recipe
@@ -33,7 +32,7 @@ function CMixingHandler:evaluate(ctx)
 
         ---@type ViewModel
         local vm = {
-            status = "No valid mixture",
+            status = "Nothing to cook",
             details = details,
             action = nil,
         }
@@ -46,29 +45,27 @@ function CMixingHandler:evaluate(ctx)
     local vm = {
         status = "Ready",
         action = {
-            id = "mixing",
-            label = "Mix " .. recipe.label,
+            id = "cooking",
+            label = "Cook " .. recipe.label,
             enabled = true,
         }
     }
     return vm
 end
 
-function CMixingHandler:OnActivate()
-    --[[ TODO Implement mixing cooking
-    * Check for ingredients and possibility should happen before
-    * This just produces the output
-    * Remove ingredients from world
-    * Add output item to inventory
+function CCookingHandler:OnActivate()
+    --[[ TODO (Cooking phase): consume ingredients + start the cook process
+    * cookTime / "requires" heat -> surface progress via ViewModel.progress
+    * produce output via the global commit executor
     ]]
 
-    log.info("Mixing action activated")
+    log.info("Cooking action activated")
 
     -- placeholder message
-    ui.showMessage("Mixing action activated - to be implemented")
+    ui.showMessage("Cooking action activated - to be implemented")
 end
 
 --#endregion
 
 
-return CMixingHandler
+return CCookingHandler

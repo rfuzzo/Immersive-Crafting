@@ -81,6 +81,18 @@ function this.matchesIngredient(recordId, ingredientId)
     return false
 end
 
+--- Format a missing-ingredient list into a human-readable string (e.g. "Meat, Water x2").
+---@param missing CRecipe.RecipeIngredient[]
+---@return string
+function this.formatMissing(missing)
+    local parts = {}
+    for _, ing in ipairs(missing) do
+        local count = ing.count or 1
+        parts[#parts + 1] = count > 1 and (ing.id .. " x" .. count) or ing.id
+    end
+    return table.concat(parts, ", ")
+end
+
 --- Resolve best matching recipe for the action/context, complexity wins
 ---@param scan table<string, IngredientScanResult>
 ---@param action CAction
@@ -94,7 +106,7 @@ function this.resolveRecipe(scan, action, context)
 
     -- first get all recipes for this action and context
     local allRecipes = {} ---@type CRecipe[]
-    for key, recipe in pairs(GRegistries.recipes) do
+    for _, recipe in pairs(GRegistries.recipes) do
         if recipe.action == action.id and recipe.context == context.id then
             table.insert(allRecipes, recipe)
         end
