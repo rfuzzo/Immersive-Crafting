@@ -54,18 +54,12 @@ function CMixingHandler:evaluate(ctx)
     return vm
 end
 
-function CMixingHandler:OnActivate()
-    --[[ TODO Implement mixing cooking
-    * Check for ingredients and possibility should happen before
-    * This just produces the output
-    * Remove ingredients from world
-    * Add output item to inventory
-    ]]
-
-    log.info("Mixing action activated")
-
-    -- placeholder message
-    ui.showMessage("Mixing action activated - to be implemented")
+---@param ctx HandlerContext
+function CMixingHandler:OnActivate(ctx)
+    -- Re-resolve + dispatch the consume/produce to the global commit executor.
+    local message = lib.commitRecipe(ctx)
+    log.info(message)
+    ui.showMessage(message)
 end
 
 --#endregion

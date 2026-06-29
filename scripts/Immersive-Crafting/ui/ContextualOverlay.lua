@@ -237,7 +237,12 @@ function this.onContextualAction()
     for _, action in pairs(currentActions or {}) do
         local handler = dataManager.resolveHandler(action.handler)
         if handler then
-            handler:OnActivate()
+            ---@type HandlerContext
+            local ctx = {
+                action = action,
+                context = currentContext
+            }
+            handler:OnActivate(ctx)
         end
     end
 end

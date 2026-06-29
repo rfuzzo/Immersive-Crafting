@@ -54,7 +54,8 @@ function CAbstractHandler:evaluate(ctx)
     error("CAbstractHandler:evaluate(ctx) must be implemented by subclass")
 end
 
-function CAbstractHandler:OnActivate()
+---@param ctx HandlerContext
+function CAbstractHandler:OnActivate(ctx)
     error("CAbstractHandler:OnActivate(ctx) must be implemented by subclass")
 end
 

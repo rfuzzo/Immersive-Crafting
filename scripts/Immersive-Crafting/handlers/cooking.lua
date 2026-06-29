@@ -53,16 +53,14 @@ function CCookingHandler:evaluate(ctx)
     return vm
 end
 
-function CCookingHandler:OnActivate()
-    --[[ TODO (Cooking phase): consume ingredients + start the cook process
-    * cookTime / "requires" heat -> surface progress via ViewModel.progress
-    * produce output via the global commit executor
-    ]]
-
-    log.info("Cooking action activated")
-
-    -- placeholder message
-    ui.showMessage("Cooking action activated - to be implemented")
+---@param ctx HandlerContext
+function CCookingHandler:OnActivate(ctx)
+    -- Re-resolve + dispatch the consume/produce to the global commit executor.
+    -- TODO (Cooking phase): gate on "requires" heat and run the cookTime process
+    -- (surface progress via ViewModel.progress) instead of an instant commit.
+    local message = lib.commitRecipe(ctx)
+    log.info(message)
+    ui.showMessage(message)
 end
 
 --#endregion

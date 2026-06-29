@@ -155,4 +155,74 @@ function this.resolveRecipe(scan, action, context)
     return result, missing
 end
 
+--- Select concrete nearby objects to consume for a recipe, honouring counts.
+--- Each candidate stack is allocated at most once across all ingredients.
+---@param range number search range
+---@param recipe CRecipe
+---@return { object: any, count: integer }[]? consume list, or nil if ingredients are insufficient
+function this.collectConsumption(range, recipe)
+    range = range or 200
+    local playerPos = self.position
+
+    -- flat list of candidate stacks within range, each with a mutable remaining count
+    local candidates = {}
+    for _, obj in ipairs(nearby.items) do
+        if (obj.position - playerPos):length() <= range then
+            candidates[#candidates + 1] = {
+                object = obj,
+                recordId = obj.recordId,
+                remaining = obj.count or 1,
+            }
+        end
+    end
+
+    local consume = {}
+    for _, ingredient in ipairs(recipe.ingredients) do
+        local needed = ingredient.count or 1
+        for _, cand in ipairs(candidates) do
+            if needed <= 0 then break end
+            if cand.remaining > 0 and this.matchesIngredient(cand.recordId, ingredient.id) then
+                local take = math.min(cand.remaining, needed)
+                cand.remaining = cand.remaining - take
+                needed = needed - take
+                consume[#consume + 1] = { object = cand.object, count = take }
+            end
+        end
+        if needed > 0 then
+            return nil -- not enough of this ingredient nearby
+        end
+    end
+
+    return consume
+end
+
+--- Craft at the given context: resolve the recipe, collect its ingredients, and
+--- dispatch the mutation to the GLOBAL commit executor (D1). Player scripts cannot
+--- mutate the world/inventory, so the actual consume + produce runs in init.lua.
+---@param ctx HandlerContext
+---@param range number?
+---@return string message user-facing result
+function this.commitRecipe(ctx, range)
+    range = range or 200
+
+    local scan = this.scanNearbyIngredients(range)
+    local recipe = this.resolveRecipe(scan, ctx.action, ctx.context)
+    if not recipe then
+        return "Nothing to make here"
+    end
+
+    local consume = this.collectConsumption(range, recipe)
+    if not consume then
+        return "Not enough ingredients"
+    end
+
+    core.sendGlobalEvent('ImmersiveCrafting_Commit', {
+        consume = consume,
+        output = recipe.output,
+        actor = self.object,
+    })
+
+    return "Made " .. (recipe.label or recipe.id)
+end
+
 return this
