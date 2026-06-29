@@ -6,7 +6,7 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field context Id
 ---@field action Id
 ---@field ingredients CRecipe.RecipeIngredient[]
----@field cookTime number
+---@field cookTime number? cooking-only; seconds for the simmer/cook process. Omitted for instant crafting.
 ---@field output table
 local CRecipe = {}
 
@@ -19,13 +19,14 @@ local CRecipe = {}
 ---@return CRecipe?
 function CRecipe:fromTable(tbl)
     -- validate input and return nil if invalid
+    -- cookTime is intentionally optional: it is a cooking-only field, so
+    -- crafting/mixing recipes legitimately omit it.
     if
         not tbl.id
         or not tbl.context
         or not tbl.label
         or not tbl.action
         or not tbl.ingredients
-        or not tbl.cookTime
         or not tbl.output then
         log.error('Invalid CRecipe table: missing required fields')
         return nil

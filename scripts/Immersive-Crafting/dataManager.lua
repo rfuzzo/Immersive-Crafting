@@ -5,6 +5,7 @@ local log = require('scripts.Immersive-Crafting.log')
 
 local CContext = require('scripts.Immersive-Crafting.models.context')
 local CAction = require('scripts.Immersive-Crafting.models.action')
+local CRecipe = require('scripts.Immersive-Crafting.models.recipe')
 local AbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 
 local vfs = require('openmw.vfs')
@@ -12,7 +13,6 @@ local vfs = require('openmw.vfs')
 local this = {}
 
 ---@class Registries
----@field tags table<Id, string[]>
 ---@field uiTemplates table<Id, table>
 ---@field actions table<Id, CAction>
 ---@field contexts table<Id, CContext>
@@ -21,7 +21,6 @@ local this = {}
 
 ---@type Registries
 GRegistries = {
-    tags = {},
     uiTemplates = {},
     handlers = {},
     actions = {},
@@ -49,21 +48,13 @@ local function mergeById(target, data)
     end
 end
 
-local function loadTags()
-    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "tags/") do
-        if filename:match("%.json$") then
-            local data = io.loadJsonFile(filename)
-            if data then
-                log.info(('Loading tags from %s'):format(filename))
-                mergeById(GRegistries.tags, data)
-            end
-        end
-    end
-
-    -- logging
-    log.info(('Loaded %d tags'):format(len(GRegistries.tags)))
-    for a in pairs(GRegistries.tags) do
-        log.info((' - %s'):format(a))
+--- Merge a plain `key -> value` object map (no `.id` field) into a registry.
+--- Used for declarative maps like uiTemplates that `mergeById` cannot handle.
+---@param target table
+---@param data table
+local function mergeMap(target, data)
+    for key, value in pairs(data) do
+        target[key] = value
     end
 end
 
@@ -73,7 +64,7 @@ local function loadUiTemplates()
             local data = io.loadJsonFile(filename)
             if data then
                 log.info(('Loading uiTemplates from %s'):format(filename))
-                mergeById(GRegistries.uiTemplates, data)
+                mergeMap(GRegistries.uiTemplates, data)
             end
         end
     end
@@ -139,12 +130,21 @@ local function loadContexts()
 end
 
 local function loadRecipes()
-    -- Shaped recipes
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "recipes/") do
-        local data = io.loadJsonFile(filename)
-        if data then
-            log.info(('Loading recipes from %s'):format(filename))
-            mergeById(GRegistries.recipes, data)
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then
+                -- data should be in the form of table[]
+                for _, entry in ipairs(data) do
+                    local r = CRecipe:fromTable(entry)
+                    if r then
+                        log.info(('Loading recipes from %s'):format(filename))
+                        mergeById(GRegistries.recipes, r)
+                    else
+                        log.error(('Failed to load recipe from %s'):format(filename))
+                    end
+                end
+            end
         end
     end
 
@@ -181,7 +181,6 @@ end
 
 ---Load all data domains.
 function this.loadAllData()
-    loadTags()
     loadUiTemplates()
     loadActions()
     loadContexts()

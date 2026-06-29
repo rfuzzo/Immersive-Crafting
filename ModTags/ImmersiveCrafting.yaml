@@ -1,0 +1,47 @@
+# Immersive-Crafting tag definitions for the Tagger framework (S3cret St4sh).
+# Tagger loads every ModTags/*.yaml under any data= entry into its global
+# TaggerStorage at runtime. Matching (lib.resolveRecipe) queries these via
+# I.TaggerL.objectHasTag(object, tag) in player/local context.
+#
+# NOTE: Tagger normalises tag names and record ids to lowercase, so casing
+# here is cosmetic. Keep tag names in sync with recipe ingredient ids.
+
+tags:
+  - "Twig"
+  - "Small rock"
+  - "Cooking pot"
+  - "Frying pan"
+  - "Meat"
+  - "Vegetable"
+  - "Water"
+  - "Stew"
+  - "Wood"
+  - "Kindling"
+
+applied_tags:
+  "misc_twig_01":
+    - "Twig"
+  "misc_twig_02":
+    - "Twig"
+  "misc_rock_small":
+    - "Small rock"
+  "misc_pot":
+    - "Cooking pot"
+  "misc_cauldron":
+    - "Cooking pot"
+  "misc_frying_pan":
+    - "Frying pan"
+  "ingred_rat_meat":
+    - "Meat"
+  "ingred_guar_meat":
+    - "Meat"
+  "ingred_potato_01":
+    - "Vegetable"
+  "misc_water":
+    - "Water"
+  "misc_stew_bowl":
+    - "Stew"
+  "misc_wood":
+    - "Wood"
+  "misc_kindling":
+    - "Kindling"

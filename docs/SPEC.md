@@ -113,10 +113,11 @@ required fields) — **except recipes, see the note**.
 | `cookTime` | number | ✅ | seconds; used by future cooking process |
 | `output` | `{id, count}` | ✅ | produced item |
 
-> **🟡 Validation gap:** `dataManager.loadRecipes` `mergeById`s the **raw JSON** and never calls
-> `CRecipe:fromTable`, so recipe required-field validation is **not enforced** at load. Several
-> shipped recipes also omit `cookTime` (e.g. `seasoned_meat` in `recipes/cooking.json`). Recipes may
-> also carry extra fields not in the model (e.g. `"requires": "heat"`).
+> **✅ Validation enforced:** `dataManager.loadRecipes` now iterates each entry and calls
+> `CRecipe:fromTable`, dropping (and logging) any recipe missing required fields. **`cookTime` is now
+> optional** in the model — it is a cooking-only field, so crafting/mixing recipes (e.g.
+> `seasoned_meat`) legitimately omit it. Recipes may still carry extra fields not in the model (e.g.
+> `"requires": "heat"`) — these pass through untouched (schema home for `requires` still TBD).
 
 ```json
 { "id": "simple_stew", "label": "Simple Stew",
@@ -127,22 +128,32 @@ required fields) — **except recipes, see the note**.
   "cookTime": 10, "output": {"id": "Stew", "count": 1} }
 ```
 
-### tags — `tags/tags.json`
-Flat `tag → recordId[]` object map.
-```json
-{ "Meat": ["ingred_rat_meat", "ingred_guar_meat"], "Water": ["misc_water"] }
+### tags — **Tagger framework (external), `ModTags/*.yaml`**
+
+Tags are **no longer a JSON registry in this mod** (the old `tags/tags.json` and `loadTags` are
+removed; `GRegistries.tags` no longer exists). Per **D2**, Tagger (S3cret St4sh ≥0.5) is the source of
+truth and a **hard dependency**. We ship `ModTags/ImmersiveCrafting.yaml` in Tagger's YAML schema
+(`tags:` list + `applied_tags: recordId → [tag]` map); Tagger loads it into its global
+`TaggerStorage` at runtime.
+
+```yaml
+tags: ["Meat", "Water"]
+applied_tags:
+  "ingred_rat_meat": ["Meat"]
+  "ingred_guar_meat": ["Meat"]
+  "misc_water": ["Water"]
 ```
-> **🟡 Load bug:** `loadTags` calls `mergeById`, but `mergeById` only handles a table with a
-> top-level `.id` or an **array** of `{id=…}` entries. This file is a plain object map (no `.id`,
-> empty array part), so `ipairs` iterates nothing and **`GRegistries.tags` ends up empty**. Tags
-> must either be reshaped to an array-of-entries or loaded with a map-aware merge before D2 matching
-> can work.
+> Matching (🟡 not yet wired — see §4/§6) will query `I.TaggerL.objectHasTag(object, tag)` per scanned
+> object in player/local context. Because we hold the scanned objects, **no reverse index is needed** —
+> this sidesteps Tagger's missing `getObjectsWithTag`. Tagger normalises tag names and record ids to
+> lowercase.
 
 ### uiTemplates — `uiTemplates/ui_templates.json`
 Declarative UI descriptors keyed by id.
-> **🟡 Same load bug as tags** (plain object map vs. `mergeById`), so `GRegistries.uiTemplates` also
-> ends up empty. Independently, the current renderer (`ContextualOverlay.lua`) builds widgets
-> imperatively and would not consume these even if loaded.
+> **✅ Load fixed:** `loadUiTemplates` now uses a map-aware `mergeMap` (copies `key → value`) instead
+> of `mergeById`, so `GRegistries.uiTemplates` populates correctly. **Still unconsumed**, though: the
+> current renderer (`ContextualOverlay.lua`) builds widgets imperatively and does not read these (see
+> §6 — open decision).
 
 ---
 
@@ -210,17 +221,24 @@ re-validation) — this is the accepted simplification.
 - Custom-record outputs are **Load-context only and not save-serialised** — primarily a Cooking
   concern (custom ingredients won't persist across save/load).
 
-### D2 — Tags = **extend the existing JSON `tags` registry**
-Keep `GRegistries.tags` as the source of truth. The real gap is wiring **3-tier ingredient matching**
-into `lib.resolveRecipe`, in priority order:
+### D2 — Tags = **Tagger framework (hard dependency)** *(revised)*
+
+> **Revised 2026-06-29.** Supersedes the original "extend the JSON `tags` registry" plan. **Tagger**
+> (S3cret St4sh ≥0.5) is now the **single source of truth and a hard dependency** — Immersive-Crafting
+> will not function without it. The in-mod JSON `tags` registry (`tags/tags.json`, `loadTags`,
+> `GRegistries.tags`) has been **removed**. ✅ done in Phase 1.
+
+We ship our tag data as `ModTags/ImmersiveCrafting.yaml` (Tagger's schema: `tags:` list +
+`applied_tags: recordId → [tag]`). The remaining gap is wiring **3-tier ingredient matching** into
+`lib.resolveRecipe`, in priority order:
+
 1. **Exact** record id (e.g. `ingred_meat_01`)
-2. **Tag** (e.g. `"Meat"` → any recordId listed under that tag in `tags/*.json`)
+2. **Tag** — `I.TaggerL.objectHasTag(scannedObject, ingredient.id)` for each scanned nearby object
 3. **Wildcard** (e.g. `ingred_meat_*` prefix match)
 
-External **Tagger** (S3cret St4sh ≥0.5: `I.TaggerG`/`I.TaggerL`, `objectHasTag`, `objectTags`,
-`AppliedTags`) is treated as an **optional later bridge** *into* `GRegistries.tags`, **not** a
-dependency now. Note Tagger has no reverse index (`getObjectsWithTag` does not exist); a reverse
-index would be built from `AppliedTags` at load if adopted.
+Tagger is accessed via `I.TaggerG` (global) / `I.TaggerL` (local/player). Because matching iterates the
+**already-scanned** nearby objects and asks Tagger per object, **no reverse index is needed** —
+sidestepping Tagger's missing `getObjectsWithTag`. Inputs are case-normalised by Tagger.
 
 ### D3 — Layering target = `engine/ · content/ · glue/`
 - `engine/` — generic, mod-agnostic Lua (registries, proximity, overlay, handler base, resolution).
@@ -234,13 +252,18 @@ last so its persistent/world-placement/time-growth needs don't bleed into core e
 ---
 
 ## 6. Known gaps / TODO
-- 🟡 Fix `mergeById` (or the data shape) so `tags` and `uiTemplates` object maps actually load —
-  currently both registries populate empty (see §3). Blocks D2.
-- 🟡 Wire 3-tier (exact → tag → wildcard) matching into `lib.resolveRecipe` (D2).
+
+- ✅ **(Phase 1)** `uiTemplates` now loads via map-aware `mergeMap`; the in-mod JSON `tags` registry was
+  removed in favour of Tagger (D2). `tags`/`uiTemplates` no longer populate empty.
+- ✅ **(Phase 1)** Recipe validation enforced (`loadRecipes` calls `CRecipe:fromTable`); `cookTime` made
+  optional (cooking-only). `requires` ("heat") still passes through unmodelled — schema home TBD.
+- 🟡 Wire 3-tier (exact → Tagger tag → wildcard) matching into `lib.resolveRecipe` (D2). **Next.**
+- 🟡 Fix `mixing.evaluate`'s `table.concat(missing, ", ")` — `missing` is `{id,count}[]`, so this
+  errors on any partial match; format ingredients to strings first.
+- 🟡 Reconcile content so recipes actually resolve: tag names vs. ingredient ids (`"Any Meat"` vs.
+  `Meat`, missing `Spices` tag), and the `cooking_pot`/`mixing_bowl` context+action wiring.
 - 🟡 Implement `mixing.OnActivate` consume/produce via the global commit executor (D1).
 - ❌ Build the GLOBAL commit executor in `init.lua` (currently save/load only).
-- 🟡 Enforce recipe validation (`loadRecipes` should call `CRecipe:fromTable`); reconcile `cookTime`
-  being required vs. omitted in shipped data; decide where `requires` ("heat") lives in the schema.
 - ❌ Cooking process state: use `GRegistries.processes` + `cookTime` for heat/simmer/cooked/burnt and
   surface progress via `ViewModel.progress`.
 - 🟡 Decide whether the renderer should consume `uiTemplates` or keep building widgets imperatively.
