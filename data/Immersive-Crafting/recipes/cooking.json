@@ -6,11 +6,11 @@
     "action": "mixing",
     "ingredients": [
       {
-        "id": "Any Meat",
+        "id": "Meat",
         "count": 1
       },
       {
-        "id": "Any Spices",
+        "id": "Spice",
         "count": 1
       }
     ],
@@ -27,11 +27,11 @@
     "requires": "heat",
     "ingredients": [
       {
-        "id": "Any Meat",
+        "id": "Meat",
         "count": 1
       },
       {
-        "id": "Any Vegetable",
+        "id": "Vegetable",
         "count": 1
       },
       {

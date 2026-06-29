@@ -1,10 +1,18 @@
 local core = require('openmw.core')
 local nearby = require('openmw.nearby')
 local self = require('openmw.self')
+local interfaces = require('openmw.interfaces')
 
 local log = require('scripts.Immersive-Crafting.log')
 
 local this = {}
+
+local taggerWarned = false
+
+---@class IngredientScanResult
+---@field object any nearest object instance of this record id
+---@field distance number distance to the nearest such object
+---@field count integer total stack count within range (summed across stacks)
 
 function this.len(t)
     local count = 0
@@ -14,9 +22,10 @@ function this.len(t)
     return count
 end
 
----Find all nearby contexts or containers within range
+---Find all nearby ingredient items within range, keyed by record id.
+---Stacks of the same record id are merged and their counts summed.
 ---@param maxRange number Maximum search range
----@return table<string, ProximityResult> Map of ID to proximity result
+---@return table<string, IngredientScanResult> Map of record id to scan result
 function this.scanNearbyIngredients(maxRange)
     maxRange = maxRange or 200
 
@@ -29,19 +38,51 @@ function this.scanNearbyIngredients(maxRange)
         local distance = (obj.position - playerPos):length()
 
         if distance <= maxRange then
-            -- Found a match
-            results[recordId] = {
-                object = obj,
-                distance = distance,
-            }
+            local entry = results[recordId]
+            if entry then
+                entry.count = entry.count + (obj.count or 1)
+                if distance < entry.distance then
+                    entry.object = obj
+                    entry.distance = distance
+                end
+            else
+                results[recordId] = {
+                    object = obj,
+                    distance = distance,
+                    count = obj.count or 1,
+                }
+            end
         end
     end
 
     return results
 end
 
---- Resolve best matching mixing recipe, complexity wins
----@param scan table<string, ProximityResult>
+--- Does a nearby object's record id satisfy a recipe ingredient id?
+--- Two-tier: (1) exact record id, (2) Tagger tag (S3cret St4sh). No wildcard.
+---@param recordId string nearby object's record id
+---@param ingredientId Id recipe ingredient id (a record id or a Tagger tag)
+---@return boolean
+function this.matchesIngredient(recordId, ingredientId)
+    -- 1. exact record id (case-insensitive)
+    if recordId:lower() == ingredientId:lower() then
+        return true
+    end
+
+    -- 2. Tagger tag. objectHasTag accepts a record id string and normalises case.
+    local tagger = interfaces.TaggerL
+    if tagger and tagger.objectHasTag then
+        return tagger.objectHasTag(recordId, ingredientId) and true or false
+    elseif not taggerWarned then
+        taggerWarned = true
+        log.warn('Tagger (I.TaggerL) unavailable; ingredient matching limited to exact record ids')
+    end
+
+    return false
+end
+
+--- Resolve best matching recipe for the action/context, complexity wins
+---@param scan table<string, IngredientScanResult>
 ---@param action CAction
 ---@param context CContext
 ---@return CRecipe?, CRecipe.RecipeIngredient[]?
@@ -72,15 +113,15 @@ function this.resolveRecipe(scan, action, context)
         local missingIngredients = {} ---@type CRecipe.RecipeIngredient[]
 
         for _, ingredient in pairs(recipe.ingredients) do
-            local found = false
+            local needed = ingredient.count or 1
+            local available = 0
             for recordId, entry in pairs(scan) do
-                if recordId:lower() == ingredient.id:lower() then
-                    found = true
-                    break
+                if this.matchesIngredient(recordId, ingredient.id) then
+                    available = available + (entry.count or 1)
                 end
             end
 
-            if not found then
+            if available < needed then
                 hasAllIngredients = false
                 table.insert(missingIngredients, ingredient)
             end

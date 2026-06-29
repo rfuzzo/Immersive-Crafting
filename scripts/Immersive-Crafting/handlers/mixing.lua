@@ -26,8 +26,13 @@ function CMixingHandler:evaluate(ctx)
     if not recipe then
         local details = nil
         if missing and #missing > 0 then
+            local parts = {}
+            for _, ing in ipairs(missing) do
+                local count = ing.count or 1
+                parts[#parts + 1] = count > 1 and (ing.id .. " x" .. count) or ing.id
+            end
             details = {
-                "Missing: " .. table.concat(missing, ", ")
+                "Missing: " .. table.concat(parts, ", ")
             }
         end
 
