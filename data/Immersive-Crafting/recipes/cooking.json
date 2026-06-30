@@ -24,7 +24,6 @@
     "label": "Simple Stew",
     "context": "cooking_pot",
     "action": "cooking",
-    "requires": "heat",
     "ingredients": [
       {
         "id": "Meat",
