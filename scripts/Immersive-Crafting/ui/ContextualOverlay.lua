@@ -147,13 +147,13 @@ local function updateOverlayUI()
                     local buttonSizer = {
                         type = ui.TYPE.Container,
                         template = I.MWUI.templates.boxSolid,
-                        props = { autoSize = true, horizontal = true },
+                        props = { autoSize = true },
                         content = ui.content {}
                     }
 
                     local template = I.MWUI.templates.textButtonNormal
                     if not viewModel.action.enabled then
-                        template = I.MWUI.templates.disabled
+                        template = I.MWUI.templates.textNormal
                     end
                     local button = {
                         type = ui.TYPE.Text,

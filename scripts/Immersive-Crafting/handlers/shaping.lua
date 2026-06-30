@@ -20,7 +20,7 @@ function CShapingHandler:evaluate(ctx)
         status = ("Crafting grid %dx%d"):format(grid[1] or 2, grid[2] or 2),
         action = {
             id = "shaping",
-            label = "Open crafting grid",
+            label = "Toggle crafting grid",
             enabled = true,
         }
     }
@@ -29,10 +29,9 @@ end
 
 ---@param ctx HandlerContext
 function CShapingHandler:OnActivate(ctx)
-    -- Open the interactive crafting grid sized to the station (ctx.context.gridSize).
-    -- The grid UI handles placement, matching, and dispatching the craft.
-    log.info("Opening crafting grid for " .. (ctx.context.id or "?"))
-    CraftingGrid.open(ctx)
+    -- Toggle the interactive crafting grid with the contextual action key.
+    log.info("Toggling crafting grid for " .. (ctx.context.id or "?"))
+    CraftingGrid.toggle(ctx)
 end
 
 --#endregion

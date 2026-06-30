@@ -29,16 +29,16 @@ local log = require('scripts.Immersive-Crafting.log')
 
 local this = {}
 
-local MAX_INV_ROWS = 15
+local MAX_INV_ROWS = 20
 
 -- ── state ───────────────────────────────────────────────────────────────────
 local isOpen = false
 local cols, rows = 2, 2
-local cells = {}          ---@type table<integer, table<integer, {recordId:string, name:string}>>
-local held = nil          ---@type {recordId:string, name:string}?
-local ctx = nil           ---@type HandlerContext?
+local cells = {} ---@type table<integer, table<integer, {recordId:string, name:string}>>
+local held = nil ---@type {recordId:string, name:string}?
+local ctx = nil ---@type HandlerContext?
 local element = nil
-local matched = nil       ---@type CShapedRecipe?
+local matched = nil ---@type CShapedRecipe?
 
 -- ── helpers ─────────────────────────────────────────────────────────────────
 
@@ -112,13 +112,13 @@ end
 
 -- ── widget builders ─────────────────────────────────────────────────────────
 
-local function short(s) return #s > 10 and (s:sub(1, 9) .. '…') or s end
+local function short(s) return #s > 20 and (s:sub(1, 19) .. '…') or s end
 
 local function button(label, enabled, cb)
     return {
         type = ui.TYPE.Text,
-        template = enabled and I.MWUI.templates.textButtonNormal or I.MWUI.templates.disabled,
-        props = { text = label, textSize = 18 },
+        template = enabled and I.MWUI.templates.textButtonNormal or I.MWUI.templates.textNormal,
+        props = { text = label, textSize = 20 },
         events = enabled and { mouseClick = async:callback(cb) } or nil,
     }
 end
@@ -128,12 +128,12 @@ local function cellWidget(r, c)
     return {
         type = ui.TYPE.Container,
         template = I.MWUI.templates.boxSolid,
-        props = { size = util.vector2(64, 28) },
+        props = { size = util.vector2(110, 64) },
         events = { mouseClick = async:callback(function() this.onCellClick(r, c) end) },
         content = ui.content { {
             type = ui.TYPE.Text,
             template = I.MWUI.templates.textNormal,
-            props = { text = cell and short(cell.name) or '·', textAlignH = ui.ALIGNMENT.Center },
+            props = { text = cell and short(cell.name) or 'Empty', textSize = 16, textAlignH = ui.ALIGNMENT.Center },
         } },
     }
 end
@@ -143,7 +143,7 @@ local function invRow(stack)
     return {
         type = ui.TYPE.Text,
         template = selected and I.MWUI.templates.textHeader or I.MWUI.templates.textNormal,
-        props = { text = ('%s (%d)'):format(short(stack.name), stack.count) },
+        props = { text = ('%s (%d)'):format(short(stack.name), stack.count), textSize = 17 },
         events = { mouseClick = async:callback(function() this.onPick(stack) end) },
     }
 end
@@ -155,18 +155,36 @@ local function rebuild()
 
     -- left: inventory list
     local invFlex = { type = ui.TYPE.Flex, props = { horizontal = false }, content = ui.content {} }
-    invFlex.content:add({ type = ui.TYPE.Text, template = I.MWUI.templates.textHeader, props = { text = 'Inventory' } })
+    invFlex.content:add({
+        type = ui.TYPE.Text,
+        template = I.MWUI.templates.textHeader,
+        props = { text = 'Inventory (click to select)', textSize = 20 }
+    })
     local stacks = inventoryStacks()
     for i = 1, math.min(#stacks, MAX_INV_ROWS) do invFlex.content:add(invRow(stacks[i])) end
     if #stacks > MAX_INV_ROWS then
-        invFlex.content:add({ type = ui.TYPE.Text, template = I.MWUI.templates.textNormal,
-            props = { text = ('…(%d more)'):format(#stacks - MAX_INV_ROWS) } })
+        invFlex.content:add({
+            type = ui.TYPE.Text,
+            template = I.MWUI.templates.textNormal,
+            props = { text = ('...(%d more)'):format(#stacks - MAX_INV_ROWS), textSize = 16 }
+        })
     end
 
     -- right: grid + result
     local gridFlex = { type = ui.TYPE.Flex, props = { horizontal = false }, content = ui.content {} }
-    gridFlex.content:add({ type = ui.TYPE.Text, template = I.MWUI.templates.textHeader,
-        props = { text = ('%s (%dx%d)'):format(ctx.context.label or 'Crafting', cols, rows) } })
+    gridFlex.content:add({
+        type = ui.TYPE.Text,
+        template = I.MWUI.templates.textHeader,
+        props = { text = ('%s (%dx%d)'):format(ctx.context.label or 'Crafting', cols, rows), textSize = 22 }
+    })
+    gridFlex.content:add({
+        type = ui.TYPE.Text,
+        template = I.MWUI.templates.textNormal,
+        props = {
+            text = held and ('Selected: ' .. short(held.name)) or 'Selected: (none)',
+            textSize = 16,
+        }
+    })
     for r = 1, rows do
         local row = { type = ui.TYPE.Flex, props = { horizontal = true }, content = ui.content {} }
         for c = 1, cols do row.content:add(cellWidget(r, c)) end
@@ -187,7 +205,11 @@ local function rebuild()
         resultText = '→ (no recipe)'
         canCraft = false
     end
-    gridFlex.content:add({ type = ui.TYPE.Text, template = I.MWUI.templates.textNormal, props = { text = resultText } })
+    gridFlex.content:add({
+        type = ui.TYPE.Text,
+        template = I.MWUI.templates.textNormal,
+        props = { text = resultText, textSize = 18 }
+    })
 
     -- buttons
     local btnRow = { type = ui.TYPE.Flex, props = { horizontal = true }, content = ui.content {} }
@@ -196,12 +218,28 @@ local function rebuild()
     gridFlex.content:add(btnRow)
 
     -- assemble
-    local body = { type = ui.TYPE.Flex, props = { horizontal = true }, content = ui.content { invFlex, gridFlex } }
+    local invPanel = {
+        type = ui.TYPE.Container,
+        template = I.MWUI.templates.boxSolid,
+        props = { size = util.vector2(420, 620) },
+        content = ui.content { invFlex },
+    }
+    local gridPanel = {
+        type = ui.TYPE.Container,
+        template = I.MWUI.templates.boxSolid,
+        props = { size = util.vector2(560, 620) },
+        content = ui.content { gridFlex },
+    }
+    local body = { type = ui.TYPE.Flex, props = { horizontal = true }, content = ui.content { invPanel, gridPanel } }
     element = ui.create({
         type = ui.TYPE.Container,
         layer = 'Windows',
         template = I.MWUI.templates.boxSolid,
-        props = { relativePosition = util.vector2(0.5, 0.5), anchor = util.vector2(0.5, 0.5) },
+        props = {
+            relativePosition = util.vector2(0.5, 0.5),
+            anchor = util.vector2(0.5, 0.5),
+            size = util.vector2(1020, 680),
+        },
         content = ui.content { body },
     })
 end
@@ -215,10 +253,29 @@ function this.open(handlerCtx)
     cols, rows = gs[1] or 2, gs[2] or 2
     cells, held, matched = {}, nil, nil
     isOpen = true
-    -- cursor on, no built-in windows. Interface mode needs no target (stub is over-strict).
-    ---@diagnostic disable-next-line: missing-fields
-    I.UI.setMode('Interface', { windows = {} })
+    -- Enter interface mode with default window policy so custom UI remains visible.
+    I.UI.setMode('Interface')
     rebuild()
+end
+
+---@return boolean
+function this.isOpen()
+    return isOpen
+end
+
+---@return string?
+function this.getContextId()
+    if not ctx or not ctx.context then return nil end
+    return ctx.context.id
+end
+
+---@param handlerCtx HandlerContext
+function this.toggle(handlerCtx)
+    if isOpen then
+        this.close()
+        return
+    end
+    this.open(handlerCtx)
 end
 
 function this.close()
@@ -237,9 +294,9 @@ end
 function this.onCellClick(r, c)
     cells[r] = cells[r] or {}
     if cells[r][c] then
-        cells[r][c] = nil            -- clicking a filled cell clears it
+        cells[r][c] = nil  -- clicking a filled cell clears it
     elseif held then
-        cells[r][c] = held           -- place the held item
+        cells[r][c] = held -- place the held item
     end
     rebuild()
 end

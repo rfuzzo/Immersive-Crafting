@@ -1,6 +1,7 @@
 [
   {
     "id": "workbench",
+    "label": "Workbench",
     "recordIds": [
       "furn_de_bar_01",
       "furn_com_table_01"
@@ -12,6 +13,7 @@
   },
   {
     "id": "campfire",
+    "label": "Campfire",
     "activationRange": 150,
     "recordIds": [
       "Any fire"
@@ -22,6 +24,7 @@
   },
   {
     "id": "tanning_rack",
+    "label": "Tanning Rack",
     "activationRange": 150,
     "recordIds": [
       "Any tanning rack"
