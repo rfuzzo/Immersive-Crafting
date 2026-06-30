@@ -6,6 +6,7 @@ local log = require('scripts.Immersive-Crafting.log')
 local CContext = require('scripts.Immersive-Crafting.models.context')
 local CAction = require('scripts.Immersive-Crafting.models.action')
 local CRecipe = require('scripts.Immersive-Crafting.models.recipe')
+local CShapedRecipe = require('scripts.Immersive-Crafting.models.shapedRecipe')
 local AbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 
 local vfs = require('openmw.vfs')
@@ -17,6 +18,7 @@ local this = {}
 ---@field actions table<Id, CAction>
 ---@field contexts table<Id, CContext>
 ---@field recipes table<string, CRecipe>
+---@field shapedRecipes table<string, CShapedRecipe>
 ---@field handlers table<string, CAbstractHandler>
 
 ---@type Registries
@@ -26,6 +28,7 @@ GRegistries = {
     actions = {},
     contexts = {},
     recipes = {},
+    shapedRecipes = {},
     processes = {},
 }
 
@@ -136,12 +139,24 @@ local function loadRecipes()
             if data then
                 -- data should be in the form of table[]
                 for _, entry in ipairs(data) do
-                    local r = CRecipe:fromTable(entry)
-                    if r then
-                        log.info(('Loading recipes from %s'):format(filename))
-                        mergeById(GRegistries.recipes, r)
+                    if entry.pattern then
+                        -- shaped (positional) recipe
+                        local r = CShapedRecipe:fromTable(entry)
+                        if r then
+                            log.info(('Loading shaped recipe from %s'):format(filename))
+                            mergeById(GRegistries.shapedRecipes, r)
+                        else
+                            log.error(('Failed to load shaped recipe from %s'):format(filename))
+                        end
                     else
-                        log.error(('Failed to load recipe from %s'):format(filename))
+                        -- flat (world-placement) recipe
+                        local r = CRecipe:fromTable(entry)
+                        if r then
+                            log.info(('Loading recipe from %s'):format(filename))
+                            mergeById(GRegistries.recipes, r)
+                        else
+                            log.error(('Failed to load recipe from %s'):format(filename))
+                        end
                     end
                 end
             end

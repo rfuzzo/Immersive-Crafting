@@ -2,6 +2,36 @@
 
 Running list of deferred work. See `docs/SPEC.md` for the authoritative design.
 
+## Shaped crafting (in progress)
+
+Interactive **grid** crafting, separate from world-placement cooking. Input = an
+inventory-driven grid menu; **tools** (saw, hammer) come from **player inventory**,
+outside the grid. Station context defines the grid size (`gridSize`): cloth/tier-0
+`[2,2]`, table/tier-1 `[3,3]`, tier-2 TBD.
+
+- ✅ **Phase 1 (engine):** `CShapedRecipe` model; loader branch → `GRegistries.shapedRecipes`
+  (a recipe is shaped iff it has a `pattern`); `shapedCrafting.lua` matcher (trim/shift-to-fit,
+  `cellsMatch` via `lib.matchesTag`, inventory `hasTools`); `CContext.gridSize`; data
+  (`crafting_cloth` 2x2 via `cloth` tag, `crafting_table` 3x3, `shaping` action,
+  `wooden_plank` example); `shaping` handler skeleton.
+- ❌ **Phase 2 (UI):** the MWUI crafting window — NxM clickable cells filled from inventory,
+  a tool slot, a result preview, and a Craft button → `resolveShapedRecipe` →
+  consume placed items **from inventory** + grant output (needs an inventory-consume commit
+  path; the current global executor removes world stacks).
+- Content gaps before the example works end-to-end:
+  - **`table` tag** (tier-1 station) not applied — needs a station tag (STAT/ACTI dump) or a
+    real table record id.
+  - **`saw` tool tag** doesn't exist — add a tools tag (misc) + apply it to saw records.
+  - **`wooden_plank` output** is not a real record (D1) — repoint to a real plank record
+    (e.g. OAAB) or drop the example.
+- Verify in-game: `types.Actor.inventory(self)` for the tool check; MWUI item-slot icons +
+  click handling for the grid cells.
+
+### Process stations (tanning rack, furnace) — undecided
+
+Separate from shaped crafting. UI still open: Minecraft-style slots (input / fuel / output)
+vs. a grid-less prompt. Decide when we get there.
+
 ## Context detection by tag (ad 2)
 
 Stations are detected by **Tagger tag** instead of hard-coded record ids.
