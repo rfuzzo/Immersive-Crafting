@@ -1,7 +1,6 @@
 local CAbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
+local CraftingGrid = require('scripts.Immersive-Crafting.ui.CraftingGrid')
 local log = require('scripts.Immersive-Crafting.log')
-
-local ui = require('openmw.ui')
 
 ---@class CShapingHandler : CAbstractHandler
 local CShapingHandler = {
@@ -30,14 +29,10 @@ end
 
 ---@param ctx HandlerContext
 function CShapingHandler:OnActivate(ctx)
-    --[[ TODO (Phase 2): open the interactive crafting grid UI for ctx.context.gridSize.
-    On "Craft":
-      * read the placed cells into a grid (recordId|nil)
-      * shapedCrafting.resolveShapedRecipe(grid, ctx.action, ctx.context)
-      * consume the placed items from inventory + grant output via the global commit
-    ]]
-    log.info("Shaping activated (crafting grid UI pending - Phase 2)")
-    ui.showMessage("Crafting grid UI coming soon")
+    -- Open the interactive crafting grid sized to the station (ctx.context.gridSize).
+    -- The grid UI handles placement, matching, and dispatching the craft.
+    log.info("Opening crafting grid for " .. (ctx.context.id or "?"))
+    CraftingGrid.open(ctx)
 end
 
 --#endregion
