@@ -7,6 +7,7 @@ local CContext = require('scripts.Immersive-Crafting.models.context')
 local CAction = require('scripts.Immersive-Crafting.models.action')
 local CRecipe = require('scripts.Immersive-Crafting.models.recipe')
 local CShapedRecipe = require('scripts.Immersive-Crafting.models.shapedRecipe')
+local CProcessRecipe = require('scripts.Immersive-Crafting.models.processRecipe')
 local AbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 
 local vfs = require('openmw.vfs')
@@ -19,6 +20,7 @@ local this = {}
 ---@field contexts table<Id, CContext>
 ---@field recipes table<string, CRecipe>
 ---@field shapedRecipes table<string, CShapedRecipe>
+---@field processRecipes table<string, CProcessRecipe>
 ---@field handlers table<string, CAbstractHandler>
 
 ---@type Registries
@@ -29,6 +31,7 @@ GRegistries = {
     contexts = {},
     recipes = {},
     shapedRecipes = {},
+    processRecipes = {},
     processes = {},
 }
 
@@ -147,6 +150,15 @@ local function loadRecipes()
                             mergeById(GRegistries.shapedRecipes, r)
                         else
                             log.error(('Failed to load shaped recipe from %s'):format(filename))
+                        end
+                    elseif entry.inputs then
+                        -- role-slot (process) recipe
+                        local r = CProcessRecipe:fromTable(entry)
+                        if r then
+                            log.info(('Loading process recipe from %s'):format(filename))
+                            mergeById(GRegistries.processRecipes, r)
+                        else
+                            log.error(('Failed to load process recipe from %s'):format(filename))
                         end
                     else
                         -- flat (world-placement) recipe

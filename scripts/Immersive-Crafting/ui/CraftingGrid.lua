@@ -1,21 +1,30 @@
 --[[
-    Crafting Grid UI (shaped crafting)
+    Crafting Window UI (extensible, MWUI-styled)
 
-    An interactive shaped-crafting window opened at a station, styled after the
-    Morrowind alchemy window: a bordered box with a title, an N×M grid of item
-    slots (like the alchemy ingredient slots), a result area, and Craft/Close
-    buttons. Items are dropped from the inventory into grid cells.
+    An interactive crafting window opened at a station, styled after the Morrowind
+    alchemy window: a bordered box with a title, a central slot area, a result /
+    progress footer, and Craft/Close buttons. Items are dropped from the inventory
+    into slots.
+
+    The window is LAYOUT-DRIVEN so new station shapes are data-driven (CContext.layout):
+      - "grid"    : N×M shaped-crafting grid (cloth 2x2, table 3x3). Engine: shapedCrafting.
+      - "process" : named role slots (kiln fuel+input, tanning ingredients+input) with an
+                    output slot and a progress bar. Engine: processCrafting.
+    Add a new entry to `layouts` below to support another shape.
 
     Layout is built from MWUI templates (boxSolid / box / padding / horizontalLine /
-    textHeader / textButtonNormal) and Flex containers — NOT absolute positions —
-    so the window auto-sizes and looks consistent with the vanilla UI.
+    textHeader / textButtonNormal) and Flex containers — never absolute positions —
+    so the window auto-sizes and matches the vanilla UI.
 
     OpenMW notes (verified against the UI reference):
     - util.color.rgb(r, g, b) components are 0..1 (not 0..255).
-    - Custom interactive UI = element on the interactive 'Windows' layer +
-      I.UI.setMode('Interface') to show the cursor; setMode() to exit.
-    - Click handling: events = { mouseClick = async:callback(fn) }.
+    - Custom interactive UI = element on the 'Windows' layer + I.UI.setMode('Interface')
+      to show the cursor; setMode() to exit.
     - Inventory: types.Actor.inventory(self):getAll(); icon from item.type.record(item).icon.
+
+    NOTE: the process layout's progress bar is driven by `currentProgress` (0..1). The
+    timed process that advances it (start -> consume -> wait duration -> grant output,
+    persisted across saves) is deferred; today Craft commits instantly like the grid.
 ]]
 
 local ui = require('openmw.ui')
@@ -27,6 +36,7 @@ local types = require('openmw.types')
 local I = require('openmw.interfaces')
 
 local shaped = require('scripts.Immersive-Crafting.shapedCrafting')
+local process = require('scripts.Immersive-Crafting.processCrafting')
 local log = require('scripts.Immersive-Crafting.log')
 
 local this = {}
@@ -35,15 +45,29 @@ local iconTextureCache = {} ---@type table<string, any>
 -- Slot/icon sizing — Morrowind item slots are small (~44px icons).
 local ICON = 44
 local SLOT_GAP = 6
-local RESULT_W = 132
 
 -- ── state ───────────────────────────────────────────────────────────────────
 local isOpen = false
-local cols, rows = 2, 2
-local cells = {} ---@type table<integer, table<integer, {recordId:string, icon:string?}>>
 local ctx = nil ---@type HandlerContext?
 local element = nil
-local matched = nil ---@type CShapedRecipe?
+local layout = nil ---@type table? resolved layout (see resolveLayout)
+local placed = {} ---@type table<string, {recordId:string, icon:string?}> slotId -> placed item
+local matched = nil ---@type CShapedRecipe|CProcessRecipe|nil
+local canCraft = false
+local currentProgress = 0 ---@type number 0..1, driven by the (future) timed process
+
+-- ── layout resolution ───────────────────────────────────────────────────────
+
+--- Resolve a context's UI layout. Falls back: layout -> gridSize -> 2x2 grid.
+---@param context CContext
+local function resolveLayout(context)
+    local L = context.layout
+    if L and L.kind == 'process' then
+        return { kind = 'process', inputs = L.inputs or {} }
+    end
+    local size = (L and L.kind == 'grid' and L.size) or context.gridSize or { 2, 2 }
+    return { kind = 'grid', cols = size[1] or 2, rows = size[2] or 2 }
+end
 
 -- ── helpers (inventory / icons) ─────────────────────────────────────────────
 
@@ -69,9 +93,7 @@ local function textureForIcon(iconPath)
     local cached = iconTextureCache[iconPath]
     if cached then return cached end
 
-    local ok, tex = pcall(function()
-        return ui.texture({ path = iconPath })
-    end)
+    local ok, tex = pcall(function() return ui.texture({ path = iconPath }) end)
     if ok and tex then
         iconTextureCache[iconPath] = tex
         return tex
@@ -91,43 +113,21 @@ local function inventoryCount(recordId)
     return total
 end
 
---- How many of each record id are placed in the grid.
+--- How many of each record id are placed across all slots.
 local function placedCounts()
     local counts = {}
-    for r = 1, rows do
-        for c = 1, cols do
-            local cell = cells[r] and cells[r][c]
-            if cell then counts[cell.recordId] = (counts[cell.recordId] or 0) + 1 end
-        end
+    for _, cell in pairs(placed) do
+        counts[cell.recordId] = (counts[cell.recordId] or 0) + 1
     end
     return counts
 end
 
---- Build the recordId|nil grid the matcher expects.
-local function asGrid()
-    local grid = {}
-    for r = 1, rows do
-        grid[r] = {}
-        for c = 1, cols do
-            local cell = cells[r] and cells[r][c]
-            grid[r][c] = cell and cell.recordId or nil
-        end
-    end
-    return grid
-end
-
 --- Do we actually own enough of everything placed?
 local function haveEnough()
-    local need = placedCounts()
-    for id, n in pairs(need) do
+    for id, n in pairs(placedCounts()) do
         if inventoryCount(id) < n then return false end
     end
     return true
-end
-
-local function refreshMatch()
-    if not ctx then return end
-    matched = shaped.resolveShapedRecipe(asGrid(), ctx.action, ctx.context)
 end
 
 -- ── widget builders (MWUI templates + Flex) ─────────────────────────────────
@@ -137,20 +137,16 @@ local function spacer(w, h)
     return { type = ui.TYPE.Widget, props = { size = util.vector2(w or 0, h or 0) } }
 end
 
-local function headerText(text)
+local function headerText(text, size)
     return {
         type = ui.TYPE.Text,
         template = I.MWUI.templates.textHeader,
-        props = { text = text, textSize = 20 },
+        props = { text = text, textSize = size or 20 },
     }
 end
 
 local function normalText(text)
-    return {
-        type = ui.TYPE.Text,
-        template = I.MWUI.templates.textNormal,
-        props = { text = text },
-    }
+    return { type = ui.TYPE.Text, template = I.MWUI.templates.textNormal, props = { text = text } }
 end
 
 local function hLine(width)
@@ -170,130 +166,186 @@ local function button(label, enabled, cb)
     }
 end
 
---- A single grid slot: a bordered box (boxSolid) sized to the icon, with the
---- item icon centred inside when the cell is filled. Drop/click events attach here.
-local function slotWidget(r, c)
-    local cell = cells[r] and cells[r][c]
+--- A bordered square box (boxSolid) sized to the icon, holding `iconTex` centred.
+--- `events` (optional) wires drop/click handling.
+local function boxSlot(iconTex, events)
     local inner = ui.content {}
-
-    if cell and cell.icon then
-        local iconTex = textureForIcon(cell.icon)
-        if iconTex then
-            inner:add({
-                type = ui.TYPE.Image,
-                props = {
-                    resource = iconTex,
-                    size = util.vector2(ICON, ICON),
-                    relativePosition = util.vector2(0.5, 0.5),
-                    anchor = util.vector2(0.5, 0.5),
-                },
-            })
-        end
+    if iconTex then
+        inner:add({
+            type = ui.TYPE.Image,
+            props = {
+                resource = iconTex,
+                size = util.vector2(ICON, ICON),
+                relativePosition = util.vector2(0.5, 0.5),
+                anchor = util.vector2(0.5, 0.5),
+            },
+        })
     end
-
-    -- fixed-size inner area so the boxSolid border wraps a consistent square
-    local slotInner = {
-        type = ui.TYPE.Widget,
-        props = { size = util.vector2(ICON, ICON) },
-        content = inner,
-    }
-
     return {
         type = ui.TYPE.Container,
         template = I.MWUI.templates.boxSolid,
-        events = {
-            mouseClick = async:callback(function(e) this.onCellClick(r, c, e) end),
-            mouseRelease = async:callback(function(e) this.onCellDrop(r, c, e) end),
-            dragDrop = async:callback(function(e) this.onCellDrop(r, c, e) end),
-        },
-        content = ui.content { slotInner },
+        events = events,
+        content = ui.content { { type = ui.TYPE.Widget, props = { size = util.vector2(ICON, ICON) }, content = inner } },
     }
 end
 
---- The N×M slot grid as a vertical Flex of horizontal row Flexes.
-local function gridWidget()
+--- An interactive slot bound to `slotId`: shows the placed item's icon and accepts drops.
+local function slotWidget(slotId)
+    local cell = placed[slotId]
+    local iconTex = cell and cell.icon and textureForIcon(cell.icon) or nil
+    return boxSlot(iconTex, {
+        mouseClick = async:callback(function(e) this.onSlotClick(slotId, e) end),
+        mouseRelease = async:callback(function(e) this.onSlotDrop(slotId, e) end),
+        dragDrop = async:callback(function(e) this.onSlotDrop(slotId, e) end),
+    })
+end
+
+--- A labelled slot: small caption above an interactive slot.
+local function labelledSlot(slotId, label)
+    return {
+        type = ui.TYPE.Flex,
+        props = { horizontal = false, align = ui.ALIGNMENT.Center },
+        content = ui.content {
+            normalText(label or ''),
+            spacer(0, 3),
+            slotWidget(slotId),
+        },
+    }
+end
+
+--- A display-only output slot (no events) with a caption.
+local function outputSlot(label)
+    return {
+        type = ui.TYPE.Flex,
+        props = { horizontal = false, align = ui.ALIGNMENT.Center },
+        content = ui.content {
+            normalText(label or 'Output'),
+            spacer(0, 3),
+            boxSlot(nil, nil),
+        },
+    }
+end
+
+--- A simple progress bar: bordered track with a filled boxSolid segment (0..1).
+local function progressBar(value, width)
+    value = math.max(0, math.min(1, value or 0))
+    local fillContent = ui.content {}
+    if value > 0 then
+        fillContent:add({
+            type = ui.TYPE.Container,
+            template = I.MWUI.templates.boxSolid,
+            content = ui.content {
+                { type = ui.TYPE.Widget, props = { size = util.vector2(math.max(1, (width - 6) * value), 10) } },
+            },
+        })
+    end
+    return {
+        type = ui.TYPE.Container,
+        template = I.MWUI.templates.box,
+        content = ui.content {
+            { type = ui.TYPE.Widget, props = { size = util.vector2(width - 4, 12) }, content = fillContent },
+        },
+    }
+end
+
+-- ── layout: bodies + resolution ─────────────────────────────────────────────
+
+--- GRID layout: vertical Flex of horizontal slot rows. slotId = "r:c".
+local function gridBody()
     local rowsContent = ui.content {}
-    for r = 1, rows do
+    for r = 1, layout.rows do
         if r > 1 then rowsContent:add(spacer(0, SLOT_GAP)) end
         local rowContent = ui.content {}
-        for c = 1, cols do
+        for c = 1, layout.cols do
             if c > 1 then rowContent:add(spacer(SLOT_GAP, 0)) end
-            rowContent:add(slotWidget(r, c))
+            rowContent:add(slotWidget(('%d:%d'):format(r, c)))
         end
         rowsContent:add({ type = ui.TYPE.Flex, props = { horizontal = true }, content = rowContent })
     end
-    return { type = ui.TYPE.Flex, props = { horizontal = false }, content = rowsContent }
+    return { type = ui.TYPE.Flex, props = { horizontal = false, align = ui.ALIGNMENT.Center }, content = rowsContent }
 end
 
---- The result column: "Result" header + recipe/tools status (or "no recipe").
----@return table widget, boolean canCraft
-local function resultWidget()
-    refreshMatch()
+local function gridResolve()
+    local grid = {}
+    for r = 1, layout.rows do
+        grid[r] = {}
+        for c = 1, layout.cols do
+            local cell = placed[('%d:%d'):format(r, c)]
+            grid[r][c] = cell and cell.recordId or nil
+        end
+    end
+    matched = shaped.resolveShapedRecipe(grid, ctx.action, ctx.context)
+    canCraft = matched ~= nil and haveEnough()
+end
 
+--- PROCESS layout: [input slots] → [output slot]. slotId = input.key.
+local function processBody()
+    local row = ui.content {}
+    for i, inp in ipairs(layout.inputs) do
+        if i > 1 then row:add(spacer(SLOT_GAP, 0)) end
+        row:add(labelledSlot(inp.key, inp.label or inp.key))
+    end
+    row:add(spacer(10, 0))
+    row:add(headerText('→', 24))
+    row:add(spacer(10, 0))
+    row:add(outputSlot('Output'))
+    return { type = ui.TYPE.Flex, props = { horizontal = true, align = ui.ALIGNMENT.Center }, content = row }
+end
+
+local function processResolve()
+    local slots = {}
+    for _, inp in ipairs(layout.inputs) do
+        local cell = placed[inp.key]
+        slots[inp.key] = cell and cell.recordId or nil
+    end
+    matched = process.resolveProcessRecipe(slots, ctx.action, ctx.context)
+    canCraft = matched ~= nil and haveEnough()
+end
+
+--- Layout registry: add an entry here to support a new station shape.
+local layouts = {
+    grid = { body = gridBody, resolve = gridResolve, hasProgress = false },
+    process = { body = processBody, resolve = processResolve, hasProgress = true },
+}
+
+-- ── footer (result + optional progress) ─────────────────────────────────────
+
+local function footer(width)
     local lines = ui.content {}
-    lines:add(headerText('Result'))
-    lines:add(spacer(0, 6))
-
-    local canCraft = false
     if matched then
-        local toolsOk = shaped.hasTools(matched.tools)
-        local enough = haveEnough()
         lines:add(normalText(('%s x%d'):format(matched.label, matched.output.count or 1)))
         if matched.tools and #matched.tools > 0 then
-            lines:add(spacer(0, 4))
+            local toolsOk = shaped.hasTools(matched.tools)
+            lines:add(spacer(0, 3))
             lines:add(normalText(('Tools: %s %s')
                 :format(table.concat(matched.tools, ', '), toolsOk and '[ok]' or '[missing]')))
         end
-        if not enough then
-            lines:add(spacer(0, 4))
+        if not haveEnough() then
+            lines:add(spacer(0, 3))
             lines:add(normalText('Not enough items'))
         end
-        canCraft = toolsOk and enough
     else
         lines:add(normalText('(no recipe)'))
     end
 
-    return {
-        type = ui.TYPE.Flex,
-        props = { horizontal = false, autoSize = false, size = util.vector2(RESULT_W, ICON * rows + SLOT_GAP * (rows - 1)) },
-        content = lines,
-    }, canCraft
+    if layouts[layout.kind].hasProgress then
+        lines:add(spacer(0, 6))
+        lines:add(progressBar(currentProgress, width))
+    end
+
+    return { type = ui.TYPE.Flex, props = { horizontal = false }, content = lines }
 end
 
---- (Re)build and show the whole window from current state.
+-- ── window assembly ─────────────────────────────────────────────────────────
+
 local function rebuild()
     if element then element:destroy() end
-    if not isOpen or not ctx then return end
+    if not isOpen or not ctx or not layout then return end
 
-    local result, canCraft = resultWidget()
+    layouts[layout.kind].resolve()
 
-    -- approximate content width for separators (grid + gap + result column)
-    local gridW = cols * (ICON + 12) + (cols - 1) * SLOT_GAP
-    local lineW = math.max(240, gridW + 16 + RESULT_W)
+    local lineW = 280
 
-    -- grid + result, side by side
-    local body = {
-        type = ui.TYPE.Flex,
-        props = { horizontal = true },
-        content = ui.content {
-            gridWidget(),
-            spacer(16, 0),
-            result,
-        },
-    }
-
-    -- buttons
-    local buttons = {
-        type = ui.TYPE.Flex,
-        props = { horizontal = true },
-        content = ui.content {
-            button('Craft', canCraft, function() this.onCraft() end),
-            spacer(16, 0),
-            button('Close', true, function() this.close() end),
-        },
-    }
-
-    -- vertical stack: title / line / body / line / buttons
     local column = {
         type = ui.TYPE.Flex,
         props = { horizontal = false },
@@ -302,15 +354,24 @@ local function rebuild()
             spacer(0, 8),
             hLine(lineW),
             spacer(0, 10),
-            body,
+            layouts[layout.kind].body(),
             spacer(0, 10),
             hLine(lineW),
             spacer(0, 8),
-            buttons,
+            footer(lineW),
+            spacer(0, 10),
+            {
+                type = ui.TYPE.Flex,
+                props = { horizontal = true },
+                content = ui.content {
+                    button('Craft', canCraft, function() this.onCraft() end),
+                    spacer(16, 0),
+                    button('Close', true, function() this.close() end),
+                },
+            },
         },
     }
 
-    -- padded bordered window on the interactive Windows layer
     element = ui.create({
         type = ui.TYPE.Container,
         layer = 'Windows',
@@ -329,24 +390,20 @@ local function rebuild()
     })
 end
 
--- ── public API / event handlers ─────────────────────────────────────────────
+-- ── public API ──────────────────────────────────────────────────────────────
 
 ---@param handlerCtx HandlerContext
 function this.open(handlerCtx)
     ctx = handlerCtx
-    local gs = ctx.context.gridSize or { 2, 2 }
-    cols, rows = gs[1] or 2, gs[2] or 2
-    cells, matched = {}, nil
+    layout = resolveLayout(ctx.context)
+    placed, matched, canCraft, currentProgress = {}, nil, false, 0
     isOpen = true
-    -- Enter interface mode (inventory remains available in default Interface mode).
-    I.UI.setMode('Interface')
+    I.UI.setMode('Interface') -- show cursor; inventory remains available
     rebuild()
 end
 
 ---@return boolean
-function this.isOpen()
-    return isOpen
-end
+function this.isOpen() return isOpen end
 
 ---@return string?
 function this.getContextId()
@@ -366,10 +423,19 @@ end
 function this.close()
     isOpen = false
     if element then element:destroy() end
-    element = nil
-    matched, ctx = nil, nil
+    element, layout, ctx, matched = nil, nil, nil, nil
+    placed = {}
     I.UI.setMode() -- back to gameplay
 end
+
+--- Drive the process progress bar (0..1) from a future timed process.
+---@param value number
+function this.setProgress(value)
+    currentProgress = value
+    if isOpen then rebuild() end
+end
+
+-- ── event handlers ──────────────────────────────────────────────────────────
 
 ---@param ev any
 ---@return string?
@@ -406,39 +472,36 @@ local function extractRecordIdFromDrop(ev)
     return probe(ev, 0)
 end
 
-function this.onCellClick(r, c, ev)
-    cells[r] = cells[r] or {}
+---@param slotId string
+function this.onSlotClick(slotId, ev)
     -- Right click clears a filled slot.
-    if ev and ev.button == 3 and cells[r][c] then
-        cells[r][c] = nil
+    if ev and ev.button == 3 and placed[slotId] then
+        placed[slotId] = nil
         rebuild()
     end
 end
 
-function this.onCellDrop(r, c, ev)
+---@param slotId string
+function this.onSlotDrop(slotId, ev)
     local recordId = extractRecordIdFromDrop(ev)
     if not recordId then
         if type(ev) == 'table' then
             local keys = {}
-            for k, v in pairs(ev) do
-                keys[#keys + 1] = tostring(k) .. ':' .. type(v)
-            end
-            log.trace('Drop unresolved at slot (' .. r .. ',' .. c .. ') keys=[' .. table.concat(keys, ', ') .. ']')
+            for k, v in pairs(ev) do keys[#keys + 1] = tostring(k) .. ':' .. type(v) end
+            log.trace('Drop unresolved at slot ' .. slotId .. ' keys=[' .. table.concat(keys, ', ') .. ']')
         end
         return
     end
     if inventoryCount(recordId) <= 0 then return end
 
-    cells[r] = cells[r] or {}
-    cells[r][c] = {
-        recordId = recordId,
-        icon = iconForRecordId(recordId),
-    }
+    placed[slotId] = { recordId = recordId, icon = iconForRecordId(recordId) }
     rebuild()
 end
 
 function this.onCraft()
-    if not matched then return end
+    if not matched or not canCraft then return end
+    -- All placed items are consumed; the global executor removes them by record id
+    -- and grants the output. (Same event serves grid and process crafts.)
     local consume = {}
     for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
     core.sendGlobalEvent('ImmersiveCrafting_CraftShaped', {

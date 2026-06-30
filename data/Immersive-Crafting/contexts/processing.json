@@ -1,0 +1,59 @@
+[
+  {
+    "id": "kiln",
+    "label": "Kiln",
+    "recordIds": ["kiln"],
+    "activationRange": 150,
+    "layout": {
+      "kind": "process",
+      "inputs": [
+        { "key": "fuel", "label": "Fuel" },
+        { "key": "input", "label": "Input" }
+      ]
+    },
+    "actions": ["processing"]
+  },
+  {
+    "id": "furnace",
+    "label": "Furnace",
+    "recordIds": ["furnace"],
+    "activationRange": 150,
+    "layout": {
+      "kind": "process",
+      "inputs": [
+        { "key": "fuel", "label": "Fuel" },
+        { "key": "input", "label": "Input" }
+      ]
+    },
+    "actions": ["processing"]
+  },
+  {
+    "id": "oven",
+    "label": "Oven",
+    "recordIds": ["oven"],
+    "activationRange": 150,
+    "layout": {
+      "kind": "process",
+      "inputs": [
+        { "key": "fuel", "label": "Fuel" },
+        { "key": "input", "label": "Input" }
+      ]
+    },
+    "actions": ["processing"]
+  },
+  {
+    "id": "tanning_rack",
+    "label": "Tanning Rack",
+    "recordIds": ["tanning_rack"],
+    "activationRange": 150,
+    "layout": {
+      "kind": "process",
+      "inputs": [
+        { "key": "ingredient1", "label": "Ingredient" },
+        { "key": "ingredient2", "label": "Ingredient" },
+        { "key": "input", "label": "Hide" }
+      ]
+    },
+    "actions": ["processing"]
+  }
+]

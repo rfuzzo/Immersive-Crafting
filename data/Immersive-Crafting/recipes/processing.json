@@ -1,0 +1,27 @@
+[
+  {
+    "id": "fired_clay_pot",
+    "label": "Clay Pot",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": {
+      "fuel": "Fuel",
+      "input": "GreenWare"
+    },
+    "duration": 30,
+    "output": { "id": "misc_com_bucket_metal", "count": 1 }
+  },
+  {
+    "id": "tanned_leather",
+    "label": "Cured Leather",
+    "context": "tanning_rack",
+    "action": "processing",
+    "inputs": {
+      "ingredient1": "Salt",
+      "ingredient2": "Water",
+      "input": "RawHide"
+    },
+    "duration": 45,
+    "output": { "id": "ingred_scrib_jelly_01", "count": 1 }
+  }
+]

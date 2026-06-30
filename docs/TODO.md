@@ -73,3 +73,36 @@ Skipped and why:
   when Sun's Dusk is loaded. Our hand-made outputs (`SeasonedMeat`, `Stew`) are **not**
   real records — they need real records, or `createRecordDraft`/`createRecord`
   (D1 accepted caveat: custom records are Load-context only, not save-serialised).
+
+## Process stations & crafting-window layouts (in progress)
+
+The crafting window (`ui/CraftingGrid.lua`) is now **layout-driven** so new station
+shapes are data-driven via `CContext.layout`. A small `layouts` registry in that file
+maps `kind` → `{ body, resolve, hasProgress }`; add an entry to support a new shape.
+
+- ✅ **UI:** restyled to the alchemy-window look (MWUI `boxSolid`/`box`/`padding`/
+  `horizontalLine` + Flex; no absolute positions; fixed the 0–255 `util.color.rgb` bug).
+  Two layouts: `grid` (N×M, engine `shapedCrafting`) and `process` (named role slots +
+  output slot + progress bar, engine `processCrafting`). `3x3` table works via `gridSize`.
+- ✅ **Engine/data:** `CProcessRecipe` model; loader branch → `GRegistries.processRecipes`
+  (a recipe is process iff it has `inputs`); `processCrafting.resolveProcessRecipe`
+  (role-slot match via `lib.matchesTag`, most-specific wins, `hasTools`); `processing`
+  action + handler; contexts `kiln`/`furnace`/`oven` (fuel+input) and `tanning_rack`
+  (2 ingredients + input); sample `recipes/processing.json`. All placed items are
+  consumed on craft (reuses the `ImmersiveCrafting_CraftShaped` global executor).
+
+Deferred / to verify:
+
+- **Timed process (deferred by design).** Today **Craft commits instantly**. The real
+  process — Start consumes inputs, a **persisted** timer advances over `duration`,
+  output is granted on completion — is not built. The UI already shows a progress bar
+  driven by `CraftingGrid.setProgress(0..1)`; a process subsystem (using
+  `GRegistries.processes`) needs to call it and survive save/load. Shares the
+  heat/simmer need with the Cooking phase.
+- **Placeholder data.** Output ids (`misc_com_bucket_metal`, `ingred_scrib_jelly_01`)
+  and station/ingredient tags (`kiln`, `furnace`, `oven`, `tanning_rack`, `Fuel`,
+  `GreenWare`, `RawHide`, `Salt`, `Water`) are placeholders — repoint outputs to real
+  records (D1: existing records only) and author the Tagger tags in `ModTags/*.yaml`.
+- **In-game UI check.** Whole window is untested live: confirm boxSolid auto-sizing,
+  slot drag-drop, the `→` arrow/progress-bar rendering, and that dropping from the
+  inventory works in plain `Interface` mode (else `setMode('Interface', {windows={'Inventory'}})`).

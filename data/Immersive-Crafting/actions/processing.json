@@ -1,0 +1,7 @@
+[
+  {
+    "id": "processing",
+    "label": "Process",
+    "handler": "processing"
+  }
+]
