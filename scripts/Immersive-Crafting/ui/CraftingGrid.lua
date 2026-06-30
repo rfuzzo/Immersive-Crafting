@@ -1,17 +1,21 @@
 --[[
-    Crafting Grid UI (shaped crafting, Phase 2 — FIRST PASS / untested in-game)
+    Crafting Grid UI (shaped crafting)
 
-    An interactive shaped-crafting grid opened at a station.
-    The window renders icon-only slots and supports dropping inventory items into
-    grid cells when the UI drop event payload includes the dragged item.
+    An interactive shaped-crafting window opened at a station, styled after the
+    Morrowind alchemy window: a bordered box with a title, an N×M grid of item
+    slots (like the alchemy ingredient slots), a result area, and Craft/Close
+    buttons. Items are dropped from the inventory into grid cells.
 
-    OpenMW notes (verify in-game):
+    Layout is built from MWUI templates (boxSolid / box / padding / horizontalLine /
+    textHeader / textButtonNormal) and Flex containers — NOT absolute positions —
+    so the window auto-sizes and looks consistent with the vanilla UI.
+
+    OpenMW notes (verified against the UI reference):
+    - util.color.rgb(r, g, b) components are 0..1 (not 0..255).
     - Custom interactive UI = element on the interactive 'Windows' layer +
-      I.UI.setMode('Interface', {windows = {}}) to show the cursor; setMode() to exit.
-      (OpenMW cannot create new named windows; this is the supported custom-UI path.)
-    - Click handling: events = { mouseClick = async:callback(fn) }; mouseClick arg is nil.
-    - Inventory: types.Actor.inventory(self):getAll(); item icon from item.type.record(item).icon.
-    - Esc handling not wired yet: use the Close button (see TODO).
+      I.UI.setMode('Interface') to show the cursor; setMode() to exit.
+    - Click handling: events = { mouseClick = async:callback(fn) }.
+    - Inventory: types.Actor.inventory(self):getAll(); icon from item.type.record(item).icon.
 ]]
 
 local ui = require('openmw.ui')
@@ -21,17 +25,17 @@ local core = require('openmw.core')
 local self = require('openmw.self')
 local types = require('openmw.types')
 local I = require('openmw.interfaces')
-local mwuiConstants = require('scripts.omw.mwui.constants')
 
 local shaped = require('scripts.Immersive-Crafting.shapedCrafting')
 local log = require('scripts.Immersive-Crafting.log')
 
 local this = {}
 local iconTextureCache = {} ---@type table<string, any>
-local whiteTexture = mwuiConstants.whiteTexture
-local CELL_SIZE = 128
-local CELL_GAP = 8
-local CELL_ICON_SIZE = 112
+
+-- Slot/icon sizing — Morrowind item slots are small (~44px icons).
+local ICON = 44
+local SLOT_GAP = 6
+local RESULT_W = 132
 
 -- ── state ───────────────────────────────────────────────────────────────────
 local isOpen = false
@@ -41,7 +45,7 @@ local ctx = nil ---@type HandlerContext?
 local element = nil
 local matched = nil ---@type CShapedRecipe?
 
--- ── helpers ─────────────────────────────────────────────────────────────────
+-- ── helpers (inventory / icons) ─────────────────────────────────────────────
 
 ---@param recordId string
 ---@return string?
@@ -126,60 +130,134 @@ local function refreshMatch()
     matched = shaped.resolveShapedRecipe(asGrid(), ctx.action, ctx.context)
 end
 
--- ── widget builders ─────────────────────────────────────────────────────────
+-- ── widget builders (MWUI templates + Flex) ─────────────────────────────────
+
+--- Invisible fixed-size spacer for gaps between flex children.
+local function spacer(w, h)
+    return { type = ui.TYPE.Widget, props = { size = util.vector2(w or 0, h or 0) } }
+end
+
+local function headerText(text)
+    return {
+        type = ui.TYPE.Text,
+        template = I.MWUI.templates.textHeader,
+        props = { text = text, textSize = 20 },
+    }
+end
+
+local function normalText(text)
+    return {
+        type = ui.TYPE.Text,
+        template = I.MWUI.templates.textNormal,
+        props = { text = text },
+    }
+end
+
+local function hLine(width)
+    return {
+        type = ui.TYPE.Image,
+        template = I.MWUI.templates.horizontalLine,
+        props = { size = util.vector2(width, 2) },
+    }
+end
 
 local function button(label, enabled, cb)
     return {
         type = ui.TYPE.Text,
-        template = enabled and I.MWUI.templates.textButtonNormal or I.MWUI.templates.textNormal,
-        props = { text = label, textSize = 20 },
+        template = enabled and I.MWUI.templates.textButtonNormal or I.MWUI.templates.disabled,
+        props = { text = label, textSize = 18 },
         events = enabled and { mouseClick = async:callback(cb) } or nil,
     }
 end
 
-local function cellWidget(r, c, x, y)
+--- A single grid slot: a bordered box (boxSolid) sized to the icon, with the
+--- item icon centred inside when the cell is filled. Drop/click events attach here.
+local function slotWidget(r, c)
     local cell = cells[r] and cells[r][c]
-    local content = ui.content {}
-
-    content:add({
-        type = ui.TYPE.Image,
-        props = {
-            resource = whiteTexture,
-            color = util.color.rgb(108, 84, 34),
-            alpha = 0.9,
-            size = util.vector2(CELL_SIZE, CELL_SIZE),
-            position = util.vector2(0, 0),
-        },
-    })
+    local inner = ui.content {}
 
     if cell and cell.icon then
         local iconTex = textureForIcon(cell.icon)
         if iconTex then
-            content:add({
+            inner:add({
                 type = ui.TYPE.Image,
                 props = {
                     resource = iconTex,
-                    size = util.vector2(CELL_ICON_SIZE, CELL_ICON_SIZE),
-                    position = util.vector2((CELL_SIZE - CELL_ICON_SIZE) / 2, (CELL_SIZE - CELL_ICON_SIZE) / 2),
+                    size = util.vector2(ICON, ICON),
+                    relativePosition = util.vector2(0.5, 0.5),
+                    anchor = util.vector2(0.5, 0.5),
                 },
             })
         end
     end
 
+    -- fixed-size inner area so the boxSolid border wraps a consistent square
+    local slotInner = {
+        type = ui.TYPE.Widget,
+        props = { size = util.vector2(ICON, ICON) },
+        content = inner,
+    }
+
     return {
         type = ui.TYPE.Container,
-        props = {
-            autoSize = false,
-            size = util.vector2(CELL_SIZE, CELL_SIZE),
-            position = util.vector2(x, y),
-        },
+        template = I.MWUI.templates.boxSolid,
         events = {
             mouseClick = async:callback(function(e) this.onCellClick(r, c, e) end),
             mouseRelease = async:callback(function(e) this.onCellDrop(r, c, e) end),
             dragDrop = async:callback(function(e) this.onCellDrop(r, c, e) end),
         },
-        content = content,
+        content = ui.content { slotInner },
     }
+end
+
+--- The N×M slot grid as a vertical Flex of horizontal row Flexes.
+local function gridWidget()
+    local rowsContent = ui.content {}
+    for r = 1, rows do
+        if r > 1 then rowsContent:add(spacer(0, SLOT_GAP)) end
+        local rowContent = ui.content {}
+        for c = 1, cols do
+            if c > 1 then rowContent:add(spacer(SLOT_GAP, 0)) end
+            rowContent:add(slotWidget(r, c))
+        end
+        rowsContent:add({ type = ui.TYPE.Flex, props = { horizontal = true }, content = rowContent })
+    end
+    return { type = ui.TYPE.Flex, props = { horizontal = false }, content = rowsContent }
+end
+
+--- The result column: "Result" header + recipe/tools status (or "no recipe").
+---@return table widget, boolean canCraft
+local function resultWidget()
+    refreshMatch()
+
+    local lines = ui.content {}
+    lines:add(headerText('Result'))
+    lines:add(spacer(0, 6))
+
+    local canCraft = false
+    if matched then
+        local toolsOk = shaped.hasTools(matched.tools)
+        local enough = haveEnough()
+        lines:add(normalText(('%s x%d'):format(matched.label, matched.output.count or 1)))
+        if matched.tools and #matched.tools > 0 then
+            lines:add(spacer(0, 4))
+            lines:add(normalText(('Tools: %s %s')
+                :format(table.concat(matched.tools, ', '), toolsOk and '[ok]' or '[missing]')))
+        end
+        if not enough then
+            lines:add(spacer(0, 4))
+            lines:add(normalText('Not enough items'))
+        end
+        canCraft = toolsOk and enough
+    else
+        lines:add(normalText('(no recipe)'))
+    end
+
+    return {
+        type = ui.TYPE.Flex,
+        props = { horizontal = false, autoSize = false, size = util.vector2(RESULT_W, ICON * rows + SLOT_GAP * (rows - 1)) },
+        content = lines,
+    }, canCraft
 end
 
 --- (Re)build and show the whole window from current state.
@@ -187,113 +265,67 @@ local function rebuild()
     if element then element:destroy() end
     if not isOpen or not ctx then return end
 
-    local cellSize = CELL_SIZE
-    local cellGap = CELL_GAP
-    local gridW = cols * cellSize + (cols - 1) * cellGap
-    local gridH = rows * cellSize + (rows - 1) * cellGap
+    local result, canCraft = resultWidget()
 
-    local gridContainer = {
-        type = ui.TYPE.Container,
-        props = {
-            autoSize = false,
-            position = util.vector2(20, 54),
-            size = util.vector2(gridW, gridH),
+    -- approximate content width for separators (grid + gap + result column)
+    local gridW = cols * (ICON + 12) + (cols - 1) * SLOT_GAP
+    local lineW = math.max(240, gridW + 16 + RESULT_W)
+
+    -- grid + result, side by side
+    local body = {
+        type = ui.TYPE.Flex,
+        props = { horizontal = true },
+        content = ui.content {
+            gridWidget(),
+            spacer(16, 0),
+            result,
         },
-        content = ui.content {},
     }
-
-    for r = 1, rows do
-        for c = 1, cols do
-            local x = (c - 1) * (cellSize + cellGap)
-            local y = (r - 1) * (cellSize + cellGap)
-            gridContainer.content:add(cellWidget(r, c, x, y))
-        end
-    end
-
-    -- result line
-    refreshMatch()
-    local resultText, canCraft
-    if matched then
-        local toolsOk = shaped.hasTools(matched.tools)
-        local enough = haveEnough()
-        local toolStr = (matched.tools and #matched.tools > 0)
-            and ('  Tools: ' .. table.concat(matched.tools, ', ') .. (toolsOk and ' ✓' or ' ✗')) or ''
-        resultText = ('→ %s x%d%s'):format(matched.label, (matched.output.count or 1), toolStr)
-        canCraft = toolsOk and enough
-    else
-        resultText = '→ (no recipe)'
-        canCraft = false
-    end
-    local panelHeight = 48 + gridH + 92
-    local panelWidth = math.max(350, gridW + 32)
 
     -- buttons
-    local btnRow = {
+    local buttons = {
         type = ui.TYPE.Flex,
-        props = {
-            horizontal = true,
-            autoSize = false,
-            position = util.vector2(20, panelHeight - 42),
-            size = util.vector2(260, 28),
+        props = { horizontal = true },
+        content = ui.content {
+            button('Craft', canCraft, function() this.onCraft() end),
+            spacer(16, 0),
+            button('Close', true, function() this.close() end),
         },
-        content = ui.content {},
-    }
-    btnRow.content:add(button('Craft', canCraft, function() this.onCraft() end))
-    btnRow.content:add(button('  Close', true, function() this.close() end))
-
-    local gridPanelContent = ui.content {
-        {
-            type = ui.TYPE.Image,
-            props = {
-                resource = whiteTexture,
-                color = util.color.rgb(122, 96, 40),
-                alpha = 0.86,
-                size = util.vector2(panelWidth - 8, panelHeight - 8),
-                position = util.vector2(4, 4),
-            },
-        },
-        {
-            type = ui.TYPE.Text,
-            template = I.MWUI.templates.textHeader,
-            props = {
-                position = util.vector2(16, 12),
-                text = ('%s (%dx%d)'):format(ctx.context.label or 'Crafting', cols, rows),
-                textSize = 20,
-            },
-        },
-        gridContainer,
-        {
-            type = ui.TYPE.Text,
-            template = I.MWUI.templates.textNormal,
-            props = {
-                position = util.vector2(20, panelHeight - 72),
-                text = resultText,
-                textSize = 17,
-            },
-        },
-        btnRow,
     }
 
-    local gridPanel = {
-        type = ui.TYPE.Container,
-        template = I.MWUI.templates.boxSolid,
-        props = {
-            autoSize = false,
-            size = util.vector2(panelWidth, panelHeight),
+    -- vertical stack: title / line / body / line / buttons
+    local column = {
+        type = ui.TYPE.Flex,
+        props = { horizontal = false },
+        content = ui.content {
+            headerText(ctx.context.label or 'Crafting'),
+            spacer(0, 8),
+            hLine(lineW),
+            spacer(0, 10),
+            body,
+            spacer(0, 10),
+            hLine(lineW),
+            spacer(0, 8),
+            buttons,
         },
-        content = gridPanelContent,
     }
 
+    -- padded bordered window on the interactive Windows layer
     element = ui.create({
         type = ui.TYPE.Container,
         layer = 'Windows',
+        template = I.MWUI.templates.boxSolid,
         props = {
-            autoSize = false,
-            relativePosition = util.vector2(0.34, 0.5),
             anchor = util.vector2(0.5, 0.5),
-            size = util.vector2(panelWidth, panelHeight),
+            relativePosition = util.vector2(0.4, 0.5),
         },
-        content = ui.content { gridPanel },
+        content = ui.content {
+            {
+                type = ui.TYPE.Container,
+                template = I.MWUI.templates.padding,
+                content = ui.content { column },
+            },
+        },
     })
 end
 
