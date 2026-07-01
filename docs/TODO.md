@@ -122,7 +122,10 @@ Deferred / to verify:
   handler (global `onActivate` / `I.Activation`) that round-trips to the player to open the
   window; the context data is player-side (`GRegistries`), so the global side needs the
   activate record-ids/tags pushed to it at load, then an event back to the player.
-- Recipe resolve / craft commit for the click-driven window is still a stub
-  (`Crafting.onCraft`, `*.Resolve`); wire placed slots → recipe → `ImmersiveCrafting_CraftShaped`.
+- ✅ **Recipe resolve + output slot + craft** wired: `Crafting.resolve()` maps the placed
+  slots to a recipe (`shapedCrafting`/`processCrafting`) every rebuild; a Minecraft-style
+  output slot shows the result, and clicking it commits via `ImmersiveCrafting_CraftShaped`
+  (consumes the placed items from inventory, grants the output, clears the grid). The
+  output-slot icon is resolved by probing item-type records (`recordIconPath`).
 - The item picker lists **all** inventory items with no scroll/filter; may overflow for large
   inventories. Consider filtering (misc/ingredient) or a scroll container.

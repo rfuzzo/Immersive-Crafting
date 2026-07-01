@@ -1,5 +1,5 @@
---- PROCESS layout: labelled input slots → an output slot. slotId = input.key.
---- Clicking an input slot is handled by the owner (Crafting.lua) via `view.onSlotClick`.
+--- PROCESS layout: labelled input slots → a result output slot. slotId = input.key.
+--- Input clicks go through `view.onSlotClick`; clicking the output slot crafts via `view.onCraft`.
 
 local ui = require('openmw.ui')
 local util = require('openmw.util')
@@ -21,16 +21,31 @@ local EMPTY_COLOR = util.color.rgb(0.72, 0.48, 0.18)
 
 local this = {}
 
+--- An item slot showing `data` ({resource,count} or nil); empty slots are tinted.
+---@param name string
+---@param data { resource: any?, count: integer? }?
+---@param onClick fun()?
+local function slot(name, data, onClick)
+    local hasIcon = data ~= nil and data.resource ~= nil
+    local iconProps = { size = ICON_SIZE }
+    if not hasIcon then iconProps.color = EMPTY_COLOR end
+    return itemSlot({
+        name = name,
+        resource = hasIcon and data.resource or whiteTexture,
+        count = data and data.count or nil,
+        iconProps = iconProps,
+        events = onClick and { mouseClick = async:callback(onClick) } or nil,
+    })
+end
+
 --- A labelled column: caption above a slot.
----@param label string
----@param slot table
-local function labelled(label, slot)
+local function labelled(label, slotWidget)
     return column({
         props = { align = ui.ALIGNMENT.Center },
         children = {
             text({ text = label or '' }),
             spacer({ props = { size = v2(0, 3) } }),
-            slot,
+            slotWidget,
         },
     })
 end
@@ -48,41 +63,22 @@ function this.Body(layout, view)
     local children = {}
     for _, inp in ipairs(layout.inputs) do
         local slotId = inp.key
-        local placed = view.slotView(slotId)
-        local hasIcon = placed ~= nil and placed.resource ~= nil
-        local iconProps = { size = ICON_SIZE }
-        if not hasIcon then iconProps.color = EMPTY_COLOR end -- tint the empty-slot square
-        local slot = itemSlot({
-            name = 'slot_' .. slotId,
-            resource = hasIcon and placed.resource or whiteTexture,
-            count = placed and placed.count or nil,
-            iconProps = iconProps,
-            events = { mouseClick = async:callback(function() view.onSlotClick(slotId) end) },
-        })
-        children[#children + 1] = labelled(inp.label or inp.key, slot)
+        local inputSlot = slot('slot_' .. slotId, view.slotView(slotId),
+            function() view.onSlotClick(slotId) end)
+        children[#children + 1] = labelled(inp.label or inp.key, inputSlot)
         children[#children + 1] = spacer({ props = { size = v2(6, 0) } })
     end
 
-    -- arrow → output (display-only)
-    children[#children + 1] = column({
-        props = { align = ui.ALIGNMENT.Center },
-        children = { text({ text = '=>' }) },
-    })
+    children[#children + 1] = column({ props = { align = ui.ALIGNMENT.Center }, children = { text({ text = '=>' }) } })
     children[#children + 1] = spacer({ props = { size = v2(6, 0) } })
-    children[#children + 1] = labelled('Output', itemSlot({
-        name = 'slot_output',
-        resource = whiteTexture,
-        iconProps = { size = ICON_SIZE, color = EMPTY_COLOR },
-    }))
+
+    local outputSlot = slot('slot_output', view.output, view.output and view.onCraft or nil)
+    children[#children + 1] = labelled('Output', outputSlot)
 
     return box({
         name = 'process_box',
         children = { row({ name = 'process_row', props = { align = ui.ALIGNMENT.Center }, children = children }) },
     })
-end
-
---- Resolve the placed slots into a matched recipe. (State/craft wiring TBD.)
-function this.Resolve()
 end
 
 return this
