@@ -13,6 +13,24 @@ setmetatable(CProcessingHandler, { __index = CAbstractHandler })
 ---@param ctx HandlerContext
 ---@return ViewModel
 function CProcessingHandler:evaluate(ctx)
+    -- Activate-triggered stations show an info-only card (opened by activating),
+    -- listing the input roles so the player knows what the station needs.
+    if ctx.context.trigger == 'activate' then
+        local details = nil
+        local inputs = ctx.context.layout and ctx.context.layout.inputs
+        if inputs and #inputs > 0 then
+            local roles = {}
+            for _, inp in ipairs(inputs) do roles[#roles + 1] = inp.label or inp.key end
+            details = { "Inputs: " .. table.concat(roles, ", ") }
+        end
+        ---@type ViewModel
+        return {
+            status = "Activate to use",
+            details = details,
+            action = nil,
+        }
+    end
+
     ---@type ViewModel
     local vm = {
         status = "Processing station",

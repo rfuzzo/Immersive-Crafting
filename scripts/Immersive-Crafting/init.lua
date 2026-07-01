@@ -1,5 +1,6 @@
 local world = require('openmw.world')
 local types = require('openmw.types')
+local I = require('openmw.interfaces')
 
 local log = require('scripts.Immersive-Crafting.log')
 
@@ -78,10 +79,60 @@ local function onCraftShaped(data)
     grantOutput(data.actor, data.output)
 end
 
+-- ── activation ───────────────────────────────────────────────────────────────
+-- Activate-triggered stations are Activator objects. The player pushes the set of
+-- "activate" contexts on load; on activating a matching activator we tell the player
+-- to open the station window (and suppress the default activation).
+
+local activateContexts = {} ---@type { id: string, recordIds: string[] }[]
+local activationHandlerRegistered = false
+
+--- Global-context tag match: exact record id or Tagger (I.TaggerG) tag.
+---@param recordId string
+---@param query string
+---@return boolean
+local function matchesTagGlobal(recordId, query)
+    if recordId:lower() == query:lower() then return true end
+    local tagger = I.TaggerG
+    if tagger and tagger.objectHasTag then
+        return tagger.objectHasTag(recordId, query) and true or false
+    end
+    return false
+end
+
+--- Activation handler for Activator objects. Returns false to suppress the default
+--- activation when we open one of our stations.
+---@param object any
+---@param actor any
+local function onActivateStation(object, actor)
+    if actor.type ~= types.Player then return end
+    local recordId = object.recordId
+    for _, c in ipairs(activateContexts) do
+        for _, rid in ipairs(c.recordIds or {}) do
+            if matchesTagGlobal(recordId, rid) then
+                actor:sendEvent('ImmersiveCrafting_OpenStation', { contextId = c.id })
+                return false -- we handled it; skip default activation
+            end
+        end
+    end
+end
+
+--- Player pushes its "activate" contexts here after loading data.
+---@param data table { contexts: { id: string, recordIds: string[] }[] }
+local function onRegisterActivateContexts(data)
+    activateContexts = (data and data.contexts) or {}
+    if not activationHandlerRegistered then
+        I.Activation.addHandlerForType(types.Activator, onActivateStation)
+        activationHandlerRegistered = true
+    end
+    log.info(('Registered %d activate-triggered contexts'):format(#activateContexts))
+end
+
 return {
     engineHandlers = { onLoad = onLoad, onInit = onLoad, onSave = onSave },
     eventHandlers = {
         ImmersiveCrafting_Commit = onCommit,
         ImmersiveCrafting_CraftShaped = onCraftShaped,
+        ImmersiveCrafting_RegisterActivateContexts = onRegisterActivateContexts,
     }
 }

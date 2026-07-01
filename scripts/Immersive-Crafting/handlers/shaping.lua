@@ -15,6 +15,16 @@ setmetatable(CShapingHandler, { __index = CAbstractHandler })
 function CShapingHandler:evaluate(ctx)
     local grid = ctx.context.layout and ctx.context.layout.size or { 2, 2 }
 
+    -- Activate-triggered stations show an info-only card (opened by activating).
+    if ctx.context.trigger == 'activate' then
+        ---@type ViewModel
+        return {
+            status = "Activate to use",
+            details = { ("Crafting grid %dx%d"):format(grid[1] or 2, grid[2] or 2) },
+            action = nil,
+        }
+    end
+
     ---@type ViewModel
     local vm = {
         status = ("Crafting grid %dx%d"):format(grid[1] or 2, grid[2] or 2),
