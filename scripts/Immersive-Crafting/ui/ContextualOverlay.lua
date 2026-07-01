@@ -53,7 +53,7 @@ local function updateOverlayUI()
     if not currentActions then return end
     if not currentContext then return end
 
-    log.trace('Updating contextual overlay UI')
+    -- log.trace('Updating contextual overlay UI')
 
     -- Create the overlay container
     local overlay = {
@@ -92,7 +92,7 @@ local function updateOverlayUI()
             if viewModel then
                 -- render the viewmodel
 
-                log.trace('Rendering overlay for action: ' .. action.id)
+                -- log.trace('Rendering overlay for action: ' .. action.id)
 
                 -- first the header
                 local headerSizer = {
@@ -151,7 +151,7 @@ local function updateOverlayUI()
                         content = ui.content {}
                     }
 
-                    local template = I.MWUI.templates.textButtonNormal
+                    local template = I.MWUI.templates.textNormal
                     if not viewModel.action.enabled then
                         template = I.MWUI.templates.textNormal
                     end
@@ -210,7 +210,7 @@ function this.registerAction(context, action)
     if not currentActions then currentActions = {} end
     table.insert(currentActions, action)
 
-    log.trace('Registered overlay action: ' .. action.id)
+    -- log.trace('Registered overlay action: ' .. action.id)
 
     updateOverlayUI()
 end

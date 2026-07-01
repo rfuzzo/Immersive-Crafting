@@ -32,6 +32,7 @@ disagree, this file wins for "what exists", and the Decisions Record below wins 
 ## 2. Runtime flow
 
 ### Entry points — `Immersive-Crafting.omwscripts`
+
 | Context | Script | Role |
 |---|---|---|
 | `GLOBAL` | `scripts/Immersive-Crafting/init.lua` | ✅ save/load passthrough (`saveData`) **+ the commit executor** — the `ImmersiveCrafting_Commit` event handler that performs the world/inventory mutation (D1). ❌ No activation handler (detection is proximity, not activation). |
@@ -39,10 +40,10 @@ disagree, this file wins for "what exists", and the Decisions Record below wins 
 | `MENU` | `scripts/Immersive-Crafting/settings.lua` | ✅ Registers settings page + rebindable hotkey (default **F**) bound to action key `ContextualAction`. |
 
 ### Flow
+
 1. **Data load** (player) — `player.onLoad` → `dataManager.loadAllData()` scans
    `data/Immersive-Crafting/` via `vfs.pathsWithPrefix`, decodes each JSON with `io.loadJsonFile`, and
-   populates the global `GRegistries` (actions/contexts/recipes via `mergeById`; uiTemplates via
-   `mergeMap`). Tags are **not** loaded here — Tagger owns them.
+   populates the global `GRegistries` (actions/contexts/recipes via `mergeById`). Tags are **not** loaded here — Tagger owns them.
 2. **Proximity detection** ✅ (player) — `contextManager.onUpdate`, throttled to **0.25s**:
    - `gatherNearby` collects candidates from **`nearby.items` + `nearby.activators`** within range
      (stations may be misc items like `bowl`/`pot` or activators like furniture/fire pits).
@@ -62,9 +63,9 @@ disagree, this file wins for "what exists", and the Decisions Record below wins 
    process yet — commit is instant; see §6.)
 
 ### `GRegistries` shape (`dataManager.lua`)
+
 ```
 GRegistries = {
-  uiTemplates    = {},  -- table<id, table>  (loaded via mergeMap)
   actions        = {},  -- table<id, CAction>
   contexts       = {},  -- table<id, CContext>
   recipes        = {},  -- table<id, CRecipe>          flat world-placement recipes (mixing/cooking)
@@ -74,6 +75,7 @@ GRegistries = {
   processes      = {},  -- ❌ declared, unused (reserved for in-progress timed process state — cooking + stations)
 }
 ```
+
 The old `tags` registry was **removed** (D2 — Tagger owns tags). Globals are intentional in this
 codebase: `GRegistries` (player) and `saveData` (global).
 
@@ -86,6 +88,7 @@ in `scripts/Immersive-Crafting/models/` and validate via `:fromTable` (returns `
 required fields) — recipes **included** (see the CRecipe note).
 
 ### CContext — `models/context.lua` · `contexts/*.json`
+
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | ✅ | registry key |
@@ -111,6 +114,7 @@ required fields) — recipes **included** (see the CRecipe note).
 ```
 
 ### CAction — `models/action.lua` · `actions/*.json`
+
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | ✅ | registry key |
@@ -122,6 +126,7 @@ required fields) — recipes **included** (see the CRecipe note).
 ```
 
 ### CRecipe — `models/recipe.lua` · `recipes/*.json`
+
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | ✅ | registry key |
@@ -150,7 +155,9 @@ required fields) — recipes **included** (see the CRecipe note).
 > (flat). Each goes to its own registry.
 
 ### CShapedRecipe — `models/shapedRecipe.lua` · `recipes/*.json` (has `pattern`)
+
 Positional grid recipe for the interactive crafting window's **grid** layout (cloth 2×2, table 3×3).
+
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id`, `label`, `context`, `action` | — | ✅ | as CRecipe |
@@ -169,7 +176,9 @@ box**, then compared cell-for-cell via `lib.matchesTag`; tools must be in invent
 ```
 
 ### CProcessRecipe — `models/processRecipe.lua` · `recipes/*.json` (has `inputs`)
+
 Role-slot recipe for the **process** layout (kiln/furnace/oven fuel+input, tanning ingredients+input).
+
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id`, `label`, `context`, `action` | — | ✅ | as CRecipe |
@@ -208,12 +217,6 @@ applied_tags:
 `misc_tags.csv`), edited, then converted to Tagger YAML via `tools/csv2yaml.py` / `tools/misc_tags.py`
 → `ModTags/ImmersiveCrafting_*.yaml`. See `tools/README.md` and `docs/TODO.md`.
 
-### uiTemplates — `uiTemplates/ui_templates.json`
-Declarative UI descriptors keyed by id.
-> **✅ Load fixed:** `loadUiTemplates` uses a map-aware `mergeMap` (copies `key → value`) instead of
-> `mergeById`, so `GRegistries.uiTemplates` populates. **Still unconsumed** — the renderer
-> (`ContextualOverlay.lua`) builds widgets imperatively (§6 open decision).
-
 ---
 
 ## 4. Handler contract
@@ -223,6 +226,7 @@ scans `handlers/*.lua`, `require`s each, and registers it by filename (minus `.l
 `dataManager.resolveHandler(id)` instantiates via `handlerClass:new()`.
 
 ### Base — `handlers/CAbstractHandler.lua`
+
 ```
 HandlerContext = { action: CAction, context: CContext }
 
@@ -232,10 +236,12 @@ CAbstractHandler:onUpdate(dt)           -- optional per-frame hook (override; de
 CAbstractHandler:evaluate(ctx)  -> ViewModel  -- MUST override
 CAbstractHandler:OnActivate(ctx)              -- MUST override (executes the action)
 ```
+
 `present` builds the `ViewModel` header from `ctx.context.label` and copies
 `status / details / action / progress` from whatever `evaluate` returns.
 
 ### ViewModel — `models/viewModel.lua`
+
 ```
 ViewModel = {
   header:   string?,
@@ -247,7 +253,9 @@ ViewModel = {
 ```
 
 ### Worked examples — `handlers/mixing.lua`, `handlers/cooking.lua`
+
 Both follow the same shape (cooking is currently a near-clone of mixing):
+
 - `evaluate(ctx)`: `lib.scanNearbyIngredients(200)` → `lib.resolveRecipe(scan, ctx.action,
   ctx.context)`. No recipe → status `"No valid mixture"` / `"Nothing to cook"` + `Missing: …`
   (`lib.formatMissing`). Matched → status `"Ready"` + enabled action `"Mix/Cook <recipe.label>"`.
@@ -255,6 +263,7 @@ Both follow the same shape (cooking is currently a near-clone of mixing):
   then `ui.showMessage(message)`. Cooking is **instant** (no heat/cookTime process yet — §6 TODO).
 
 ### Resolution & commit — `lib.lua`
+
 - `scanNearbyIngredients(range)` ✅ — scans `nearby.items`, keyed by `recordId`, **summing stack
   counts** (`IngredientScanResult = { object, distance, count }`).
 - `matchesTag(recordId, query)` ✅ — **2-tier (D2):** (1) exact case-insensitive record id, (2)
@@ -273,7 +282,9 @@ consumed stack, then `world.createObject(output.id, count):moveInto(actor)`; the
 `pcall`-wrapped so a bad request can't brick global activation.
 
 ### Interactive crafting — handlers, window & layouts (D4)
+
 Two thin handlers toggle the interactive crafting window (`ui/CraftingGrid.lua`):
+
 - `handlers/shaping.lua` (action `shaping`) — grid stations (cloth, table).
 - `handlers/processing.lua` (action `processing`) — process stations (kiln/furnace/oven, tanning rack).
 
@@ -285,6 +296,7 @@ hasProgress }`; add an entry to support a new shape. Built entirely from MWUI te
 `box` / `padding` / `horizontalLine` / `textHeader` / `textButtonNormal`) + Flex (no absolute
 positions), so it auto-sizes and matches the alchemy window. Items are dropped from the inventory into
 slots; `placed[slotId]` holds them. Opens on the `'Windows'` layer via `I.UI.setMode('Interface')`.
+
 - **grid** layout → `shapedCrafting.resolveShapedRecipe`; slotId = `"r:c"`.
 - **process** layout → `processCrafting.resolveProcessRecipe`; slotId = the slot `key`; renders labelled
   input slots → output slot + a **progress bar** (driven by `CraftingGrid.setProgress(0..1)`).
@@ -299,6 +311,7 @@ output. Both shaped and process crafts use this path (all placed items consumed)
 ## 5. Decisions record
 
 ### D1 — Execution model = **player-side** (with a thin global commit)
+
 Detection, recipe evaluation, and overlay rendering run in the **player** script. We do **not** adopt
 the handoff's "global re-validates before consuming/producing" trust model.
 
@@ -309,6 +322,7 @@ server-side re-validation) — accepted simplification.
 
 **Outputs = existing records only** *(ratified 2026-06-29).* `world.createObject` requires an existing
 record id; we do **not** author custom records via `createRecordDraft`/`createRecord`. Implications:
+
 - Outputs must reference real record ids (vanilla, or from a required master/mod, e.g. Sun's Dusk
   `sd_food_*` which only resolve when Sun's Dusk is loaded).
 - The hand-made placeholders `SeasonedMeat` and `Stew` are **not real records** and will fail until
@@ -329,9 +343,11 @@ The in-mod JSON `tags` registry (`tags/tags.json`, `loadTags`, `GRegistries.tags
   schema) — author the union tag, apply it to the members, then use one matcher per slot.
 
 ### D4 — Interactive crafting via a layout-driven window *(2026-06-30)*
+
 Crafting/processing stations open an **interactive inventory-driven window** (distinct from the
 proximity world-placement flow used by mixing/cooking). The window is **layout-driven** (`CContext.layout`)
 so new station shapes are data-only:
+
 - **grid** (N×M) — shaped/positional recipes (`CShapedRecipe`).
 - **process** — named role slots + output + progress (`CProcessRecipe`); kiln/furnace/oven (fuel+input),
   tanning rack (2 ingredients + input). **All placed items are consumed** on craft *(ratified 2026-06-30)*.
@@ -342,8 +358,9 @@ progress is deferred:** Craft commits instantly today; the progress bar exists a
 using `GRegistries.processes`) is future work.
 
 ### D3 — Layering target = `engine/ · content/ · glue/`  *(deferred, not started)*
+
 - `engine/` — generic, mod-agnostic Lua (registries, proximity, overlay, handler base, resolution).
-- `content/` — JSON only (`actions`, `contexts`, `recipes`, `uiTemplates`) + `ModTags/*.yaml`.
+- `content/` — JSON only (`actions`, `contexts`, `recipes`) + `ModTags/*.yaml`.
 - `glue/` — per-mod `.omwscripts` + registration.
 
 Goal: adding **Cooking** should touch only `content/` + `glue/` + new handler class(es). Build order:
@@ -353,8 +370,8 @@ persistent/world-placement/time-growth needs don't bleed into core early).
 ---
 
 ## 6. Known gaps / TODO
+
 - ✅ GLOBAL commit executor built (`init.lua`); `mixing`/`cooking` `OnActivate` consume+produce via it.
-- ✅ `uiTemplates` loads via `mergeMap`; JSON `tags` registry removed (Tagger, D2).
 - ✅ Recipe validation enforced; `cookTime` made optional (cooking-only); `matchesTag` 2-tier wired;
   `formatMissing` replaces the old `table.concat(missing)` bug.
 - 🟡 **Content reconciliation so recipes actually resolve in-game:** ensure ingredient ids match real
@@ -373,12 +390,12 @@ persistent/world-placement/time-growth needs don't bleed into core early).
 - 🟡 **Process/grid placeholder data:** repoint process outputs (`misc_com_bucket_metal`,
   `ingred_scrib_jelly_01`) to intended records; author the station/ingredient Tagger tags (`kiln`,
   `furnace`, `oven`, `tanning_rack`, `Fuel`, `GreenWare`, `RawHide`, `Salt`, `Water`). See `docs/TODO.md`.
-- 🟡 Decide whether the renderer should consume `uiTemplates` or keep building widgets imperatively.
 - Empty/placeholder data files: `actions/{crafting,tanning,foraging}.json`.
 
 ---
 
 ## 7. Open verification items (require in-game or external source)
+
 - **`objectHasTag` signature:** `lib.matchesTag` passes a **record-id string** to
   `I.TaggerL.objectHasTag`. Confirm Tagger accepts a record-id string (some Tagger APIs expect a
   GameObject) — if it needs an object, pass the scanned `obj` instead.

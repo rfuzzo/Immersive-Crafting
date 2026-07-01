@@ -38,7 +38,7 @@ end
 
 ---Update overlay actions based on nearby context
 local function updateOverlay()
-    log.trace('Updating overlay actions for nearby context')
+    -- log.trace('Updating overlay actions for nearby context')
 
     -- Clear existing actions
     overlay.clearAllActions()

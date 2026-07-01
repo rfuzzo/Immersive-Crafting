@@ -5,7 +5,6 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field label string
 ---@field recordIds string[] Record ids OR Tagger tags that identify this station (e.g. "bowl")
 ---@field requires string[]|nil Extra Tagger tags that must also be present nearby (e.g. "fire")
----@field gridSize integer[]|nil Shaped-crafting grid `[cols, rows]` (e.g. cloth [2,2], table [3,3]). Shorthand for `layout = { kind = "grid", size = ... }`.
 ---@field layout CContext.Layout|nil UI layout for the crafting window (grid or process). Falls back to `gridSize`, then a 2x2 grid.
 ---@field activationRange number|nil Distance in units to detect station (default 150)
 ---@field actions CAction[]|Id[] List of actions available at this station

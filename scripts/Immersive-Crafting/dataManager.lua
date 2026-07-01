@@ -15,7 +15,6 @@ local vfs = require('openmw.vfs')
 local this = {}
 
 ---@class Registries
----@field uiTemplates table<Id, table>
 ---@field actions table<Id, CAction>
 ---@field contexts table<Id, CContext>
 ---@field recipes table<string, CRecipe>
@@ -25,7 +24,6 @@ local this = {}
 
 ---@type Registries
 GRegistries = {
-    uiTemplates = {},
     handlers = {},
     actions = {},
     contexts = {},
@@ -55,30 +53,12 @@ local function mergeById(target, data)
 end
 
 --- Merge a plain `key -> value` object map (no `.id` field) into a registry.
---- Used for declarative maps like uiTemplates that `mergeById` cannot handle.
+--- Used for declarative maps that `mergeById` cannot handle.
 ---@param target table
 ---@param data table
 local function mergeMap(target, data)
     for key, value in pairs(data) do
         target[key] = value
-    end
-end
-
-local function loadUiTemplates()
-    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "uiTemplates/") do
-        if filename:match("%.json$") then
-            local data = io.loadJsonFile(filename)
-            if data then
-                log.info(('Loading uiTemplates from %s'):format(filename))
-                mergeMap(GRegistries.uiTemplates, data)
-            end
-        end
-    end
-
-    -- logging
-    log.info(('Loaded %d uiTemplates'):format(len(GRegistries.uiTemplates)))
-    for a in pairs(GRegistries.uiTemplates) do
-        log.info((' - %s'):format(a))
     end
 end
 
@@ -208,7 +188,6 @@ end
 
 ---Load all data domains.
 function this.loadAllData()
-    loadUiTemplates()
     loadActions()
     loadContexts()
     loadRecipes()

@@ -1,5 +1,5 @@
 local CAbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
-local CraftingGrid = require('scripts.Immersive-Crafting.ui.CraftingGrid')
+local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local log = require('scripts.Immersive-Crafting.log')
 
 ---@class CShapingHandler : CAbstractHandler
@@ -13,7 +13,7 @@ setmetatable(CShapingHandler, { __index = CAbstractHandler })
 ---@param ctx HandlerContext
 ---@return ViewModel
 function CShapingHandler:evaluate(ctx)
-    local grid = ctx.context.gridSize or { 2, 2 }
+    local grid = ctx.context.layout and ctx.context.layout.size or { 2, 2 }
 
     ---@type ViewModel
     local vm = {
@@ -31,7 +31,7 @@ end
 function CShapingHandler:OnActivate(ctx)
     -- Toggle the interactive crafting grid with the contextual action key.
     log.info("Toggling crafting grid for " .. (ctx.context.id or "?"))
-    CraftingGrid.toggle(ctx)
+    Crafting.toggle(ctx)
 end
 
 --#endregion

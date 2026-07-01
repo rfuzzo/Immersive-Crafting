@@ -1,36 +1,37 @@
 [
   {
-    "id": "workbench",
-    "label": "Workbench",
+    "id": "crafting_cloth",
+    "label": "Crafting Cloth",
     "recordIds": [
-      "furn_de_bar_01",
-      "furn_com_table_01"
+      "cloth"
     ],
-    "activationRange": 150,
+    "layout": {
+      "kind": "grid",
+      "size": [
+        2,
+        2
+      ]
+    },
+    "activationRange": 100,
     "actions": [
-      "crafting"
+      "shaping"
     ]
   },
   {
-    "id": "campfire",
-    "label": "Campfire",
-    "activationRange": 150,
+    "id": "crafting_table",
+    "label": "Crafting Table",
     "recordIds": [
-      "Any fire"
+      "table"
     ],
+    "layout": {
+      "kind": "grid",
+      "size": [
+        3,
+        3
+      ]
+    },
     "actions": [
-      "cooking"
-    ]
-  },
-  {
-    "id": "tanning_rack",
-    "label": "Tanning Rack",
-    "activationRange": 150,
-    "recordIds": [
-      "Any tanning rack"
-    ],
-    "actions": [
-      "tanning"
+      "shaping"
     ]
   }
 ]

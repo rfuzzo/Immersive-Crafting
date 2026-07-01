@@ -1,5 +1,5 @@
 local CAbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
-local CraftingGrid = require('scripts.Immersive-Crafting.ui.CraftingGrid')
+local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local log = require('scripts.Immersive-Crafting.log')
 
 ---@class CProcessingHandler : CAbstractHandler
@@ -30,7 +30,7 @@ function CProcessingHandler:OnActivate(ctx)
     -- The window picks its layout from ctx.context.layout, so the same handler
     -- serves grid and process stations.
     log.info("Toggling crafting window for " .. (ctx.context.id or "?"))
-    CraftingGrid.toggle(ctx)
+    Crafting.toggle(ctx)
 end
 
 --#endregion
