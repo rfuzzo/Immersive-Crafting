@@ -106,3 +106,26 @@ Deferred / to verify:
 - **In-game UI check.** Whole window is untested live: confirm boxSolid auto-sizing,
   slot drag-drop, the `→` arrow/progress-bar rendering, and that dropping from the
   inventory works in plain `Interface` mode (else `setMode('Interface', {windows={'Inventory'}})`).
+
+## Crafting window: components, item picker, context trigger
+
+- ✅ **Window widget** — the draggable/resizable bordered window shell is broken out into
+  `ui/Window.lua`; it accepts a `body` layout + `title` and a `getElement` accessor.
+  `ui/Crafting.lua` composes it per layout.
+- ✅ **Item picker** — clicking an empty slot opens `ui/ItemPicker.lua` (a grid of the
+  player's inventory items, click to pick — no drag-and-drop); the pick is placed in the
+  slot. Clicking a filled slot clears it. Placed-slot state lives in `ui/Crafting.lua`.
+- ✅ **`CContext.trigger`** — `"proximity"` (default) or `"activate"`. The proximity scanner
+  (`contextManager`) now **skips `activate` contexts** so they don't show as nearby prompts.
+- ❌ **Activation hook (deferred).** Setting `trigger:"activate"` currently just hides the
+  context from proximity — nothing opens it yet. Wiring it needs an engine activation
+  handler (global `onActivate` / `I.Activation`) that round-trips to the player to open the
+  window; the context data is player-side (`GRegistries`), so the global side needs the
+  activate record-ids/tags pushed to it at load, then an event back to the player.
+- ✅ **Recipe resolve + output slot + craft** wired: `Crafting.resolve()` maps the placed
+  slots to a recipe (`shapedCrafting`/`processCrafting`) every rebuild; a Minecraft-style
+  output slot shows the result, and clicking it commits via `ImmersiveCrafting_CraftShaped`
+  (consumes the placed items from inventory, grants the output, clears the grid). The
+  output-slot icon is resolved by probing item-type records (`recordIconPath`).
+- The item picker lists **all** inventory items with no scroll/filter; may overflow for large
+  inventories. Consider filtering (misc/ingredient) or a scroll container.
