@@ -93,21 +93,20 @@ function this.open(opts)
 
     log.trace(('ItemPicker: %d distinct items'):format(#order))
 
-    element = ui.create({
-        layer = 'Windows',
-        template = I.MWUI.templates.boxSolid,
-        props = {
-            anchor = v2(0.5, 0.5),
-            relativePosition = v2(0.62, 0.5),
-        },
-        content = ui.content({
-            dialog({
-                name = 'item_picker_dialog',
-                title = opts.title or 'Select item',
-                children = { grid({ name = 'item_picker_grid', columns = COLUMNS, items = items }) },
-            }),
-        }),
-    })
+    local r =
+        dialog({
+            template = I.MWUI.templates.bordersThick,
+            props = {
+                anchor = v2(0.5, 0.5),
+                relativePosition = v2(0.62, 0.5),
+                size = v2(300, 300),
+            },
+            name = 'item_picker_dialog',
+            title = opts.title or 'Select item',
+            children = { grid({ name = 'item_picker_grid', columns = COLUMNS, items = items }) },
+        })
+    r.layer = 'Windows'
+    element = ui.create(r)
 end
 
 return this
