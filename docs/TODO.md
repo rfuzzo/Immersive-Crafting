@@ -164,14 +164,19 @@ Open items:
   vanish on reload. **Proposed D1 amendment:** custom items ship as plugin (.esp/.omwaddon)
   records. Note `ic_chitin_plate` / `ic_netch_hide` are referenced but never produced —
   they need world/leveled-list sources too.
-- ❌ **Bushcrafting has no trigger mechanism** — contexts require a nearby/activated
-  object; "craft anywhere by hand" needs a new trigger (hotkey/menu). Placeholder context
-  uses recordIds `["bushcraft"]` until then.
+- ✅ **Bushcrafting = the work cloth** *(ratified 2026-07-02)*. No abstract "craft anywhere"
+  trigger: the tier-0 surface is a droppable cloth (or hide) you unroll on the ground — the
+  old `crafting_cloth` context was merged into `bushcrafting` (recordIds `["cloth","hide"]`,
+  **proximity** trigger — activating an item would pick it up). Bootstrap mirrors the
+  found-knife assumption: cheap cloth is everywhere in vanilla. Rule of thumb: portable
+  surfaces = proximity + [F]; built structures (kiln, furnace, racks) = activate.
 - 🟡 **Tags to author** (14 assumed Tagger tags, list in `docs/ic_records.md`): Charcoal,
   Clay, Fibre, Hide, Knife, Ore, Plant, Raw Glass, Salt, Stone, Water, Wood… — including
   tags applied to `ic_*` records (e.g. `Fibre` → `ic_fibre`, `Charcoal` → `ic_charcoal`).
-- 🟡 Station tags (`firepit`, `kiln`, `furnace`, `charcoal_pit`, `tanning_rack`,
-  `bushcraft`) need real Activator records + Tagger entries.
+  The `cloth`/`hide` surface tags should cover vanilla cloth bolts/folded cloth and hides
+  (and later `ic_cloth`/`ic_netch_leather`).
+- 🟡 Station tags (`firepit`, `kiln`, `furnace`, `charcoal_pit`, `tanning_rack`) need real
+  Activator records + Tagger entries.
 - 🟡 Verify chitin armor record ids against the tes3-records dump (`chitin cuirass` with
   spaces vs `steel_cuirass` with underscores).
 - 🟡 Bootstrap knife assumption ratified: every vanilla start passes the census-office
