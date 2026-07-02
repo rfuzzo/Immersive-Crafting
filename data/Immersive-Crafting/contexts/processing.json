@@ -2,58 +2,105 @@
   {
     "id": "kiln",
     "label": "Kiln",
-    "recordIds": ["kiln"],
+    "recordIds": [
+      "kiln"
+    ],
     "activationRange": 150,
     "layout": {
       "kind": "process",
       "inputs": [
-        { "key": "fuel", "label": "Fuel" },
-        { "key": "input", "label": "Input" }
+        {
+          "key": "fuel",
+          "label": "Fuel"
+        },
+        {
+          "key": "input",
+          "label": "Input"
+        }
       ]
     },
-    "actions": ["processing"]
+    "actions": [
+      "processing"
+    ],
+    "trigger": "activate"
   },
   {
     "id": "furnace",
     "label": "Furnace",
-    "recordIds": ["furnace"],
+    "recordIds": [
+      "furnace"
+    ],
     "activationRange": 150,
     "layout": {
       "kind": "process",
       "inputs": [
-        { "key": "fuel", "label": "Fuel" },
-        { "key": "input", "label": "Input" }
+        {
+          "key": "fuel",
+          "label": "Fuel"
+        },
+        {
+          "key": "input",
+          "label": "Input"
+        }
       ]
     },
-    "actions": ["processing"]
+    "actions": [
+      "processing"
+    ],
+    "trigger": "activate"
   },
   {
     "id": "oven",
     "label": "Oven",
-    "recordIds": ["oven"],
+    "recordIds": [
+      "oven"
+    ],
     "activationRange": 150,
     "layout": {
       "kind": "process",
       "inputs": [
-        { "key": "fuel", "label": "Fuel" },
-        { "key": "input", "label": "Input" }
+        {
+          "key": "fuel",
+          "label": "Fuel"
+        },
+        {
+          "key": "input",
+          "label": "Input"
+        }
       ]
     },
-    "actions": ["processing"]
+    "actions": [
+      "processing"
+    ],
+    "trigger": "activate"
   },
   {
     "id": "tanning_rack",
     "label": "Tanning Rack",
-    "recordIds": ["tanning_rack"],
+    "recordIds": [
+      "tanning_rack"
+    ],
     "activationRange": 150,
     "layout": {
       "kind": "process",
       "inputs": [
-        { "key": "ingredient1", "label": "Ingredient" },
-        { "key": "ingredient2", "label": "Ingredient" },
-        { "key": "input", "label": "Hide" }
+        {
+          "key": "ingredient1",
+          "label": "Ingredient"
+        },
+        {
+          "key": "ingredient2",
+          "label": "Ingredient"
+        },
+        {
+          "key": "input",
+          "label": "Hide"
+        }
       ]
     },
-    "actions": ["processing"]
+    "actions": [
+      "processing"
+    ],
+    "trigger": "activate"
   }
 ]

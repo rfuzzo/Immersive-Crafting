@@ -233,6 +233,10 @@ function this.onContextualAction()
     if not currentContext then return end
     if not currentActions then return end
 
+    -- Activate-triggered stations are opened by activating the object, not [F];
+    -- their overlay card is info-only.
+    if currentContext.trigger == 'activate' then return end
+
     -- for all actions
     for _, action in pairs(currentActions or {}) do
         local handler = dataManager.resolveHandler(action.handler)

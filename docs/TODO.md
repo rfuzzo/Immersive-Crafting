@@ -117,11 +117,20 @@ Deferred / to verify:
   slot. Clicking a filled slot clears it. Placed-slot state lives in `ui/Crafting.lua`.
 - ✅ **`CContext.trigger`** — `"proximity"` (default) or `"activate"`. The proximity scanner
   (`contextManager`) now **skips `activate` contexts** so they don't show as nearby prompts.
-- ❌ **Activation hook (deferred).** Setting `trigger:"activate"` currently just hides the
-  context from proximity — nothing opens it yet. Wiring it needs an engine activation
-  handler (global `onActivate` / `I.Activation`) that round-trips to the player to open the
-  window; the context data is player-side (`GRegistries`), so the global side needs the
-  activate record-ids/tags pushed to it at load, then an event back to the player.
+- ✅ **Activation hook wired.** `trigger:"activate"` contexts (Activator objects) open by
+  **activating** the object: the player pushes its activate contexts to the global script on
+  load (`ImmersiveCrafting_RegisterActivateContexts`); global registers
+  `I.Activation.addHandlerForType(types.Activator, …)`, matches the activated object (exact id
+  or `I.TaggerG` tag), and `actor:sendEvent('ImmersiveCrafting_OpenStation', …)` back to the
+  player (returning false to suppress default activation). Non-activators can't be activated,
+  so they remain proximity-only. Activate stations also show an **info-only** proximity card
+  ("Activate to use" + input roles for process stations); `[F]` is disabled for them.
+  Demonstrated on the process contexts (kiln/furnace/oven/tanning_rack → `trigger:"activate"`).
+- 🟡 **Window has no close button.** The crafting window is closed by walking away
+  (proximity loss) — for activate stations you must exit Interface mode. Add an explicit
+  close button / Esc handling.
+- 🟡 **Verify `I.TaggerG.objectHasTag` signature** in the global activation handler (same
+  record-id-string vs object question as `lib.matchesTag`).
 - ✅ **Recipe resolve + output slot + craft** wired: `Crafting.resolve()` maps the placed
   slots to a recipe (`shapedCrafting`/`processCrafting`) every rebuild; a Minecraft-style
   output slot shows the result, and clicking it commits via `ImmersiveCrafting_CraftShaped`

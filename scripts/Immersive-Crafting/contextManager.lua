@@ -103,34 +103,33 @@ local function findcurrentContexts(registries, maxRange)
     local results = {}
 
     for id, def in pairs(registries.contexts) do
-        -- Only proximity-triggered contexts appear in the nearby overlay.
-        -- "activate" contexts are opened by activating the object (handled elsewhere).
-        if def.trigger ~= 'activate' then
-            local range = def.activationRange or 150
+        -- Both proximity and activate contexts show a nearby card. For "activate"
+        -- contexts the card is info-only (no [F] action; the station is opened by
+        -- activating the object — see the global activation handler).
+        local range = def.activationRange or 150
 
-            -- closest candidate that matches any of the context's recordIds (id or tag)
-            local best = nil
-            for _, cand in ipairs(candidates) do
-                if cand.distance <= range then
-                    for _, rid in ipairs(def.recordIds or {}) do
-                        if lib.matchesTag(cand.recordId, rid) then
-                            if not best or cand.distance < best.distance then
-                                best = cand
-                            end
-                            break
+        -- closest candidate that matches any of the context's recordIds (id or tag)
+        local best = nil
+        for _, cand in ipairs(candidates) do
+            if cand.distance <= range then
+                for _, rid in ipairs(def.recordIds or {}) do
+                    if lib.matchesTag(cand.recordId, rid) then
+                        if not best or cand.distance < best.distance then
+                            best = cand
                         end
+                        break
                     end
                 end
             end
+        end
 
-            -- gate on any extra required tags nearby (e.g. cooking_pot requires "fire")
-            if best and (not def.requires or hasRequired(candidates, def.requires)) then
-                results[id] = {
-                    context = def,
-                    object = best.object,
-                    distance = best.distance,
-                }
-            end
+        -- gate on any extra required tags nearby (e.g. cooking_pot requires "fire")
+        if best and (not def.requires or hasRequired(candidates, def.requires)) then
+            results[id] = {
+                context = def,
+                object = best.object,
+                distance = best.distance,
+            }
         end
     end
 
