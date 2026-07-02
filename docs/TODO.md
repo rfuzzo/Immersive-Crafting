@@ -126,9 +126,7 @@ Deferred / to verify:
   so they remain proximity-only. Activate stations also show an **info-only** proximity card
   ("Activate to use" + input roles for process stations); `[F]` is disabled for them.
   Demonstrated on the process contexts (kiln/furnace/oven/tanning_rack → `trigger:"activate"`).
-- 🟡 **Window has no close button.** The crafting window is closed by walking away
-  (proximity loss) — for activate stations you must exit Interface mode. Add an explicit
-  close button / Esc handling.
+- ✅ **Close button added** (alchemy-style rework). Esc handling still open.
 - 🟡 **Verify `I.TaggerG.objectHasTag` signature** in the global activation handler (same
   record-id-string vs object question as `lib.matchesTag`).
 - ✅ **Recipe resolve + output slot + craft** wired: `Crafting.resolve()` maps the placed
@@ -136,8 +134,17 @@ Deferred / to verify:
   output slot shows the result, and clicking it commits via `ImmersiveCrafting_CraftShaped`
   (consumes the placed items from inventory, grants the output, clears the grid). The
   output-slot icon is resolved by probing item-type records (`recordIconPath`).
-- The item picker lists **all** inventory items with no scroll/filter; may overflow for large
-  inventories. Consider filtering (misc/ingredient) or a scroll container.
+- ✅ **Alchemy-style window + integrated picker** *(2026-07-03)*. The window now mirrors
+  the vanilla alchemy layout: Tools row (apparatus-style, the matched recipe's tools) |
+  Result panel, then the input slots, then a **Materials strip** — the picker embedded in
+  the window (no popup), **filtered** to items usable at this station (any recipe
+  ingredient id/tag; falls back to the full inventory while tags are unauthored) and
+  **paged** (12 per page). Interaction: click an empty slot to select it → click a
+  material to place (auto-advances selection); click a filled slot to clear it. **No
+  Create button** — clicking the Result slot *takes* the item: that is the craft (inputs
+  consumed, output moved to inventory); the window stays open for batches. Shared
+  `ui/Slot.lua` renders every slot. Material counts refresh one interaction after a craft
+  (global consume lands next frame).
 
 ## Tiered recipes import (Minecraft-style progression)
 

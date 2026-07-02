@@ -1,30 +1,33 @@
 --[[
-    Item Picker widget — pick an inventory item by clicking it (no drag-and-drop).
+    Materials strip — the item picker integrated INTO the crafting window,
+    modelled after the vanilla alchemy window's ingredient list (no popup).
 
-    Opens a small bordered window listing the player's inventory items as a grid of
-    clickable icon slots. Clicking an item calls `onPick(recordId, iconPath)` and
-    closes the picker. Used by the crafting window when an empty slot is clicked.
+    Renders a paged grid of the player's usable materials; clicking one calls
+    `view.onPick(recordId, iconPath)` (the crafting window places it into the
+    selected slot). The owner passes the pre-filtered item list; this module
+    only owns presentation + paging.
 ]]
 
 local ui = require('openmw.ui')
 local util = require('openmw.util')
 local async = require('openmw.async')
-local self = require('openmw.self')
-local types = require('openmw.types')
 local I = require('openmw.interfaces')
 
-local dialog = require('scripts.s3.components.dialog')
+local column = require('scripts.s3.components.column')
+local row = require('scripts.s3.components.row')
 local grid = require('scripts.s3.components.grid')
-local itemSlot = require('scripts.s3.components.itemSlot')
-local log = require('scripts.Immersive-Crafting.log')
+local text = require('scripts.s3.components.text')
+local spacer = require('scripts.s3.components.spacer')
+local Slot = require('scripts.Immersive-Crafting.ui.Slot')
 
 local v2 = util.vector2
 local ICON_SIZE = v2(40, 40)
 local COLUMNS = 6
+local PAGE_SIZE = 12 -- 2 rows of 6
 
 local this = {}
 
-local element = nil
+local page = 1
 local iconTextureCache = {} ---@type table<string, any>
 
 ---@param path string?
@@ -41,72 +44,76 @@ local function textureForPath(path)
     return nil
 end
 
----@return boolean
-function this.isOpen() return element ~= nil end
+--- Reset paging (call when the window opens).
+function this.reset() page = 1 end
 
-function this.close()
-    if element then element:destroy() end
-    element = nil
+---@param label string
+---@param enabled boolean
+---@param delta integer
+---@param view { refresh: fun() }
+local function pageButton(label, enabled, delta, view)
+    return {
+        type = ui.TYPE.Text,
+        template = enabled and I.MWUI.templates.textButtonNormal or I.MWUI.templates.disabled,
+        props = { text = label, textSize = 16 },
+        events = enabled and {
+            mouseClick = async:callback(function()
+                page = page + delta
+                view.refresh()
+            end),
+        } or nil,
+    }
 end
 
---- Open the picker.
----@param opts { onPick: fun(recordId: string, iconPath: string?), title?: string }
-function this.open(opts)
-    this.close()
+--- Build the embedded strip.
+---@param items { recordId: string, icon: string?, count: integer }[] usable materials (pre-filtered)
+---@param view { onPick: fun(recordId: string, iconPath: string?), refresh: fun() }
+---@return table layout
+function this.Body(items, view)
+    local pages = math.max(1, math.ceil(#items / PAGE_SIZE))
+    if page > pages then page = pages end
+    if page < 1 then page = 1 end
 
-    -- Collapse the inventory into one clickable slot per record id (summed count).
-    local order, byId = {}, {}
-    for _, item in ipairs(types.Actor.inventory(self):getAll()) do
-        local rid = item.recordId
-        local entry = byId[rid]
-        if not entry then
-            local icon
-            local ok, rec = pcall(function() return item.type.record(item) end)
-            if ok and rec and rec.icon and rec.icon ~= '' then icon = rec.icon end
-            entry = { recordId = rid, icon = icon, count = 0 }
-            byId[rid] = entry
-            order[#order + 1] = entry
-        end
-        entry.count = entry.count + (item.count or 1)
+    -- header: title + pager (pager only when it matters)
+    local headerChildren = { text({ text = 'Materials' }) }
+    if pages > 1 then
+        headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(14, 0) } })
+        headerChildren[#headerChildren + 1] = pageButton('<', page > 1, -1, view)
+        headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(6, 0) } })
+        headerChildren[#headerChildren + 1] = text({ text = ('%d/%d'):format(page, pages) })
+        headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(6, 0) } })
+        headerChildren[#headerChildren + 1] = pageButton('>', page < pages, 1, view)
     end
 
-    local items = {}
-    for _, entry in ipairs(order) do
-        items[#items + 1] = itemSlot({
+    -- item slots for the current page
+    local slots = {}
+    local first = (page - 1) * PAGE_SIZE
+    for i = first + 1, math.min(first + PAGE_SIZE, #items) do
+        local entry = items[i]
+        slots[#slots + 1] = Slot({
             name = 'pick_' .. entry.recordId,
             resource = textureForPath(entry.icon),
             count = entry.count > 1 and entry.count or nil,
-            iconProps = { size = ICON_SIZE },
-            events = {
-                mouseClick = async:callback(function()
-                    local pick = entry
-                    this.close()
-                    opts.onPick(pick.recordId, pick.icon)
-                end),
-            },
+            size = ICON_SIZE,
+            onClick = function() view.onPick(entry.recordId, entry.icon) end,
         })
     end
 
-    if #items == 0 then
-        items[1] = { template = I.MWUI.templates.textNormal, props = { text = '(inventory empty)' } }
+    local body
+    if #slots > 0 then
+        body = grid({ name = 'materials_grid', columns = COLUMNS, items = slots })
+    else
+        body = text({ text = '(no usable materials)' })
     end
 
-    log.trace(('ItemPicker: %d distinct items'):format(#order))
-
-    local r =
-        dialog({
-            template = I.MWUI.templates.bordersThick,
-            props = {
-                anchor = v2(0.5, 0.5),
-                relativePosition = v2(0.62, 0.5),
-                size = v2(300, 300),
-            },
-            name = 'item_picker_dialog',
-            title = opts.title or 'Select item',
-            children = { grid({ name = 'item_picker_grid', columns = COLUMNS, items = items }) },
-        })
-    r.layer = 'Windows'
-    element = ui.create(r)
+    return column({
+        name = 'materials_strip',
+        children = {
+            row({ name = 'materials_header', children = headerChildren }),
+            spacer({ props = { size = v2(0, 4) } }),
+            body,
+        },
+    })
 end
 
 return this

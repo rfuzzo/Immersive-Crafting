@@ -1,53 +1,28 @@
---- GRID layout: an N×M grid of clickable item slots + a result output slot (Minecraft-style).
---- slotId = "r:c". Clicks are handled by the owner (Crafting.lua) via `view.onSlotClick`;
---- clicking the output slot crafts via `view.onCraft`.
+--- GRID layout: an N×M grid of clickable item slots (positional). slotId = "r:c".
+--- Clicking an empty slot selects it (the materials strip fills the selected slot);
+--- clicking a filled slot clears it. The tools/result panels live in the shared
+--- window frame (Crafting.lua), alchemy-window style.
 
-local ui = require('openmw.ui')
 local util = require('openmw.util')
-local async = require('openmw.async')
 
 local log = require('scripts.Immersive-Crafting.log')
 
 local box = require('scripts.s3.components.box')
-local row = require('scripts.s3.components.row')
 local column = require('scripts.s3.components.column')
 local grid = require('scripts.s3.components.grid')
-local text = require('scripts.s3.components.text')
-local spacer = require('scripts.s3.components.spacer')
-local itemSlot = require('scripts.s3.components.itemSlot')
+local Slot = require('scripts.Immersive-Crafting.ui.Slot')
 
-local v2 = util.vector2
-local whiteTexture = ui.texture { path = 'white' }
-local ICON_SIZE = v2(44, 44)
-local EMPTY_COLOR = util.color.rgb(0.72, 0.48, 0.18)
+local ICON_SIZE = util.vector2(44, 44)
 
 local this = {}
 
 ---@class CraftingSlotView
 ---@field slotView fun(slotId: string): { resource: any?, count: integer? }? placed item for a slot, or nil
 ---@field onSlotClick fun(slotId: string) called when a slot is clicked
----@field onCraft fun() called when the output slot is clicked
----@field output { resource: any?, count: integer? }? the resolved result, or nil for no recipe
+---@field onPick fun(recordId: string, iconPath: string?) place a picked material into the selected slot
+---@field selectedSlot string? the slot the next picked material goes into
 
---- An item slot showing `data` ({resource,count} or nil); empty slots are tinted.
---- `onClick` (optional) wires a mouseClick handler.
----@param name string
----@param data { resource: any?, count: integer? }?
----@param onClick fun()?
-local function slot(name, data, onClick)
-    local hasIcon = data ~= nil and data.resource ~= nil
-    local iconProps = { size = ICON_SIZE }
-    if not hasIcon then iconProps.color = EMPTY_COLOR end
-    return itemSlot({
-        name = name,
-        resource = hasIcon and data.resource or whiteTexture,
-        count = data and data.count or nil,
-        iconProps = iconProps,
-        events = onClick and { mouseClick = async:callback(onClick) } or nil,
-    })
-end
-
---- Build the grid body.
+--- Build the grid body (input slots only).
 ---@param layout CContext.Layout?
 ---@param view CraftingSlotView
 ---@return table?
@@ -65,33 +40,25 @@ function this.Body(layout, view)
     for r = 1, rows do
         for c = 1, cols do
             local slotId = ('%d:%d'):format(r, c)
-            items[#items + 1] = slot('slot_' .. slotId, view.slotView(slotId),
-                function() view.onSlotClick(slotId) end)
+            local placed = view.slotView(slotId)
+            local state = (view.selectedSlot == slotId and not placed) and 'selected' or 'empty'
+            items[#items + 1] = Slot({
+                name = 'slot_' .. slotId,
+                resource = placed and placed.resource or nil,
+                count = placed and placed.count or nil,
+                size = ICON_SIZE,
+                state = state,
+                onClick = function() view.onSlotClick(slotId) end,
+            })
         end
     end
-
-    -- output slot is clickable only when there's a craftable result
-    local outputSlot = slot('slot_output', view.output, view.output and view.onCraft or nil)
 
     return box({
         name = 'grid_box',
         children = {
-            row({
-                name = 'grid_row',
-                props = { align = ui.ALIGNMENT.Center },
-                children = {
-                    column({ name = 'grid_body', children = { grid({ name = 'crafting_grid', columns = cols, items = items }) } }),
-                    spacer({ props = { size = v2(12, 0) } }),
-                    column({
-                        name = 'grid_output',
-                        props = { align = ui.ALIGNMENT.Center },
-                        children = {
-                            text({ text = '=>' }),
-                            spacer({ props = { size = v2(0, 4) } }),
-                            outputSlot,
-                        },
-                    }),
-                },
+            column({
+                name = 'grid_body',
+                children = { grid({ name = 'crafting_grid', columns = cols, items = items }) },
             }),
         },
     })
