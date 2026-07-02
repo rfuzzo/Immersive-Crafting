@@ -6,7 +6,7 @@ local log = require('scripts.Immersive-Crafting.log')
 
 local this = {}
 
---- Are all required tools present in the player's inventory?
+--- Are all required tools present in the player's inventory? (Tools are NEVER consumed.)
 ---@param tools string[]|nil
 ---@return boolean
 function this.hasTools(tools)
@@ -25,41 +25,55 @@ function this.hasTools(tools)
     return true
 end
 
---- Count how many of a recipe's input slots are satisfied by the placed slots.
----@param recipe CProcessRecipe
----@param slots table<string, string|nil> slot key -> placed record id
----@return boolean ok, integer filled
-local function recipeSatisfied(recipe, slots)
-    local filled = 0
-    for key, need in pairs(recipe.inputs) do
-        local placedId = slots[key]
-        if not placedId or not lib.matchesTag(placedId, need) then
-            return false, 0
+--- Exact multiset match: every counted input line must be satisfied by distinct
+--- placed items, and no placed item may be left over (everything placed is
+--- consumed on craft, so extras would silently vanish).
+--- NOTE: greedy line-order claiming; with heavily overlapping tags a pathological
+--- assignment could fail where a perfect matching exists — acceptable for now.
+---@param placedIds string[] record ids of the placed items (one per filled slot)
+---@param inputs CProcessRecipe.Input[]
+---@return boolean
+local function multisetMatch(placedIds, inputs)
+    local claimed = {}
+    local total = 0
+    for _, line in ipairs(inputs) do
+        local need = line.count or 1
+        total = total + need
+        for i, recordId in ipairs(placedIds) do
+            if need <= 0 then break end
+            if not claimed[i] and lib.matchesTag(recordId, line.id) then
+                claimed[i] = true
+                need = need - 1
+            end
         end
-        filled = filled + 1
+        if need > 0 then return false end
     end
-    return true, filled
+    return total == #placedIds
 end
 
---- Resolve the process recipe matching the placed role-slots for this
---- action/context. When several recipes match, the one using the most input
---- slots (most specific) wins.
----@param slots table<string, string|nil> slot key -> placed record id (or nil)
+--- Resolve the process recipe matching the placed items for this action/context.
+--- Non-positional: only the multiset of placed items matters. When several
+--- recipes match, the one requiring the most items (most specific) wins.
+---@param placedIds string[] record ids of the placed items (one per filled slot)
 ---@param action CAction
 ---@param context CContext
 ---@return CProcessRecipe?
-function this.resolveProcessRecipe(slots, action, context)
+function this.resolveProcessRecipe(placedIds, action, context)
     if not GRegistries then
         log.error('GRegistries not initialized yet')
         return nil
     end
+    if #placedIds == 0 then return nil end
 
     local best, bestScore = nil, -1
     for _, recipe in pairs(GRegistries.processRecipes or {}) do
         if recipe.action == action.id and recipe.context == context.id then
-            local ok, filled = recipeSatisfied(recipe, slots)
-            if ok and this.hasTools(recipe.tools) and filled > bestScore then
-                best, bestScore = recipe, filled
+            if multisetMatch(placedIds, recipe.inputs) and this.hasTools(recipe.tools) then
+                local score = 0
+                for _, line in ipairs(recipe.inputs) do score = score + (line.count or 1) end
+                if score > bestScore then
+                    best, bestScore = recipe, score
+                end
             end
         end
     end

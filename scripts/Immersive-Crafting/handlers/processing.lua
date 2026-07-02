@@ -19,9 +19,17 @@ function CProcessingHandler:evaluate(ctx)
         local details = nil
         local inputs = ctx.context.layout and ctx.context.layout.inputs
         if inputs and #inputs > 0 then
+            -- named roles (e.g. Input, Reagent) if the layout labels them;
+            -- otherwise just the generic slot count
             local roles = {}
-            for _, inp in ipairs(inputs) do roles[#roles + 1] = inp.label or inp.key end
-            details = { "Inputs: " .. table.concat(roles, ", ") }
+            for _, inp in ipairs(inputs) do
+                if inp.label then roles[#roles + 1] = inp.label end
+            end
+            if #roles > 0 then
+                details = { "Inputs: " .. table.concat(roles, ", ") }
+            else
+                details = { ("%d input slots"):format(#inputs) }
+            end
         end
         ---@type ViewModel
         return {

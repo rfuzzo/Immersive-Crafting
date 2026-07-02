@@ -70,7 +70,7 @@ GRegistries = {
   contexts       = {},  -- table<id, CContext>
   recipes        = {},  -- table<id, CRecipe>          flat world-placement recipes (mixing/cooking)
   shapedRecipes  = {},  -- table<id, CShapedRecipe>    positional grid recipes (a recipe is shaped iff it has `pattern`)
-  processRecipes = {},  -- table<id, CProcessRecipe>   role-slot station recipes (process iff it has `inputs`)
+  processRecipes = {},  -- table<id, CProcessRecipe>   counted non-positional station recipes (process iff it has `inputs`)
   handlers       = {},  -- table<name, CAbstractHandler subclass>
   processes      = {},  -- ❌ declared, unused (reserved for in-progress timed process state — cooking + stations)
 }
@@ -177,25 +177,29 @@ box**, then compared cell-for-cell via `lib.matchesTag`; tools must be in invent
 
 ### CProcessRecipe — `models/processRecipe.lua` · `recipes/*.json` (has `inputs`)
 
-Role-slot recipe for the **process** layout (kiln/furnace/oven fuel+input, tanning ingredients+input).
-
+Counted, **non-positional** recipe for the **process** layout (kiln/firepit/furnace input+fuel,
+charcoal pit, tanning rack). Position never matters — only the multiset of placed items.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id`, `label`, `context`, `action` | — | ✅ | as CRecipe |
-| `inputs` | table<string,string> | ✅ | slot key → record id or Tagger tag (keys match the context layout's slot `key`s) |
+| `inputs` | `{id, count}[]` | ✅ | counted ingredients; `id` is a record id **or Tagger tag** |
 | `duration` | number? | — | process seconds (timing **deferred** — §6) |
-| `tools` | string[]? | — | optional tool tags/ids in inventory |
+| `tools` | string[]? | — | tool tags/ids required in inventory (**never consumed**) |
 | `output` | `{id,count}` | ✅ | existing record id (D1) |
 
-Matching (`processCrafting.lua`): every `inputs[key]` must be satisfied by the placed slot via
-`lib.matchesTag`; when several match, the one using **the most slots** wins. **All placed items are
-consumed** on craft.
+Matching (`processCrafting.lua`): **exact multiset** — every counted input line must be satisfied by
+distinct placed items via `lib.matchesTag`, and **no placed item may be left over** (everything placed
+is consumed on craft). When several recipes match, the one requiring the **most items** wins.
 
 ```json
-{ "id": "fired_clay_pot", "label": "Clay Pot", "context": "kiln", "action": "processing",
-  "inputs": { "fuel": "Fuel", "input": "GreenWare" }, "duration": 30,
-  "output": { "id": "misc_com_bucket_metal", "count": 1 } }
+{ "id": "ic_iron_ingot", "label": "Iron Ingot", "context": "kiln", "action": "processing",
+  "inputs": [ {"id": "Ore", "count": 3}, {"id": "ic_charcoal", "count": 2} ],
+  "output": { "id": "ic_iron_ingot", "count": 1 } }
 ```
+
+Recipes are **generated from `docs/immersive_crafting_recipes_v2.csv`** by
+`tools/recipes_csv2json.py` → `recipes/crafting.json` (grid rows → shaped, station rows → process;
+lints the tool-vs-consumed rules; also emits the `ic_*` record inventory to `docs/ic_records.md`).
 
 ### tags — **Tagger framework (external), `ModTags/*.yaml`**
 
@@ -298,7 +302,8 @@ positions), so it auto-sizes and matches the alchemy window. Items are dropped f
 slots; `placed[slotId]` holds them. Opens on the `'Windows'` layer via `I.UI.setMode('Interface')`.
 
 - **grid** layout → `shapedCrafting.resolveShapedRecipe`; slotId = `"r:c"`.
-- **process** layout → `processCrafting.resolveProcessRecipe`; slotId = the slot `key`; renders labelled
+- **process** layout → `processCrafting.resolveProcessRecipe` (exact multiset over all placed items,
+  non-positional); slots are generic (`s1..sN`, chunked 4 per row) or labelled; renders labelled
   input slots → output slot + a **progress bar** (driven by `CraftingGrid.setProgress(0..1)`).
 
 **Commit:** `CraftingGrid.onCraft` sends `core.sendGlobalEvent('ImmersiveCrafting_CraftShaped', {

@@ -1,28 +1,79 @@
 [
   {
+    "id": "firepit",
+    "label": "Firepit",
+    "recordIds": [
+      "firepit"
+    ],
+    "activationRange": 150,
+    "trigger": "activate",
+    "layout": {
+      "kind": "process",
+      "inputs": [
+        {
+          "key": "s1"
+        },
+        {
+          "key": "s2"
+        },
+        {
+          "key": "s3"
+        },
+        {
+          "key": "s4"
+        },
+        {
+          "key": "s5"
+        },
+        {
+          "key": "s6"
+        },
+        {
+          "key": "s7"
+        },
+        {
+          "key": "s8"
+        }
+      ]
+    },
+    "actions": [
+      "processing"
+    ]
+  },
+  {
     "id": "kiln",
     "label": "Kiln",
     "recordIds": [
       "kiln"
     ],
     "activationRange": 150,
+    "trigger": "activate",
     "layout": {
       "kind": "process",
       "inputs": [
         {
-          "key": "fuel",
-          "label": "Fuel"
+          "key": "s1"
         },
         {
-          "key": "input",
-          "label": "Input"
+          "key": "s2"
+        },
+        {
+          "key": "s3"
+        },
+        {
+          "key": "s4"
+        },
+        {
+          "key": "s5"
+        },
+        {
+          "key": "s6"
         }
       ]
     },
     "actions": [
       "processing"
-    ],
-    "trigger": "activate"
+    ]
   },
   {
     "id": "furnace",
@@ -31,23 +82,56 @@
       "furnace"
     ],
     "activationRange": 150,
+    "trigger": "activate",
     "layout": {
       "kind": "process",
       "inputs": [
         {
-          "key": "fuel",
-          "label": "Fuel"
+          "key": "s1"
         },
         {
-          "key": "input",
-          "label": "Input"
+          "key": "s2"
+        },
+        {
+          "key": "s3"
+        },
+        {
+          "key": "s4"
         }
       ]
     },
     "actions": [
       "processing"
+    ]
+  },
+  {
+    "id": "charcoal_pit",
+    "label": "Charcoal Pit",
+    "recordIds": [
+      "charcoal_pit"
     ],
-    "trigger": "activate"
+    "activationRange": 150,
+    "trigger": "activate",
+    "layout": {
+      "kind": "process",
+      "inputs": [
+        {
+          "key": "s1"
+        },
+        {
+          "key": "s2"
+        },
+        {
+          "key": "s3"
+        },
+        {
+          "key": "s4"
+        }
+      ]
+    },
+    "actions": [
+      "processing"
+    ]
   },
   {
     "id": "oven",
@@ -56,23 +140,27 @@
       "oven"
     ],
     "activationRange": 150,
+    "trigger": "activate",
     "layout": {
       "kind": "process",
       "inputs": [
         {
-          "key": "fuel",
-          "label": "Fuel"
+          "key": "s1"
         },
         {
-          "key": "input",
-          "label": "Input"
+          "key": "s2"
+        },
+        {
+          "key": "s3"
+        },
+        {
+          "key": "s4"
         }
       ]
     },
     "actions": [
       "processing"
-    ],
-    "trigger": "activate"
+    ]
   },
   {
     "id": "tanning_rack",
@@ -81,26 +169,22 @@
       "tanning_rack"
     ],
     "activationRange": 150,
+    "trigger": "activate",
     "layout": {
       "kind": "process",
       "inputs": [
         {
-          "key": "ingredient1",
-          "label": "Ingredient"
-        },
-        {
-          "key": "ingredient2",
-          "label": "Ingredient"
-        },
-        {
           "key": "input",
-          "label": "Hide"
+          "label": "Input"
+        },
+        {
+          "key": "reagent",
+          "label": "Reagent"
         }
       ]
     },
     "actions": [
       "processing"
-    ],
-    "trigger": "activate"
+    ]
   }
 ]

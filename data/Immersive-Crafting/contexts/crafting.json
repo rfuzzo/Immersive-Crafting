@@ -1,5 +1,23 @@
 [
   {
+    "id": "bushcrafting",
+    "label": "Bushcrafting",
+    "recordIds": [
+      "bushcraft"
+    ],
+    "layout": {
+      "kind": "grid",
+      "size": [
+        2,
+        2
+      ]
+    },
+    "activationRange": 100,
+    "actions": [
+      "shaping"
+    ]
+  },
+  {
     "id": "crafting_cloth",
     "label": "Crafting Cloth",
     "recordIds": [

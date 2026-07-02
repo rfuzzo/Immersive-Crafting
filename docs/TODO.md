@@ -138,3 +138,41 @@ Deferred / to verify:
   output-slot icon is resolved by probing item-type records (`recordIconPath`).
 - The item picker lists **all** inventory items with no scroll/filter; may overflow for large
   inventories. Consider filtering (misc/ingredient) or a scroll container.
+
+## Tiered recipes import (Minecraft-style progression)
+
+`docs/immersive_crafting_recipes_v2.csv` → `tools/recipes_csv2json.py` →
+`recipes/crafting.json` (86 recipes: 57 shaped, 29 process). Rerun the script after
+editing the CSV. It lints the tool-vs-consumed rules (consumed weapon molds never in
+tool columns; reusable crucible/armor mold never in ingredient columns) and generates
+the `ic_*` record inventory → `docs/ic_records.md`.
+
+Applied per design review (ratified 2026-07-02):
+- ✅ `outcome_count` column added (default 1; arrows/bolts ×20 via `output.count`).
+- ✅ Process recipes are **counted multisets** (`inputs: [{id,count}]`, exact match, no
+  leftovers); process station layouts use generic slots (firepit 8, kiln 6, furnace 4,
+  charcoal pit 4), tanning rack = Input + Reagent roles.
+- ✅ Charcoal Pit is a real process station (Charcoal moved there from Firepit); new
+  `firepit`/`charcoal_pit`/`bushcrafting` contexts; station build recipes trimmed to fit
+  the Bushcrafting 2×2; `ic_station_firepit` id aligned; generic reusable **Armor Mold**
+  (tool, not consumed) + Raw/Burnt Armor Mold recipes; superseded sample recipe files
+  (`processing.json`, `woodworking.json`) removed.
+
+Open items:
+- ❌ **`ic_*` records need a content plugin** (~45 records, see `docs/ic_records.md`).
+  Runtime `createRecordDraft` outputs are not save-serialised → progression items would
+  vanish on reload. **Proposed D1 amendment:** custom items ship as plugin (.esp/.omwaddon)
+  records. Note `ic_chitin_plate` / `ic_netch_hide` are referenced but never produced —
+  they need world/leveled-list sources too.
+- ❌ **Bushcrafting has no trigger mechanism** — contexts require a nearby/activated
+  object; "craft anywhere by hand" needs a new trigger (hotkey/menu). Placeholder context
+  uses recordIds `["bushcraft"]` until then.
+- 🟡 **Tags to author** (14 assumed Tagger tags, list in `docs/ic_records.md`): Charcoal,
+  Clay, Fibre, Hide, Knife, Ore, Plant, Raw Glass, Salt, Stone, Water, Wood… — including
+  tags applied to `ic_*` records (e.g. `Fibre` → `ic_fibre`, `Charcoal` → `ic_charcoal`).
+- 🟡 Station tags (`firepit`, `kiln`, `furnace`, `charcoal_pit`, `tanning_rack`,
+  `bushcraft`) need real Activator records + Tagger entries.
+- 🟡 Verify chitin armor record ids against the tes3-records dump (`chitin cuirass` with
+  spaces vs `steel_cuirass` with underscores).
+- 🟡 Bootstrap knife assumption ratified: every vanilla start passes the census-office
+  dagger; `Knife` tag should cover all daggers.

@@ -135,13 +135,13 @@ local function gridFromPlaced()
     return g
 end
 
-local function slotsFromPlaced()
-    local s = {}
-    for _, inp in ipairs(layout.inputs or {}) do
-        local cell = placed[inp.key]
-        s[inp.key] = cell and cell.recordId or nil
+--- All placed record ids, one per filled slot (process matching is non-positional).
+local function placedList()
+    local list = {}
+    for _, cell in pairs(placed) do
+        list[#list + 1] = cell.recordId
     end
-    return s
+    return list
 end
 
 --- Resolve the placed slots into a matched recipe + craftability for the layout.
@@ -152,7 +152,7 @@ local function resolve()
     if layout.kind == 'grid' then
         matched = shaped.resolveShapedRecipe(gridFromPlaced(), ctx.action, ctx.context)
     elseif layout.kind == 'process' then
-        matched = processCrafting.resolveProcessRecipe(slotsFromPlaced(), ctx.action, ctx.context)
+        matched = processCrafting.resolveProcessRecipe(placedList(), ctx.action, ctx.context)
     end
 
     canCraft = matched ~= nil and haveEnough()
