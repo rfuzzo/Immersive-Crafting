@@ -7,7 +7,7 @@ local log = require('scripts.Immersive-Crafting.log')
 
 local this = {}
 
-local taggerWarned = false
+local flexTagWarned = false
 
 ---@class IngredientScanResult
 ---@field object any nearest object instance of this record id
@@ -59,9 +59,9 @@ function this.scanNearbyIngredients(maxRange)
 end
 
 --- Does a record id satisfy a query (a recipe ingredient id or a context entry)?
---- Two-tier: (1) exact record id, (2) Tagger tag (S3cret St4sh). No wildcard.
+--- Two-tier: (1) exact record id, (2) FlexTag tag. No wildcard.
 ---@param recordId string an object's record id
----@param query Id a record id or a Tagger tag (e.g. "Meat", "bowl")
+---@param query Id a record id or a FlexTag tag (e.g. "Meat", "bowl")
 ---@return boolean
 function this.matchesTag(recordId, query)
     -- 1. exact record id (case-insensitive)
@@ -69,13 +69,13 @@ function this.matchesTag(recordId, query)
         return true
     end
 
-    -- 2. Tagger tag. objectHasTag accepts a record id string and normalises case.
-    local tagger = interfaces.TaggerL
-    if tagger and tagger.objectHasTag then
-        return tagger.objectHasTag(recordId, query) and true or false
-    elseif not taggerWarned then
-        taggerWarned = true
-        log.warn('Tagger (I.TaggerL) unavailable; matching limited to exact record ids')
+    -- 2. FlexTag tag. objectHasTag accepts a record id string and normalises case.
+    local flexTag = interfaces.FlexTagL
+    if flexTag and flexTag.objectHasTag then
+        return flexTag.objectHasTag(recordId, query) and true or false
+    elseif not flexTagWarned then
+        flexTagWarned = true
+        log.warn('FlexTag (I.FlexTagL) unavailable; matching limited to exact record ids')
     end
 
     return false

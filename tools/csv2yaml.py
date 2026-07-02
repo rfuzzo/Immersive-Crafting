@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
-"""Generate the Tagger ingredient YAML from ingredients_tags.csv.
+"""Generate the FlexTag ingredient YAML from ingredients_tags.csv.
 
 The CSV (columns: id,name,tags,comment) is the source of truth. Only id + tags
 are emitted; the comment column is editor-only metadata. The tag list is
 extracted straight from the CSV (no predefined order). Ids are deduped, unioning
 their tags. Untagged rows are skipped.
+
+FlexTag's schema is a flat mapping of tag name -> list of record ids (no
+`tags`/`applied_tags` wrapper keys):
+
+    Bread:
+      - "ingred_bread_01"
+    Meat:
+      - "ingred_rat_meat_01"
 
 Usage:
     py tools/csv2yaml.py [CSV_PATH] [OUT_PATH]
@@ -43,17 +51,20 @@ def main():
 
     tag_list = sorted(all_tags, key=str.lower)
 
-    lines = [
-        "# Immersive-Crafting tag definitions for the Tagger framework (S3cret St4sh).",
-        f"# GENERATED from {os.path.basename(csv_path)} by tools/csv2yaml.py - edit the CSV, then regenerate. Do not hand-edit.",
-        "# Tagger lowercases tag names and record ids; multiple tags per record are allowed.",
-        "tags:",
-    ]
-    lines += [f'  - "{tag}"' for tag in tag_list]
-    lines.append("applied_tags:")
+    ids_by_tag = {tag: [] for tag in tag_list}
     for rid, tags in records.items():
-        joined = ", ".join(f'"{tag}"' for tag in tags)
-        lines.append(f'  "{rid}": [{joined}]')
+        for tag in tags:
+            ids_by_tag[tag].append(rid)
+
+    lines = [
+        "# Immersive-Crafting ingredient tag definitions for the FlexTag framework.",
+        f"# GENERATED from {os.path.basename(csv_path)} by tools/csv2yaml.py - edit the CSV, then regenerate. Do not hand-edit.",
+        "# FlexTag lowercases tag names and record ids; multiple tags per record are allowed.",
+    ]
+    for tag in tag_list:
+        lines.append(f"{tag}:")
+        for rid in sorted(ids_by_tag[tag], key=str.lower):
+            lines.append(f'  - "{rid}"')
 
     out_dir = os.path.dirname(out_path)
     if out_dir:

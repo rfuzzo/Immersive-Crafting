@@ -2,14 +2,14 @@ local log = require('scripts.Immersive-Crafting.log')
 
 ---A positional (shaped) crafting recipe. The `pattern` rows are matched against
 ---the crafting grid; each non-space character is looked up in `key` to a record
----id or Tagger tag. `tools` are required (from inventory) but sit outside the grid.
+---id or FlexTag tag. `tools` are required (from inventory) but sit outside the grid.
 ---@class CShapedRecipe
 ---@field id Id registry key
 ---@field label string display name of the result
 ---@field context Id must match a context id (a crafting station)
 ---@field action Id must match an action id (e.g. "shaping")
 ---@field pattern string[] grid rows; each char is a key symbol, space = empty cell
----@field key table<string, string> symbol -> record id or Tagger tag
+---@field key table<string, string> symbol -> record id or FlexTag tag
 ---@field tools string[]|nil tool tags/ids required in inventory (outside the grid)
 ---@field output { id: string, count: integer } produced item (must be a real record)
 local CShapedRecipe = {}

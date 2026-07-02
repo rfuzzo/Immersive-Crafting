@@ -92,7 +92,7 @@ local function hasRequired(candidates, requires)
     return true
 end
 
----Find all nearby contexts within range, matching record ids OR Tagger tags.
+---Find all nearby contexts within range, matching record ids OR FlexTag tags.
 ---@param registries Registries The data registries
 ---@param maxRange number Maximum search range
 ---@return table<string, ProximityResult> Map of ID to proximity result

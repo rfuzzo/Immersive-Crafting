@@ -87,15 +87,15 @@ end
 local activateContexts = {} ---@type { id: string, recordIds: string[] }[]
 local activationHandlerRegistered = false
 
---- Global-context tag match: exact record id or Tagger (I.TaggerG) tag.
+--- Global-context tag match: exact record id or FlexTag (I.FlexTagG) tag.
 ---@param recordId string
 ---@param query string
 ---@return boolean
 local function matchesTagGlobal(recordId, query)
     if recordId:lower() == query:lower() then return true end
-    local tagger = I.TaggerG
-    if tagger and tagger.objectHasTag then
-        return tagger.objectHasTag(recordId, query) and true or false
+    local flexTag = I.FlexTagG
+    if flexTag and flexTag.objectHasTag then
+        return flexTag.objectHasTag(recordId, query) and true or false
     end
     return false
 end

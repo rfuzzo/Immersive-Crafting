@@ -20,7 +20,7 @@ local log = require('scripts.Immersive-Crafting.log')
 local CProcessRecipe = {}
 
 ---@class CProcessRecipe.Input
----@field id string record id or Tagger tag
+---@field id string record id or FlexTag tag
 ---@field count integer how many are required
 
 --- Deserialize from table
