@@ -37,7 +37,7 @@ local v2 = util.vector2
 local updateInterval = 0.25 -- Check for nearby context every 0.25 seconds
 
 -- Position: lower-right, card top at ~3/4 screen height, growing downward.
-local OVERLAY_POS = v2(0.99, 0.75)
+local OVERLAY_POS = v2(0.99, 0.70)
 local OVERLAY_ANCHOR = v2(1, 0)
 local LINE_W = 190
 
