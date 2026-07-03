@@ -42,7 +42,7 @@ function this.Body(layout, view)
             local slotId = ('%d:%d'):format(r, c)
             local placed = view.slotView(slotId)
             local state = (view.selectedSlot == slotId and not placed) and 'selected' or 'empty'
-            items[#items + 1] = Slot({
+            items[#items + 1] = Slot.Slot({
                 name = 'slot_' .. slotId,
                 resource = placed and placed.resource or nil,
                 count = placed and placed.count or nil,

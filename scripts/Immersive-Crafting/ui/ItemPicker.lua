@@ -18,6 +18,7 @@ local row = require('scripts.s3.components.row')
 local grid = require('scripts.s3.components.grid')
 local text = require('scripts.s3.components.text')
 local spacer = require('scripts.s3.components.spacer')
+
 local Slot = require('scripts.Immersive-Crafting.ui.Slot')
 
 local v2 = util.vector2
@@ -54,7 +55,8 @@ function this.reset() page = 1 end
 local function pageButton(label, enabled, delta, view)
     return {
         type = ui.TYPE.Text,
-        template = enabled and I.MWUI.templates.textButtonNormal or I.MWUI.templates.disabled,
+        -- template = enabled and I.MWUI.templates.textNormal or I.MWUI.templates.disabled,
+        template = I.MWUI.templates.textNormal,
         props = { text = label, textSize = 16 },
         events = enabled and {
             mouseClick = async:callback(function()
@@ -75,12 +77,16 @@ function this.Body(items, view)
     if page < 1 then page = 1 end
 
     -- header: title + pager (pager only when it matters)
-    local headerChildren = { text({ text = 'Materials' }) }
+    local headerChildren = { text({ text = 'Materials', template = I.MWUI.templates.textNormal }) }
     if pages > 1 then
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(14, 0) } })
         headerChildren[#headerChildren + 1] = pageButton('<', page > 1, -1, view)
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(6, 0) } })
-        headerChildren[#headerChildren + 1] = text({ text = ('%d/%d'):format(page, pages) })
+        headerChildren[#headerChildren + 1] = text({
+            text = ('%d/%d'):format(page, pages),
+            template = I.MWUI.templates
+                .textNormal
+        })
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(6, 0) } })
         headerChildren[#headerChildren + 1] = pageButton('>', page < pages, 1, view)
     end
@@ -90,11 +96,12 @@ function this.Body(items, view)
     local first = (page - 1) * PAGE_SIZE
     for i = first + 1, math.min(first + PAGE_SIZE, #items) do
         local entry = items[i]
-        slots[#slots + 1] = Slot({
+        slots[#slots + 1] = Slot.Slot({
             name = 'pick_' .. entry.recordId,
             resource = textureForPath(entry.icon),
             count = entry.count > 1 and entry.count or nil,
             size = ICON_SIZE,
+            noborder = true,
             onClick = function() view.onPick(entry.recordId, entry.icon) end,
         })
     end
@@ -103,11 +110,10 @@ function this.Body(items, view)
     if #slots > 0 then
         body = grid({ name = 'materials_grid', columns = COLUMNS, items = slots })
     else
-        body = text({ text = '(no usable materials)' })
+        body = text({ text = '(no usable materials)', template = I.MWUI.templates.textNormal })
     end
 
     return column({
-        name = 'materials_strip',
         children = {
             row({ name = 'materials_header', children = headerChildren }),
             spacer({ props = { size = v2(0, 4) } }),

@@ -7,6 +7,7 @@
 
 local ui = require('openmw.ui')
 local util = require('openmw.util')
+local I = require('openmw.interfaces')
 
 local log = require('scripts.Immersive-Crafting.log')
 
@@ -29,7 +30,7 @@ local function labelled(label, slotWidget)
     return column({
         props = { align = ui.ALIGNMENT.Center },
         children = {
-            text({ text = label }),
+            text({ text = label, template = I.MWUI.templates.textNormal }),
             spacer({ props = { size = v2(0, 3) } }),
             slotWidget,
         },
@@ -51,7 +52,7 @@ function this.Body(layout, view)
         local slotId = inp.key
         local placed = view.slotView(slotId)
         local state = (view.selectedSlot == slotId and not placed) and 'selected' or 'empty'
-        local inputSlot = Slot({
+        local inputSlot = Slot.Slot({
             name = 'slot_' .. slotId,
             resource = placed and placed.resource or nil,
             count = placed and placed.count or nil,

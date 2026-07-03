@@ -49,11 +49,6 @@ local processCrafting = require('scripts.Immersive-Crafting.processCrafting')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
-local column = require('scripts.s3.components.column')
-local row = require('scripts.s3.components.row')
-local text = require('scripts.s3.components.text')
-local spacer = require('scripts.s3.components.spacer')
-
 local v2 = util.vector2
 
 local WINDOW_SIZE = v2(480, 470)
@@ -307,7 +302,7 @@ local view = {
         ensureSelection()
         if not selectedSlot then return end -- no empty slot left
         placed[selectedSlot] = { recordId = recordId, icon = iconPath }
-        ensureSelection() -- auto-advance to the next empty slot
+        ensureSelection()                   -- auto-advance to the next empty slot
         this.rebuild()
     end,
 }
@@ -323,27 +318,28 @@ local function toolsSection()
         local query = tools[i]
         if query then
             local owned, iconPath = toolInfo(query)
-            slots[#slots + 1] = Slot({
+            slots[#slots + 1] = Slot.Slot({
                 name = 'tool_' .. i,
                 resource = textureForPath(iconPath),
                 size = TOOL_ICON,
                 state = owned and 'selected' or 'missing',
             })
         else
-            slots[#slots + 1] = Slot({ name = 'tool_' .. i, size = TOOL_ICON, state = 'empty' })
+            slots[#slots + 1] = Slot.Slot({ name = 'tool_' .. i, size = TOOL_ICON, state = 'empty' })
         end
         if i < TOOL_SLOTS then
-            slots[#slots + 1] = spacer({ props = { size = v2(4, 0) } })
+            slots[#slots + 1] = { type = ui.TYPE.Widget, props = { size = v2(4, 0) } }
         end
     end
-    return column({
+    return {
+        type = ui.TYPE.Flex,
         name = 'tools_section',
-        children = {
-            text({ text = 'Tools' }),
-            spacer({ props = { size = v2(0, 3) } }),
-            row({ children = slots }),
-        },
-    })
+        content = ui.content({
+            { type = ui.TYPE.Text,   props = { text = 'Tools' },    template = I.MWUI.templates.textNormal },
+            { type = ui.TYPE.Widget, props = { size = v2(0, 3) } },
+            { type = ui.TYPE.Flex,   props = { horizontal = true }, content = ui.content(slots) },
+        }),
+    }
 end
 
 --- Result panel — the resolved output. CLICKING THE RESULT SLOT IS THE CRAFT:
@@ -360,7 +356,7 @@ local function resultSection()
         caption = '(no match)'
     end
 
-    local resultSlot = Slot({
+    local resultSlot = Slot.Slot({
         name = 'slot_output',
         resource = resource,
         count = countLabel,
@@ -368,21 +364,23 @@ local function resultSection()
         onClick = canCraft and function() this.onCraft() end or nil,
     })
 
-    return column({
+    return {
+        type = ui.TYPE.Flex,
         name = 'result_section',
-        children = {
-            text({ text = 'Result' }),
-            spacer({ props = { size = v2(0, 3) } }),
-            row({
-                props = { align = ui.ALIGNMENT.Center },
-                children = {
+        content = ui.content({
+            { type = ui.TYPE.Text,   props = { text = 'Result' }, template = I.MWUI.templates.textNormal },
+            { type = ui.TYPE.Widget, props = { size = v2(0, 3) } },
+            {
+                type = ui.TYPE.Flex,
+                props = { align = ui.ALIGNMENT.Center, horizontal = true },
+                content = ui.content({
                     resultSlot,
-                    spacer({ props = { size = v2(8, 0) } }),
-                    text({ text = caption }),
-                },
-            }),
-        },
-    })
+                    { type = ui.TYPE.Widget, props = { size = v2(8, 0) } },
+                    { type = ui.TYPE.Text,   props = { text = caption }, template = I.MWUI.templates.textNormal },
+                })
+            },
+        }),
+    }
 end
 
 local function hLine(width)
@@ -396,8 +394,8 @@ end
 local function closeButton()
     return {
         type = ui.TYPE.Text,
-        template = I.MWUI.templates.textButtonNormal,
-        props = { text = 'Close', textSize = 18 },
+        template = I.MWUI.templates.textNormal,
+        props = { text = 'Close' },
         events = { mouseClick = async:callback(function() this.close() end) },
     }
 end
@@ -423,34 +421,73 @@ function this.rebuild()
         return
     end
 
-    local content = column({
+    local content = {
+        type = ui.TYPE.Flex,
         name = 'crafting_content',
-        children = {
-            row({
-                name = 'tools_result_row',
-                children = {
-                    toolsSection(),
-                    spacer({ props = { size = v2(26, 0) } }),
-                    resultSection(),
-                },
-            }),
-            spacer({ props = { size = v2(0, 10) } }),
-            inputs,
-            spacer({ props = { size = v2(0, 10) } }),
-            hLine(LINE_W),
-            spacer({ props = { size = v2(0, 6) } }),
-            ItemPicker.Body(materials, {
-                onPick = view.onPick,
-                refresh = function() this.rebuild() end,
-            }),
-            spacer({ props = { size = v2(0, 8) } }),
-            row({ children = { closeButton() } }),
+        props = { position = v2(20, 20) },
+        external = {
+            grow = 1,
+            stretch = 1
         },
-    })
+        content = ui.content({
+            {
+                type = ui.TYPE.Flex,
+                name = 'tools_result_row',
+                props = { horizontal = true },
+                content = ui.content({
+                    toolsSection(),
+                    { type = ui.TYPE.Widget, props = { size = v2(26, 0) } },
+                    resultSection(),
+                }),
+            },
+
+            { type = ui.TYPE.Widget, props = { size = v2(0, 10) } },
+
+            -- grid
+            inputs,
+
+            { type = ui.TYPE.Widget, props = { size = v2(0, 6) } },
+
+            {
+                name = 'itempicker',
+                type = ui.TYPE.Flex,
+                template = I.MWUI.templates.bordersThick,
+                external = {
+                    grow = 1,
+                    stretch = 1
+                },
+                content = ui.content({
+                    ItemPicker.Body(materials, {
+                        onPick = view.onPick,
+                        refresh = function() this.rebuild() end,
+                    }),
+                })
+            },
+
+            { type = ui.TYPE.Widget, props = { size = v2(0, 8) } },
+            -- footer: close button
+            {
+                name = 'footer',
+                type = ui.TYPE.Flex,
+                external = { stretch = 1 },
+                props = {
+                    align = ui.ALIGNMENT.End,
+                },
+                content = ui.content({ closeButton() })
+            },
+            {
+                type = ui.TYPE.Widget,
+                props = {
+                    size = v2(0, 8)
+                }
+            },
+        }),
+    }
 
     local dlg = Window({
         title = 'Crafting Station: ' .. (ctx.context.label or 'Unknown'),
-        body = content,
+        -- body = ui.content(contentList),
+        body = ui.content({ content }),
         props = { anchor = v2(0.5, 0.5), relativePosition = v2(0.4, 0.5), size = WINDOW_SIZE },
         getElement = function() return element end,
     })

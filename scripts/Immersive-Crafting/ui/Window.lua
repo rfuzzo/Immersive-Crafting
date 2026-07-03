@@ -44,7 +44,7 @@ local function colorFromGMST(gmst)
 end
 
 --- Build the draggable/resizable window layout.
----@param opts { title?: string, body: table, props?: table, getElement: fun():any }
+---@param opts { title?: string, body: openmw.ui.Content, props?: table, getElement: fun():any }
 ---@return table layout
 local function Window(opts)
     local getElement = opts.getElement
@@ -83,13 +83,13 @@ local function Window(opts)
 
             local elemX, elemY = element.layout.props.position.x, element.layout.props.position.y
             local elemW, elemH = element.layout.props.size.x, element.layout.props.size.y
-            local mx, my = mouseEvent.position.x, mouseEvent.position.y
-            local edgeMargin = 15 -- pixels from the edge that count as an edge grab
+            local mx, my       = mouseEvent.position.x, mouseEvent.position.y
+            local edgeMargin   = 15 -- pixels from the edge that count as an edge grab
 
-            local onLeft   = mx >= elemX and mx <= elemX + edgeMargin
-            local onRight  = mx >= elemX + elemW - edgeMargin and mx <= elemX + elemW
-            local onTop    = my >= elemY and my <= elemY + edgeMargin
-            local onBottom = my >= elemY + elemH - edgeMargin and my <= elemY + elemH
+            local onLeft       = mx >= elemX and mx <= elemX + edgeMargin
+            local onRight      = mx >= elemX + elemW - edgeMargin and mx <= elemX + elemW
+            local onTop        = my >= elemY and my <= elemY + edgeMargin
+            local onBottom     = my >= elemY + elemH - edgeMargin and my <= elemY + elemH
 
             if onTop and onLeft then
                 element.layout.userData.edgeWhenMouseDown = "top-left"
@@ -182,7 +182,10 @@ local function Window(opts)
             {
                 name = 'foreground',
                 type = ui.TYPE.Flex,
-                props = { relativeSize = v2(1, 1) },
+                props = {
+                    autoSize = false,
+                    relativeSize = v2(1, 1)
+                },
                 content = ui.content {
                     {
                         name = 'header',
@@ -204,9 +207,11 @@ local function Window(opts)
                     {
                         name = 'body',
                         template = I.MWUI.templates.bordersThick,
+                        type = ui.TYPE.Flex,
                         external = { grow = 1, stretch = 1 },
-                        content = ui.content({ opts.body }),
+                        content = opts.body,
                     },
+
                 },
             },
         }),
