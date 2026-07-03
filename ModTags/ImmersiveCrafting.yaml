@@ -2,16 +2,12 @@ wood:
   - ic_wood
 stone:
   - ic_stone
-clay:
-  - ic_clay
-# ── foraging seed entries (testing only — replace/extend from the records dump) ──
+# clay is tagged in ImmersiveCrafting_Ingredients.yaml (real OAAB/TR clay records)
+# ── foraging tool tags ──
+# tree/rock target tags are generated into ImmersiveCrafting_Statics.yaml by
+# tools/static_tags.py (from the tes3-records dump) — don't hand-add them here.
 axe:
   - chitin war axe
   - iron war axe
 shovel:
   - misc_de_muck_shovel_01
-tree:
-  - flora_bc_tree_01
-  - flora_bc_tree_02
-rock:
-  - terrain_rock_bc_01

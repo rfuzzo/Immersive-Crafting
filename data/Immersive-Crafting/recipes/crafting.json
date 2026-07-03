@@ -546,7 +546,7 @@
       }
     ],
     "output": {
-      "id": "ic_charcoal",
+      "id": "T_IngMine_Charcoal_01",
       "count": 1
     }
   },
@@ -1001,7 +1001,7 @@
         "count": 3
       },
       {
-        "id": "ic_charcoal",
+        "id": "Charcoal",
         "count": 2
       }
     ],
@@ -1021,7 +1021,7 @@
         "count": 2
       },
       {
-        "id": "ic_charcoal",
+        "id": "Charcoal",
         "count": 3
       }
     ],
@@ -1516,7 +1516,7 @@
         "count": 2
       },
       {
-        "id": "ic_charcoal",
+        "id": "Charcoal",
         "count": 2
       }
     ],

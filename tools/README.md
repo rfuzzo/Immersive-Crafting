@@ -1,4 +1,31 @@
-# Ingredient tagging tools
+# Tagging tools
+
+## Foraging static tags (trees, rocks)
+
+`static_tags.py` generates the FlexTag file
+`../ModTags/ImmersiveCrafting_Statics.yaml` used by gaze foraging. It scans a
+tes3-records dump and classifies every `Static` by keyword-matching its id and
+mesh path.
+
+From the repo root (dump assumed at `../tes3-records`):
+
+```sh
+py tools/static_tags.py                 # --db ../tes3-records --out ModTags/ImmersiveCrafting_Statics.yaml
+py tools/static_tags.py --db /path/to/tes3-records
+```
+
+- `tree` matches the substring `tree` (covers `flora_bc_tree_*`, `ashtree`,
+  `treestump`, …).
+- `rock` matches `rock`/`boulder`, minus structural/scenery uses (bridges,
+  stairs, doorrocks, rock-nest columns, minecart fills — see `EXCLUDE`).
+- Classification is automatic (no CSV); to tune coverage, edit `INCLUDE` /
+  `EXCLUDE` in the script and regenerate. Standard library only.
+
+The generated file is marked `# GENERATED … do not hand-edit`; the `tree`/`rock`
+target tags must **not** be duplicated in the hand-maintained
+`ImmersiveCrafting.yaml` (which now holds only tool tags like `axe`/`shovel`).
+
+## Ingredient tags
 
 Generate the FlexTag ingredient tag file
 (`../ModTags/ImmersiveCrafting_Ingredients.yaml`) from a reviewable CSV.

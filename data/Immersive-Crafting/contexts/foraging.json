@@ -36,7 +36,7 @@
     "forage": {
       "verb": "Dig clay",
       "label": "Clay",
-      "yield": { "id": "ic_clay", "count": 2 },
+      "yield": { "id": "AB_IngMine_Clay01", "count": 2 },
       "tools": ["shovel"],
       "cooldown": 1800
     },
