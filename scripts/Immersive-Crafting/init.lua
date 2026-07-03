@@ -17,14 +17,23 @@ end
 ---@param actor any
 ---@param output { id: string, count: integer }
 local function grantOutput(actor, output)
-    if not (output and output.id and actor) then return end
+    if not (output and output.id) then
+        log.error('grant: no output in commit payload')
+        return
+    end
+    if not actor then
+        log.error(('grant: no actor in commit payload (output "%s")'):format(tostring(output.id)))
+        return
+    end
     local ok, err = pcall(function()
         local created = world.createObject(output.id, output.count or 1)
-        ---@diagnostic disable-next-line: discard-returns
-        created:moveInto(actor)
+        -- move into the actor's inventory (moveInto wants an Inventory, not the actor)
+        created:moveInto(types.Actor.inventory(actor))
     end)
-    if not ok then
-        log.error(('commit: failed to create output "%s": %s'):format(tostring(output.id), tostring(err)))
+    if ok then
+        log.info(('grant: %d x "%s" -> %s'):format(output.count or 1, output.id, tostring(actor.recordId)))
+    else
+        log.error(('grant: failed to create output "%s": %s'):format(tostring(output.id), tostring(err)))
     end
 end
 
@@ -54,7 +63,12 @@ end
 --- (by record id), then grant the output.
 ---@param data table { actor: any, consume: { id: string, count: integer }[], output: { id: string, count: integer } }
 local function onCraftShaped(data)
-    if not (data and data.actor) then return end
+    if not (data and data.actor) then
+        log.error('craft: event without actor')
+        return
+    end
+    log.info(('craft: %d inputs -> "%s"'):format(
+        #(data.consume or {}), tostring(data.output and data.output.id)))
     local inv = types.Actor.inventory(data.actor)
 
     for _, entry in ipairs(data.consume or {}) do

@@ -19,7 +19,9 @@
 ]]
 
 local core = require('openmw.core')
-local self = require('openmw.self')
+-- NOT named `self`: inside `function CForagingHandler:Method()` the implicit
+-- method receiver would shadow it (self.object -> nil actor in events).
+local omwSelf = require('openmw.self')
 local types = require('openmw.types')
 local ui = require('openmw.ui')
 
@@ -45,7 +47,7 @@ local function missingTools(forage)
     local missing = {}
     for _, tool in ipairs(forage.tools or {}) do
         local found = false
-        for _, item in ipairs(types.Actor.inventory(self):getAll()) do
+        for _, item in ipairs(types.Actor.inventory(omwSelf):getAll()) do
             if lib.matchesTag(item.recordId, tool) then
                 found = true
                 break
@@ -111,7 +113,7 @@ function CForagingHandler:OnActivate(ctx)
 
     -- grant the yield (nothing consumed) via the existing global executor
     core.sendGlobalEvent('ImmersiveCrafting_CraftShaped', {
-        actor = self.object,
+        actor = omwSelf.object,
         consume = {},
         output = forage.yield,
     })
