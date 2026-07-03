@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_bedroll_mk1
+name: Bedroll
+script: ""
+mesh: f\Furn_clothbolt_02.NIF
+icon: m\Tx_clothbolt_02.tga
+data:
+  weight: 5.0
+  value: 10
+  flags: ""

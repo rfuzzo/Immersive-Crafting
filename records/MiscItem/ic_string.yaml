@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_string
+name: String
+script: ""
+mesh: n\Ingred_Kresh_Fiber_01.nif
+icon: n\Tx_kresh_fiber_01.tga
+data:
+  weight: 0.2
+  value: 1
+  flags: ""

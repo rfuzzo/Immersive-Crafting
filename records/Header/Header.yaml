@@ -4,7 +4,7 @@ version: 1.3
 file_type: Esp
 author: ""
 description: ""
-num_objects: 1
+num_objects: 46
 masters:
   - - Morrowind.esm
     - 79837557

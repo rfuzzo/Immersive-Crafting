@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_chitin_dust
+name: Chitin Dust
+script: ""
+mesh: n\Ingred_Blonemeal_01.nif
+icon: n\Tx_bonemeal_01.tga
+data:
+  weight: 0.5
+  value: 2
+  flags: ""

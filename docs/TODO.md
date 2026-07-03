@@ -176,11 +176,13 @@ Applied per design review (ratified 2026-07-02):
 Open items:
 - 🟡 **`ic_*` records ship as plugin records — pipeline in place** *(D1 amendment ratified
   2026-07-03)*: `tes3util.exe` packs `records/<Type>/<id>.yaml` → `immersive_crafting.esp`
-  (`_pack.ps1`). First record done (`records/MiscItem/ic_wood.yaml`). Remaining: the other
-  ~44 records from `docs/ic_records.md`; icon/mesh picking is aided by
-  `docs/vanilla_icons.csv` (3631 icon-bearing vanilla records, regenerate with
-  `py tools/extract_icons.py <dump-root>`). Note `ic_chitin_plate` / `ic_netch_hide` are
-  referenced but never produced — they need world/leveled-list sources too.
+  (`_pack.ps1`). **All 46 records drafted** and packing clean (44 MiscItem + Armor
+  `ic_armor_hide_mk1` cloned from netch_leather_cuirass + `ic_wood`). Icon/mesh picks are
+  borrowed vanilla placeholders (from `docs/vanilla_icons.csv`; regenerate with
+  `py tools/extract_icons.py <dump-root>`) — **review pass wanted**, esp.: stick=broom,
+  molds=redware/limeware flasks, station kits are carryable MiscItems whose
+  drop-to-deploy/Activator design is still open. `ic_chitin_plate` / `ic_netch_hide` are
+  drafted but never produced by recipes — they still need world/leveled-list sources.
 - ✅ **Bushcrafting = the work cloth** *(ratified 2026-07-02)*. No abstract "craft anywhere"
   trigger: the tier-0 surface is a droppable cloth (or hide) you unroll on the ground — the
   old `crafting_cloth` context was merged into `bushcrafting` (recordIds `["cloth","hide"]`,

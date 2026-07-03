@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_cloth
+name: Cloth
+script: ""
+mesh: m\misc_foldedcloth00.nif
+icon: m\misc_cloth00.tga
+data:
+  weight: 1.0
+  value: 3
+  flags: ""

@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_pot
+name: Cooking Pot
+script: ""
+mesh: m\Misc_Com_Bucket_Metal.NIF
+icon: m\Misc_Com_Bucket_Metal.tga
+data:
+  weight: 5.0
+  value: 10
+  flags: ""

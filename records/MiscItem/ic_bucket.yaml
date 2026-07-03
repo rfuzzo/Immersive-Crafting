@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_bucket
+name: Bucket
+script: ""
+mesh: m\Misc_Com_Bucket_01.NIF
+icon: m\Misc_Com_Bucket_01.tga
+data:
+  weight: 3.0
+  value: 5
+  flags: ""

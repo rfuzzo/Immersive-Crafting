@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_station_furnace
+name: Furnace
+script: ""
+mesh: n\Ingred_Scrap_Metal_01.nif
+icon: n\Tx_scrapmetal_01.tga
+data:
+  weight: 25.0
+  value: 50
+  flags: ""

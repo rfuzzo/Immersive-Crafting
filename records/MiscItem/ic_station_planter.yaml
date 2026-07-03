@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_station_planter
+name: Planter
+script: ""
+mesh: n\Ingred_Muck_01.nif
+icon: n\Tx_muck_01.tga
+data:
+  weight: 12.0
+  value: 15
+  flags: ""

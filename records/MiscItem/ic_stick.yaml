@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_stick
+name: Stick
+script: ""
+mesh: m\Misc_Com_Broom_01.NIF
+icon: m\Misc_Com_Broom_01.tga
+data:
+  weight: 0.5
+  value: 1
+  flags: ""

@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_mold_spear_burnt
+name: Burnt Spear Mold
+script: ""
+mesh: m\Misc_LW_Flask.NIF
+icon: m\Misc_LW_Flask.tga
+data:
+  weight: 3.0
+  value: 5
+  flags: ""

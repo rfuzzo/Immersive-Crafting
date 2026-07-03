@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_glass_component
+name: Glass Component
+script: ""
+mesh: n\Ingred_Raw_Glass_01.nif
+icon: n\Tx_RawGlass.tga
+data:
+  weight: 2.0
+  value: 50
+  flags: ""

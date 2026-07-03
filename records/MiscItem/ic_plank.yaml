@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_plank
+name: Plank
+script: ""
+mesh: x\ex_scrapwood05.NIF
+icon: n\Tx_trama_root_01.tga
+data:
+  weight: 2.0
+  value: 2
+  flags: ""

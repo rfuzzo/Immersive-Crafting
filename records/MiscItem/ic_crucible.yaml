@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_crucible
+name: Crucible
+script: ""
+mesh: m\Apparatus_A_Calcinator_01.NIF
+icon: m\Tx_calcinator_01.tga
+data:
+  weight: 3.0
+  value: 15
+  flags: ""
