@@ -47,6 +47,7 @@ local this = {}
 this.timeSinceLastUpdate = 0 ---@type number
 
 local currentContext = nil ---@type CContext?
+local currentObject = nil ---@type any? matched world object (proximity/gaze), if any
 local currentActions = {} ---@type CAction[]?
 local overlayElement = nil
 
@@ -108,7 +109,7 @@ local function updateOverlayUI()
         local handler = dataManager.resolveHandler(action.handler)
         if handler then
             ---@type HandlerContext
-            local ctx = { action = action, context = currentContext }
+            local ctx = { action = action, context = currentContext, object = currentObject }
             local viewModel = handler:present(ctx)
             if viewModel then
                 if #rows > 0 then -- separate stacked actions
@@ -149,13 +150,14 @@ end
 ---Register an action that should be shown in the overlay
 ---@param context CContext
 ---@param action CAction?
-function this.registerAction(context, action)
+function this.registerAction(context, action, object)
     if not action then
         log.error('Cannot register nil action to overlay')
         return
     end
 
     currentContext = context
+    currentObject = object
     if not currentActions then currentActions = {} end
     table.insert(currentActions, action)
 
@@ -168,6 +170,7 @@ end
 function this.clearAllActions()
     currentActions = nil
     currentContext = nil
+    currentObject = nil
 
     updateOverlayUI()
 end
@@ -193,7 +196,8 @@ function this.onContextualAction()
             ---@type HandlerContext
             local ctx = {
                 action = action,
-                context = currentContext
+                context = currentContext,
+                object = currentObject
             }
             handler:OnActivate(ctx)
         end

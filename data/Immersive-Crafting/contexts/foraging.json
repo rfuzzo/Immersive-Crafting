@@ -1,0 +1,45 @@
+[
+  {
+    "id": "forage_tree",
+    "label": "Tree",
+    "recordIds": ["tree"],
+    "trigger": "gaze",
+    "activationRange": 300,
+    "forage": {
+      "verb": "Chop wood",
+      "label": "Wood",
+      "yield": { "id": "ic_wood", "count": 1 },
+      "tools": ["axe"],
+      "cooldown": 3600
+    },
+    "actions": ["foraging"]
+  },
+  {
+    "id": "forage_rock",
+    "label": "Rock",
+    "recordIds": ["rock"],
+    "trigger": "gaze",
+    "activationRange": 300,
+    "forage": {
+      "verb": "Gather stones",
+      "label": "Stone",
+      "yield": { "id": "ic_stone", "count": 2 },
+      "cooldown": 3600
+    },
+    "actions": ["foraging"]
+  },
+  {
+    "id": "forage_clay",
+    "label": "Waterside",
+    "trigger": "condition",
+    "condition": "near_water",
+    "forage": {
+      "verb": "Dig clay",
+      "label": "Clay",
+      "yield": { "id": "ic_clay", "count": 2 },
+      "tools": ["shovel"],
+      "cooldown": 1800
+    },
+    "actions": ["foraging"]
+  }
+]

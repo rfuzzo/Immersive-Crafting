@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_stone
+name: Stone
+script: ""
+mesh: n\Ingred_RawEbony_01.NIF
+icon: n\Tx_RawEbony.tga
+data:
+  weight: 5.0
+  value: 1
+  flags: ""

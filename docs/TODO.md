@@ -200,3 +200,35 @@ Open items:
   spaces vs `steel_cuirass` with underscores).
 - 🟡 Bootstrap knife assumption ratified: every vanilla start passes the census-office
   dagger; `Knife` tag should cover all daggers.
+
+## Foraging (gaze + condition contexts)
+
+Raw-material gathering from the world, built on two new context triggers:
+
+- ✅ **`trigger:"gaze"`** — a single crosshair raycast per tick (`camera.getPosition()` +
+  `viewportToWorldVector` → `nearby.castRay`), matched against gaze contexts' recordIds/tags.
+  This is how statics (trees, rocks) are targeted — they never appear in `nearby.*` lists.
+  The gaze target wins over proximity contexts (aiming is the stronger signal).
+- ✅ **`trigger:"condition"`** — named Lua predicates (`conditions.lua`, extensible via
+  `register`); contexts have no recordIds/object. First predicate: `near_water` (player z
+  within a band around the cell water level). Shown at a nominal distance of 100 so nearer
+  stations still win the overlay.
+- ✅ **Foraging definition on the context** (`forage: { verb, label, yield, tools, cooldown }`)
+  + `foraging` action/handler: tools required-not-consumed, yield granted via the existing
+  `ImmersiveCrafting_CraftShaped` executor (empty consume). Cooldowns are per **object**
+  (gaze) / per **context** (condition), in **game seconds** (3600 = 1 game hour — they pass
+  while sleeping), persisted in the player save (`forageState.lua`).
+- ✅ `HandlerContext.object` — overlay/contextManager now pass the matched world object
+  through to handlers (needed for per-object cooldowns; useful generally).
+- ✅ Data: `forage_tree` (axe → `ic_wood`), `forage_rock` (→ `ic_stone` ×2),
+  `forage_clay` (shovel near water → `ic_clay` ×2). New records `ic_stone`/`ic_clay`
+  (placeholder meshes/icons — review with the rest). Tag seeds in
+  `ModTags/ImmersiveCrafting.yaml` (`axe`, `shovel`, `tree`, `rock` — **testing seeds**,
+  replace from the records dump; tree/rock static ids are guesses).
+
+Verify in-game:
+- `nearby.castRay` returns `hitObject` for statics (and that `viewportToWorldVector` +
+  `camera.getPosition` behave in both 1st/3rd person; `{ ignore = self }` set).
+- `cell.waterLevel` semantics in exteriors (sea level 0) — tune the `near_water` band.
+- Gaze-vs-proximity priority feels right (tree prompt while standing at a station).
+- Cooldown durations (1 game hour ≈ 2 real minutes at default timescale).

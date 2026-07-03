@@ -5,11 +5,20 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field label string
 ---@field recordIds string[] Record ids OR FlexTag tags that identify this station (e.g. "bowl")
 ---@field requires string[]|nil Extra FlexTag tags that must also be present nearby (e.g. "fire")
----@field trigger string|nil How the context activates: "proximity" (default, shown in the nearby overlay) or "activate" (triggered by activating the object; excluded from proximity)
+---@field trigger string|nil Detection: "proximity" (default), "activate" (activating the object opens it), "gaze" (crosshair raycast — for statics like trees/rocks), or "condition" (named predicate, no object)
+---@field condition string|nil trigger:"condition" only — predicate name in conditions.lua (e.g. "near_water")
+---@field forage CContext.Forage|nil foraging definition (see handlers/foraging.lua)
 ---@field layout CContext.Layout|nil UI layout for the crafting window (grid or process). Falls back to `gridSize`, then a 2x2 grid.
 ---@field activationRange number|nil Distance in units to detect station (default 150)
 ---@field actions CAction[]|Id[] List of actions available at this station
 local CContext = {}
+
+---@class CContext.Forage
+---@field yield { id: string, count: integer } granted item (real record id)
+---@field verb string|nil action label (e.g. "Chop wood")
+---@field label string|nil material name for messages (e.g. "Wood")
+---@field tools string[]|nil required tool tags/ids in inventory (NOT consumed)
+---@field cooldown number|nil recovery in GAME seconds (3600 = 1 game hour); default 1800
 
 ---@class CContext.Layout
 ---@field kind string "grid" | "process"
@@ -25,11 +34,14 @@ local CContext = {}
 ---@return CContext?
 function CContext:fromTable(tbl)
     -- validate input and return nil if invalid
+    -- condition contexts have no world object, hence no recordIds — they name a
+    -- predicate instead; every other trigger matches recordIds/tags.
     if
         not tbl.id
         or not tbl.label
-        or not tbl.recordIds
-        or not tbl.actions then
+        or not tbl.actions
+        or (tbl.trigger ~= 'condition' and not tbl.recordIds)
+        or (tbl.trigger == 'condition' and not tbl.condition) then
         log.error('Invalid CContext table: missing required fields')
         return nil
     end

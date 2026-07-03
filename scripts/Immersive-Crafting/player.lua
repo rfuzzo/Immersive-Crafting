@@ -8,6 +8,7 @@ local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local contextManager = require('scripts.Immersive-Crafting.contextManager')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
+local forageState = require('scripts.Immersive-Crafting.forageState')
 local log = require('scripts.Immersive-Crafting.log')
 
 --- Push the set of "activate"-triggered contexts to the global script so it can
@@ -54,12 +55,15 @@ local function onInit() log.info('Immersive Crafting player script initialized')
 local function onLoad(data)
     dataManager.loadAllData()
     registerActivateContexts()
+    forageState.load(data and data.forage)
 
     log.info('Immersive Crafting player script loaded from save')
 end
 
 ---Called before saving
-local function onSave() return {} end
+local function onSave()
+    return { forage = forageState.serialize() }
+end
 
 ---Main update loop
 local function onUpdate(dt)

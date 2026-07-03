@@ -6,6 +6,7 @@ local CAbstractHandler = {}
 ---@class HandlerContext
 ---@field action CAction
 ---@field context CContext
+---@field object any|nil The matched world object (proximity/gaze target), if any
 
 -- Constructor
 ---@return CAbstractHandler

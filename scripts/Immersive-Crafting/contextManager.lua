@@ -1,11 +1,18 @@
 local log = require('scripts.Immersive-Crafting.log')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local lib = require('scripts.Immersive-Crafting.lib')
+local conditions = require('scripts.Immersive-Crafting.conditions')
 
 local nearby = require('openmw.nearby')
 local self = require('openmw.self')
+local util = require('openmw.util')
+local camera = require('openmw.camera')
 
 local updateInterval = 0.25 -- Check for nearby context every 0.25 seconds
+
+-- Nominal "distance" for condition contexts (no world object): closer stations
+-- still win, but the condition card shows when nothing else is around.
+local CONDITION_DISTANCE = 100
 
 local this = {}
 
@@ -50,7 +57,7 @@ local function updateOverlay()
     if not context then return end
 
     for _, action in ipairs(context.actions or {}) do
-        overlay.registerAction(context, resolveAction(action))
+        overlay.registerAction(context, resolveAction(action), result.object)
     end
 end
 
@@ -103,37 +110,91 @@ local function findcurrentContexts(registries, maxRange)
     local results = {}
 
     for id, def in pairs(registries.contexts) do
-        -- Both proximity and activate contexts show a nearby card. For "activate"
-        -- contexts the card is info-only (no [F] action; the station is opened by
-        -- activating the object — see the global activation handler).
-        local range = def.activationRange or 150
+        if def.trigger == 'gaze' then
+            -- handled by findGazeContext (crosshair raycast, not proximity)
+        elseif def.trigger == 'condition' then
+            -- predicate contexts have no world object (e.g. shovel near water)
+            if def.condition and conditions.check(def.condition) then
+                results[id] = {
+                    context = def,
+                    object = nil,
+                    distance = CONDITION_DISTANCE,
+                }
+            end
+        else
+            -- Both proximity and activate contexts show a nearby card. For "activate"
+            -- contexts the card is info-only (no [F] action; the station is opened by
+            -- activating the object — see the global activation handler).
+            local range = def.activationRange or 150
 
-        -- closest candidate that matches any of the context's recordIds (id or tag)
-        local best = nil
-        for _, cand in ipairs(candidates) do
-            if cand.distance <= range then
-                for _, rid in ipairs(def.recordIds or {}) do
-                    if lib.matchesTag(cand.recordId, rid) then
-                        if not best or cand.distance < best.distance then
-                            best = cand
+            -- closest candidate that matches any of the context's recordIds (id or tag)
+            local best = nil
+            for _, cand in ipairs(candidates) do
+                if cand.distance <= range then
+                    for _, rid in ipairs(def.recordIds or {}) do
+                        if lib.matchesTag(cand.recordId, rid) then
+                            if not best or cand.distance < best.distance then
+                                best = cand
+                            end
+                            break
                         end
-                        break
                     end
                 end
             end
-        end
 
-        -- gate on any extra required tags nearby (e.g. cooking_pot requires "fire")
-        if best and (not def.requires or hasRequired(candidates, def.requires)) then
-            results[id] = {
-                context = def,
-                object = best.object,
-                distance = best.distance,
-            }
+            -- gate on any extra required tags nearby (e.g. cooking_pot requires "fire")
+            if best and (not def.requires or hasRequired(candidates, def.requires)) then
+                results[id] = {
+                    context = def,
+                    object = best.object,
+                    distance = best.distance,
+                }
+            end
         end
     end
 
     return results
+end
+
+---Find the gaze context, if any: a single crosshair raycast against the world,
+---matched against `trigger:"gaze"` contexts (trees, rocks — statics never appear
+---in the nearby.* lists, so proximity cannot find them).
+---@param registries Registries
+---@return ProximityResult?
+local function findGazeContext(registries)
+    -- longest gaze range among gaze contexts (one raycast serves all)
+    local maxRange = 0
+    for _, def in pairs(registries.contexts) do
+        if def.trigger == 'gaze' then
+            maxRange = math.max(maxRange, def.activationRange or 200)
+        end
+    end
+    if maxRange == 0 then return nil end -- no gaze contexts defined
+
+    local from = camera.getPosition()
+    local dir = camera.viewportToWorldVector(util.vector2(0.5, 0.5))
+    local ok, res = pcall(function()
+        return nearby.castRay(from, from + dir * maxRange, { ignore = self })
+    end)
+    if not ok or not res or not res.hitObject then return nil end
+
+    local recordId = res.hitObject.recordId
+    local distance = (res.hitPos - self.position):length()
+
+    for _, def in pairs(registries.contexts) do
+        if def.trigger == 'gaze' and distance <= (def.activationRange or 200) then
+            for _, rid in ipairs(def.recordIds or {}) do
+                if lib.matchesTag(recordId, rid) then
+                    return {
+                        context = def,
+                        object = res.hitObject,
+                        distance = distance,
+                    }
+                end
+            end
+        end
+    end
+    return nil
 end
 
 ---Update nearby contexts and overlay actions
@@ -156,6 +217,10 @@ local function updatecurrentContexts()
             closestContext = result
         end
     end
+
+    -- the gaze target wins over everything: aiming at it is the stronger signal
+    local gaze = findGazeContext(GRegistries)
+    if gaze then closestContext = gaze end
 
     if not closestContext then
         this.currentContext = nil
