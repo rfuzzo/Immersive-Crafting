@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_wood
+name: Wood
+script: ""
+mesh: x\ex_scrapwood05.NIF
+icon: n\Tx_trama_root_01.tga
+data:
+  weight: 4.0
+  value: 1
+  flags: ""
