@@ -174,11 +174,13 @@ Applied per design review (ratified 2026-07-02):
   (`processing.json`, `woodworking.json`) removed.
 
 Open items:
-- ❌ **`ic_*` records need a content plugin** (~45 records, see `docs/ic_records.md`).
-  Runtime `createRecordDraft` outputs are not save-serialised → progression items would
-  vanish on reload. **Proposed D1 amendment:** custom items ship as plugin (.esp/.omwaddon)
-  records. Note `ic_chitin_plate` / `ic_netch_hide` are referenced but never produced —
-  they need world/leveled-list sources too.
+- 🟡 **`ic_*` records ship as plugin records — pipeline in place** *(D1 amendment ratified
+  2026-07-03)*: `tes3util.exe` packs `records/<Type>/<id>.yaml` → `immersive_crafting.esp`
+  (`_pack.ps1`). First record done (`records/MiscItem/ic_wood.yaml`). Remaining: the other
+  ~44 records from `docs/ic_records.md`; icon/mesh picking is aided by
+  `docs/vanilla_icons.csv` (3631 icon-bearing vanilla records, regenerate with
+  `py tools/extract_icons.py <dump-root>`). Note `ic_chitin_plate` / `ic_netch_hide` are
+  referenced but never produced — they need world/leveled-list sources too.
 - ✅ **Bushcrafting = the work cloth** *(ratified 2026-07-02)*. No abstract "craft anywhere"
   trigger: the tier-0 surface is a droppable cloth (or hide) you unroll on the ground — the
   old `crafting_cloth` context was merged into `bushcrafting` (recordIds `["cloth","hide"]`,
