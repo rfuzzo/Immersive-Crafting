@@ -1,7 +1,5 @@
 ---Player Script for Immersive Crafting
 
-local input = require('openmw.input')
-local async = require('openmw.async')
 local core = require('openmw.core')
 
 local dataManager = require('scripts.Immersive-Crafting.dataManager')
@@ -81,11 +79,9 @@ local function onUpdate(dt)
     overlay.onUpdate(dt)
 end
 
--- callbacks
-input.registerActionHandler('ContextualAction', async:callback(function(pressed)
-    if not pressed then return end
-    overlay.onContextualAction()
-end))
+-- The contextual action key is polled every frame inside the overlay's onUpdate
+-- (ContextualOverlay.handleActionInput) so it can support hold-to-forage timing;
+-- no edge callback is registered here.
 
 return {
     engineHandlers = {

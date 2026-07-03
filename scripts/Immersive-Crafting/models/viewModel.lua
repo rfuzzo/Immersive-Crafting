@@ -10,3 +10,4 @@
 ---@field label string
 ---@field enabled boolean
 ---@field disabledReason string|nil
+---@field hold number|nil seconds the key must be held to trigger (nil/0 = instant press)

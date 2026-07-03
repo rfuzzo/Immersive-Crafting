@@ -41,6 +41,9 @@ local OVERLAY_POS = v2(0.99, 0.75)
 local OVERLAY_ANCHOR = v2(1, 0)
 local LINE_W = 190
 
+-- Width (in cells) of the ASCII hold bar drawn while a forage key is held.
+local HOLD_BAR_CELLS = 16
+
 local this = {}
 
 -- State variables
@@ -50,6 +53,17 @@ local currentContext = nil ---@type CContext?
 local currentObject = nil ---@type any? matched world object (proximity/gaze), if any
 local currentActions = {} ---@type CAction[]?
 local overlayElement = nil
+
+-- Hold-to-act state. `duration` (seconds) comes from the current context's
+-- primary hold action (foraging); `elapsed` accrues while the key is held.
+-- `fired` guards against re-triggering until the key is released.
+local hold = {
+    duration = 0, ---@type number 0 = current context acts on press, not hold
+    enabled = false, ---@type boolean is the hold action currently allowed
+    elapsed = 0, ---@type number
+    fired = false, ---@type boolean
+}
+local prevPressed = false ---@type boolean edge tracker for instant (non-hold) actions
 
 --- Thin separator line.
 local function hLine()
@@ -78,12 +92,25 @@ local function renderViewModel(viewModel, rows)
         rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
     end
 
-    -- action hint: "[F] <label>" (gold when enabled)
+    -- action hint: "[F] <label>" (gold when enabled). Held actions append a hint.
     if viewModel.action then
         local template = viewModel.action.enabled
             and I.MWUI.templates.textHeader
             or I.MWUI.templates.textNormal
-        rows[#rows + 1] = c.text({ text = ('[F] %s'):format(viewModel.action.label), template = template })
+        local label = viewModel.action.label
+        if viewModel.action.hold and viewModel.action.hold > 0 and not viewModel.progress then
+            label = label .. ' (hold)'
+        end
+        rows[#rows + 1] = c.text({ text = ('[F] %s'):format(label), template = template })
+        rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
+    end
+
+    -- hold progress bar: shown only while the key is actively held.
+    if viewModel.progress then
+        local p = math.max(0, math.min(1, viewModel.progress))
+        local filled = math.floor(p * HOLD_BAR_CELLS + 0.5)
+        local bar = '[' .. string.rep('|', filled) .. string.rep('.', HOLD_BAR_CELLS - filled) .. ']'
+        rows[#rows + 1] = c.text({ text = bar, template = I.MWUI.templates.textHeader })
         rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
     end
 
@@ -104,6 +131,10 @@ local function updateOverlayUI()
     if not currentActions then return end
     if not currentContext then return end
 
+    -- Reset the hold spec each rebuild; the first hold-capable action sets it.
+    hold.duration = 0
+    hold.enabled = false
+
     local rows = {}
     for _, action in pairs(currentActions) do
         local handler = dataManager.resolveHandler(action.handler)
@@ -112,6 +143,17 @@ local function updateOverlayUI()
             local ctx = { action = action, context = currentContext, object = currentObject }
             local viewModel = handler:present(ctx)
             if viewModel then
+                -- adopt the first hold-capable action as the context's hold action,
+                -- and feed live hold progress back into its card.
+                if viewModel.action and viewModel.action.hold and viewModel.action.hold > 0 then
+                    if hold.duration == 0 then
+                        hold.duration = viewModel.action.hold
+                        hold.enabled = viewModel.action.enabled and true or false
+                    end
+                    if hold.elapsed > 0 then
+                        viewModel.progress = hold.elapsed / viewModel.action.hold
+                    end
+                end
                 if #rows > 0 then -- separate stacked actions
                     rows[#rows + 1] = c.spacer({ props = { size = v2(0, 8) } })
                     rows[#rows + 1] = hLine()
@@ -172,6 +214,12 @@ function this.clearAllActions()
     currentContext = nil
     currentObject = nil
 
+    -- looking away / walking off cancels any in-progress hold
+    hold.duration = 0
+    hold.enabled = false
+    hold.elapsed = 0
+    hold.fired = false
+
     updateOverlayUI()
 end
 
@@ -179,17 +227,9 @@ end
 
 --#region Events
 
-function this.onContextualAction()
-    -- early outs
-    if not overlayElement then return end
+--- Dispatch OnActivate for every action on the current context.
+local function fireActions()
     if not currentContext then return end
-    if not currentActions then return end
-
-    -- Activate-triggered stations are opened by activating the object, not [F];
-    -- their overlay card is info-only.
-    if currentContext.trigger == 'activate' then return end
-
-    -- for all actions
     for _, action in pairs(currentActions or {}) do
         local handler = dataManager.resolveHandler(action.handler)
         if handler then
@@ -204,15 +244,57 @@ function this.onContextualAction()
     end
 end
 
+--- Drive the contextual action key each frame. Instant actions fire on the press
+--- edge; hold actions (foraging) accrue while the key is down and fire once the
+--- hold bar fills, then wait for release before they can fire again.
+---@param pressed boolean current key state
+---@param dt number
+local function handleActionInput(pressed, dt)
+    -- no card, or an activate-only station (opened by activating the object): the
+    -- key does nothing here. Keep the edge tracker in sync so we don't fire late.
+    if not overlayElement or not currentContext or not currentActions
+        or currentContext.trigger == 'activate' then
+        prevPressed = pressed
+        return
+    end
+
+    if hold.duration > 0 then
+        -- hold-to-act (foraging)
+        if pressed and hold.enabled then
+            hold.elapsed = hold.elapsed + dt
+            if not hold.fired and hold.elapsed >= hold.duration then
+                fireActions()
+                hold.fired = true
+            end
+        else
+            -- released, or the action is currently disabled: reset the bar
+            hold.elapsed = 0
+            hold.fired = false
+        end
+    else
+        -- instant press (crafting stations)
+        if pressed and not prevPressed then
+            fireActions()
+        end
+    end
+
+    prevPressed = pressed
+end
+
 --#endregion
 
 --#region Parent
 
 ---Main update function called every frame
 function this.onUpdate(dt)
-    -- Periodically update UI
+    -- Poll the contextual action key every frame so hold timing is smooth and
+    -- edge-accurate (see handleActionInput).
+    handleActionInput(input.getBooleanActionValue('ContextualAction'), dt)
+
+    -- Periodically update UI — but refresh every frame while a hold is in
+    -- progress so the hold bar fills smoothly.
     this.timeSinceLastUpdate = this.timeSinceLastUpdate + dt
-    if this.timeSinceLastUpdate >= updateInterval then
+    if hold.elapsed > 0 or this.timeSinceLastUpdate >= updateInterval then
         updateOverlayUI()
         this.timeSinceLastUpdate = 0
     end

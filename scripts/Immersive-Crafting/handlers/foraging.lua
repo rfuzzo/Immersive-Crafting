@@ -28,6 +28,10 @@ local lib = require('scripts.Immersive-Crafting.lib')
 local forageState = require('scripts.Immersive-Crafting.forageState')
 local log = require('scripts.Immersive-Crafting.log')
 
+-- Seconds the forage key must be held before the yield is granted. A gather is a
+-- deliberate act (chopping, digging), not a tap — the overlay shows a hold bar.
+local DEFAULT_HOLD = 1.2
+
 ---@class CForagingHandler : CAbstractHandler
 local CForagingHandler = {
 
@@ -90,6 +94,7 @@ function CForagingHandler:evaluate(ctx)
             id = 'foraging',
             label = forage.verb or ('Gather ' .. (forage.label or forage.yield.id)),
             enabled = enabled,
+            hold = forage.holdTime or DEFAULT_HOLD,
         },
     }
 end

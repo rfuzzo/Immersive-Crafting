@@ -17,16 +17,17 @@ local this = {}
 
 local registry = {} ---@type table<string, fun(): boolean>
 
---- In/near water: the player's z is within a band around the cell's water
---- level (standing in the shallows or on the waterline). Cells without water
---- have no water level. Margins are a first guess — tune in-game.
+--- In/near water: the player's z is within a tight band around the cell's
+--- water level (standing in the shallows or on the waterline). Cells without
+--- water have no water level. Margins are tuned to keep the trigger at the
+--- shoreline rather than up on the bank — tune in-game.
 registry.near_water = function()
     local cell = self.cell
     if not cell then return false end
     local waterLevel = cell.waterLevel
     if waterLevel == nil then return false end
     local dz = self.position.z - waterLevel
-    return dz > -64 and dz < 128
+    return dz > -64 and dz < 32
 end
 
 --- Evaluate a named condition (false on unknown names or predicate errors).

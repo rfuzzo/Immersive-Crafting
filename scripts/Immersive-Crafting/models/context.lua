@@ -19,6 +19,7 @@ local CContext = {}
 ---@field label string|nil material name for messages (e.g. "Wood")
 ---@field tools string[]|nil required tool tags/ids in inventory (NOT consumed)
 ---@field cooldown number|nil recovery in GAME seconds (3600 = 1 game hour); default 1800
+---@field holdTime number|nil seconds the forage key must be held (default 1.2)
 
 ---@class CContext.Layout
 ---@field kind string "grid" | "process"

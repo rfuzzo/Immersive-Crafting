@@ -197,6 +197,21 @@ local function findGazeContext(registries)
     return nil
 end
 
+--- Same logical target? Each poll builds fresh result tables, so identity
+--- comparison would see a "change" every tick (rebuilding the overlay and
+--- resetting hold-to-forage progress). Compare the context definition and the
+--- matched world object instead.
+---@param a ProximityResult|nil
+---@param b ProximityResult|nil
+---@return boolean
+local function isSameResult(a, b)
+    if a == nil or b == nil then return a == b end
+    if a.context ~= b.context then return false end
+    local aId = a.object and a.object.id or nil
+    local bId = b.object and b.object.id or nil
+    return aId == bId
+end
+
 ---Update nearby contexts and overlay actions
 local function updatecurrentContexts()
     if not GRegistries then
@@ -229,7 +244,7 @@ local function updatecurrentContexts()
     end
 
     this.currentContext = closestContext
-    if previousContext ~= this.currentContext then updateOverlay() end
+    if not isSameResult(previousContext, closestContext) then updateOverlay() end
 end
 
 ---Main update function called every frame
