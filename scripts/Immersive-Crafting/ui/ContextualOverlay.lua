@@ -29,9 +29,17 @@ local input = require('openmw.input')
 local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
+local c = require('scripts.Immersive-Crafting.ui.components')
+
+local v2 = util.vector2
 
 -- Configuration
 local updateInterval = 0.25 -- Check for nearby context every 0.25 seconds
+
+-- Position: lower-right, card top at ~3/4 screen height, growing downward.
+local OVERLAY_POS = v2(0.99, 0.75)
+local OVERLAY_ANCHOR = v2(1, 0)
+local LINE_W = 190
 
 local this = {}
 
@@ -41,6 +49,48 @@ this.timeSinceLastUpdate = 0 ---@type number
 local currentContext = nil ---@type CContext?
 local currentActions = {} ---@type CAction[]?
 local overlayElement = nil
+
+--- Thin separator line.
+local function hLine()
+    return {
+        type = ui.TYPE.Image,
+        template = I.MWUI.templates.horizontalLine,
+        props = { size = v2(LINE_W, 2) },
+    }
+end
+
+--- Build one action card's rows from its ViewModel.
+---@param viewModel ViewModel
+---@param rows table[] target list
+local function renderViewModel(viewModel, rows)
+    -- header: station name
+    if viewModel.header then
+        rows[#rows + 1] = c.text({ text = viewModel.header, template = I.MWUI.templates.textHeader })
+        rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
+        rows[#rows + 1] = hLine()
+        rows[#rows + 1] = c.spacer({ props = { size = v2(0, 4) } })
+    end
+
+    -- status
+    if viewModel.status then
+        rows[#rows + 1] = c.text({ text = viewModel.status })
+        rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
+    end
+
+    -- action hint: "[F] <label>" (gold when enabled)
+    if viewModel.action then
+        local template = viewModel.action.enabled
+            and I.MWUI.templates.textHeader
+            or I.MWUI.templates.textNormal
+        rows[#rows + 1] = c.text({ text = ('[F] %s'):format(viewModel.action.label), template = template })
+        rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
+    end
+
+    -- details (e.g. "Missing: Water", input roles)
+    for _, detail in ipairs(viewModel.details or {}) do
+        rows[#rows + 1] = c.text({ text = detail })
+    end
+end
 
 ---Create or update the overlay UI element
 local function updateOverlayUI()
@@ -53,146 +103,45 @@ local function updateOverlayUI()
     if not currentActions then return end
     if not currentContext then return end
 
-    -- log.trace('Updating contextual overlay UI')
-
-    -- Create the overlay container
-    local overlay = {
-        type = ui.TYPE.Container,
-        layer = 'HUD',
-        name = "contextualOverlay",
-        template = I.MWUI.templates.boxTransparent,
-        props = {
-            -- position: upper right corner
-            relativePosition = util.vector2(1, 0),
-            anchor = util.vector2(1, 0)
-        },
-        content = ui.content {}
-    }
-
-    local mainSizer = {
-        type = ui.TYPE.Flex,
-        name = 'mainLayout',
-        props = { size = util.vector2(220, 100) },
-        content = ui.content {}
-    }
-    overlay.content:add(mainSizer)
-
+    local rows = {}
     for _, action in pairs(currentActions) do
-        -- render the viewmodel
         local handler = dataManager.resolveHandler(action.handler)
         if handler then
             ---@type HandlerContext
-            local ctx =
-            {
-                action = action,
-                context = currentContext
-            }
+            local ctx = { action = action, context = currentContext }
             local viewModel = handler:present(ctx)
-
             if viewModel then
-                -- render the viewmodel
-
-                -- log.trace('Rendering overlay for action: ' .. action.id)
-
-                -- first the header
-                local headerSizer = {
-                    type = ui.TYPE.Container,
-                    template = I.MWUI.templates.padding,
-                    props = {
-                        anchor = util.vector2(0.5, 0),
-                        relativePosition = util.vector2(0.5, 0)
-                    },
-                    content = ui.content {}
-                }
-                local stationNameWidget = {
-                    type = ui.TYPE.Text,
-                    template = I.MWUI.templates.textHeader,
-                    props = {
-                        text = viewModel.header,
-                        textAlignH = ui.ALIGNMENT.Center
-                    }
-                }
-                headerSizer.content:add(stationNameWidget)
-                mainSizer.content:add(headerSizer)
-
-                -- line break
-                mainSizer.content:add({
-                    type = ui.TYPE.Image,
-                    template = I.MWUI.templates.horizontalLine,
-                    props = { size = util.vector2(200, 2) }
-                })
-
-                -- then the status
-                if viewModel.status then
-                    local statusWidget = {
-                        type = ui.TYPE.Text,
-                        template = I.MWUI.templates.textNormal,
-                        props = {
-                            text = "Status: " .. viewModel.status,
-                            textAlignH = ui.ALIGNMENT.Start
-                        }
-                    }
-                    mainSizer.content:add(statusWidget)
-
-                    -- line break
-                    mainSizer.content:add({
-                        type = ui.TYPE.Image,
-                        template = I.MWUI.templates.horizontalLine,
-                        props = { size = util.vector2(200, 2) }
-                    })
+                if #rows > 0 then -- separate stacked actions
+                    rows[#rows + 1] = c.spacer({ props = { size = v2(0, 8) } })
+                    rows[#rows + 1] = hLine()
+                    rows[#rows + 1] = c.spacer({ props = { size = v2(0, 8) } })
                 end
-
-                -- the action
-                if viewModel.action then
-                    local buttonSizer = {
-                        type = ui.TYPE.Container,
-                        template = I.MWUI.templates.boxSolid,
-                        props = { autoSize = true },
-                        content = ui.content {}
-                    }
-
-                    local template = I.MWUI.templates.textNormal
-                    if not viewModel.action.enabled then
-                        template = I.MWUI.templates.textNormal
-                    end
-                    local button = {
-                        type = ui.TYPE.Text,
-                        template = template,
-                        props = {
-                            text = 'Press [F] to ' .. viewModel.action.label,
-                            textSize = 20,
-                            relativePosition = util.vector2(0, 0)
-                        }
-                    }
-
-                    buttonSizer.content:add(button)
-                    mainSizer.content:add(buttonSizer)
-                end
-
-
-                -- then details if any
-                if viewModel.details then
-                    for _, detail in pairs(viewModel.details) do
-                        local detailWidget = {
-                            type = ui.TYPE.Text,
-                            template = I.MWUI.templates.textNormal,
-                            props = {
-                                text = detail,
-                                textAlignH = ui.ALIGNMENT.Start
-                            }
-                        }
-                        mainSizer.content:add(detailWidget)
-                    end
-                end
+                renderViewModel(viewModel, rows)
             end
         else
             log.error('No handler found for action: ' .. action.id)
         end
     end
+    if #rows == 0 then return end
 
-    -- Create and store the overlay element
-    overlayElement = ui.create(overlay)
-    overlayElement:update()
+    -- auto-sized card: transparent box + padding + vertical flex
+    overlayElement = ui.create({
+        layer = 'HUD',
+        name = 'contextualOverlay',
+        template = I.MWUI.templates.boxTransparent,
+        props = {
+            relativePosition = OVERLAY_POS,
+            anchor = OVERLAY_ANCHOR,
+        },
+        content = ui.content {
+            {
+                template = I.MWUI.templates.padding,
+                content = ui.content {
+                    c.column({ name = 'overlay_rows', children = rows }),
+                },
+            },
+        },
+    })
 end
 
 --#region Public API
