@@ -1,0 +1,123 @@
+--[[
+    Minimal local UI component builders — replaces the external `scripts.s3`
+    dependency. Same call shapes as the handful of s3 components we used
+    (row/column/grid/box/text/spacer) plus a bordered button.
+
+    All builders return plain layout tables; callers own mounting and events.
+]]
+
+local ui = require('openmw.ui')
+local util = require('openmw.util')
+local async = require('openmw.async')
+local I = require('openmw.interfaces')
+
+local this = {}
+
+--- Plain text (MWUI textNormal unless a template is given).
+---@param opts { text: string, name: string?, template: any?, props: table? }
+function this.text(opts)
+    local props = {}
+    for k, v in pairs(opts.props or {}) do props[k] = v end
+    props.text = opts.text
+    return {
+        type = ui.TYPE.Text,
+        name = opts.name,
+        template = opts.template or I.MWUI.templates.textNormal,
+        props = props,
+    }
+end
+
+--- Invisible fixed-size gap.
+---@param opts { props: { size: any } }
+function this.spacer(opts)
+    return { type = ui.TYPE.Widget, name = opts and opts.name, props = (opts and opts.props) or {} }
+end
+
+--- Horizontal Flex.
+---@param opts { name: string?, props: table?, children: table[] }
+function this.row(opts)
+    local props = {}
+    for k, v in pairs(opts.props or {}) do props[k] = v end
+    props.horizontal = true
+    return {
+        type = ui.TYPE.Flex,
+        name = opts.name,
+        props = props,
+        external = opts.external,
+        content = ui.content(opts.children or {}),
+    }
+end
+
+--- Vertical Flex.
+---@param opts { name: string?, props: table?, children: table[] }
+function this.column(opts)
+    local props = {}
+    for k, v in pairs(opts.props or {}) do props[k] = v end
+    props.horizontal = false
+    return {
+        type = ui.TYPE.Flex,
+        name = opts.name,
+        props = props,
+        external = opts.external,
+        content = ui.content(opts.children or {}),
+    }
+end
+
+--- Grid: a vertical Flex of horizontal Flex rows, `columns` items per row.
+---@param opts { name: string?, columns: integer?, items: table[], props: table? }
+function this.grid(opts)
+    local columns = math.max(1, opts.columns or 1)
+    local rows = {}
+    local currentRow = nil
+    for index, item in ipairs(opts.items or {}) do
+        if (index - 1) % columns == 0 then
+            currentRow = { type = ui.TYPE.Flex, props = { horizontal = true }, content = ui.content({}) }
+            rows[#rows + 1] = currentRow
+        end
+        currentRow.content:add(item)
+    end
+    local props = {}
+    for k, v in pairs(opts.props or {}) do props[k] = v end
+    props.horizontal = false
+    return {
+        type = ui.TYPE.Flex,
+        name = opts.name,
+        props = props,
+        content = ui.content(rows),
+    }
+end
+
+--- Bordered container (MWUI box unless a template is given).
+---@param opts { name: string?, children: table[], template: any?, props: table? }
+function this.box(opts)
+    return {
+        template = opts.template or I.MWUI.templates.box,
+        name = opts.name,
+        props = opts.props,
+        content = ui.content(opts.children or {}),
+    }
+end
+
+--- Bordered text button (MWUI box + padding + label).
+---@param opts { label: string, name: string?, onClick: fun()? }
+function this.button(opts)
+    return {
+        template = I.MWUI.templates.box,
+        name = opts.name,
+        events = opts.onClick and { mouseClick = async:callback(opts.onClick) } or nil,
+        content = ui.content({
+            {
+                template = I.MWUI.templates.padding,
+                content = ui.content({
+                    {
+                        type = ui.TYPE.Text,
+                        template = I.MWUI.templates.textNormal,
+                        props = { text = opts.label },
+                    },
+                }),
+            },
+        }),
+    }
+end
+
+return this

@@ -7,9 +7,8 @@ local util = require('openmw.util')
 
 local log = require('scripts.Immersive-Crafting.log')
 
-local box = require('scripts.s3.components.box')
-local column = require('scripts.s3.components.column')
-local grid = require('scripts.s3.components.grid')
+local components = require('scripts.Immersive-Crafting.ui.components')
+local box, column, grid = components.box, components.column, components.grid
 local Slot = require('scripts.Immersive-Crafting.ui.Slot')
 
 local ICON_SIZE = util.vector2(44, 44)

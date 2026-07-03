@@ -34,7 +34,6 @@
 local I = require('openmw.interfaces')
 local ui = require('openmw.ui')
 local util = require('openmw.util')
-local async = require('openmw.async')
 local core = require('openmw.core')
 local self = require('openmw.self')
 local types = require('openmw.types')
@@ -48,6 +47,7 @@ local shaped = require('scripts.Immersive-Crafting.shapedCrafting')
 local processCrafting = require('scripts.Immersive-Crafting.processCrafting')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
+local components = require('scripts.Immersive-Crafting.ui.components')
 
 local v2 = util.vector2
 
@@ -66,6 +66,7 @@ local element = nil
 local placed = {} ---@type table<string, {recordId:string, icon:string?}> slotId -> placed item
 local selectedSlot = nil ---@type string? slot the next picked material goes into
 local materials = {} ---@type { recordId:string, icon:string?, count:integer }[]
+local stationTools = {} ---@type string[] distinct tool ids/tags used by this station's recipes
 local matched = nil ---@type CShapedRecipe|CProcessRecipe|nil
 local canCraft = false
 local iconTextureCache = {} ---@type table<string, any>
@@ -216,6 +217,43 @@ local function collectMaterials()
     return list
 end
 
+--- Materials still pickable: inventory counts minus what is already placed in
+--- the slots (placing an item visibly removes one from the strip).
+local function availableMaterials()
+    local placedBy = placedCounts()
+    local list = {}
+    for _, entry in ipairs(materials) do
+        local remaining = entry.count - (placedBy[entry.recordId] or 0)
+        if remaining > 0 then
+            list[#list + 1] = { recordId = entry.recordId, icon = entry.icon, count = remaining }
+        end
+    end
+    return list
+end
+
+--- Distinct tool ids/tags used by any recipe at this station (for the
+--- auto-detected Tools row).
+local function collectStationTools()
+    local seen, list = {}, {}
+    local function add(query)
+        if query and not seen[query] then
+            seen[query] = true
+            list[#list + 1] = query
+        end
+    end
+    for _, r in pairs(GRegistries.shapedRecipes or {}) do
+        if r.context == ctx.context.id and r.action == ctx.action.id then
+            for _, t in ipairs(r.tools or {}) do add(t) end
+        end
+    end
+    for _, r in pairs(GRegistries.processRecipes or {}) do
+        if r.context == ctx.context.id and r.action == ctx.action.id then
+            for _, t in ipairs(r.tools or {}) do add(t) end
+        end
+    end
+    return list
+end
+
 -- ── selection / resolution ───────────────────────────────────────────────────
 
 --- Slot ids in visual order (grid row-major / process input order).
@@ -309,35 +347,32 @@ local view = {
 
 -- ── window sections (alchemy-style) ─────────────────────────────────────────
 
---- Tools row — apparatus-style: the matched recipe's tools as slots (icon when
---- owned; matching already guarantees ownership, so these read as "in use").
+--- Tools row — apparatus-style, AUTO-DETECTED from the inventory (like the
+--- alchemy window showing the apparatus you own): every tool any recipe at
+--- this station can use shows up here if the player carries a matching item.
 local function toolsSection()
     local slots = {}
-    local tools = (matched and matched.tools) or {}
-    for i = 1, TOOL_SLOTS do
-        local query = tools[i]
-        if query then
-            local owned, iconPath = toolInfo(query)
+    for _, query in ipairs(stationTools) do
+        local owned, iconPath = toolInfo(query)
+        if owned then
             slots[#slots + 1] = Slot.Slot({
-                name = 'tool_' .. i,
+                name = 'tool_' .. query,
                 resource = textureForPath(iconPath),
                 size = TOOL_ICON,
-                state = owned and 'selected' or 'missing',
             })
-        else
-            slots[#slots + 1] = Slot.Slot({ name = 'tool_' .. i, size = TOOL_ICON, state = 'empty' })
         end
-        if i < TOOL_SLOTS then
-            slots[#slots + 1] = { type = ui.TYPE.Widget, props = { size = v2(4, 0) } }
-        end
+    end
+    -- pad to a minimum width so the section keeps its apparatus look
+    while #slots < TOOL_SLOTS do
+        slots[#slots + 1] = Slot.Slot({ name = 'tool_pad_' .. #slots, size = TOOL_ICON, state = 'empty' })
     end
     return {
         type = ui.TYPE.Flex,
         name = 'tools_section',
         content = ui.content({
-            { type = ui.TYPE.Text,   props = { text = 'Tools' },    template = I.MWUI.templates.textNormal },
+            { type = ui.TYPE.Text,   props = { text = 'Tools' }, template = I.MWUI.templates.textNormal },
             { type = ui.TYPE.Widget, props = { size = v2(0, 3) } },
-            { type = ui.TYPE.Flex,   props = { horizontal = true }, content = ui.content(slots) },
+            components.grid({ name = 'tools_grid', columns = 5, items = slots }),
         }),
     }
 end
@@ -392,17 +427,27 @@ local function hLine(width)
 end
 
 local function closeButton()
-    return {
-        type = ui.TYPE.Text,
-        template = I.MWUI.templates.textNormal,
-        props = { text = 'Close' },
-        events = { mouseClick = async:callback(function() this.close() end) },
-    }
+    return components.button({
+        name = 'close_button',
+        label = 'Close',
+        onClick = function() this.close() end,
+    })
 end
 
 -- ── window assembly ─────────────────────────────────────────────────────────
 
 function this.rebuild()
+    -- preserve the live window geometry (the user may have moved/resized it)
+    local prevProps = nil
+    if element and element.layout and element.layout.props then
+        local p = element.layout.props
+        prevProps = {
+            position = p.position,
+            size = p.size,
+            anchor = p.anchor,
+            relativePosition = p.relativePosition,
+        }
+    end
     if element then element:destroy() end
     if not isOpen or not ctx or not layout then return end
 
@@ -411,6 +456,16 @@ function this.rebuild()
         log.error('Unknown crafting layout kind: ' .. tostring(layout.kind))
         return
     end
+
+    -- the materials strip follows the window size (alchemy-style auto layout);
+    -- a resize reflows on the next rebuild (i.e. the next click)
+    local winSize = (prevProps and prevProps.size) or WINDOW_SIZE
+    local inputRows = layout.kind == 'grid' and (layout.size[1] or 2)
+        or math.ceil(#(layout.inputs or {}) / 4)
+    local pickerDims = {
+        columns = math.max(3, math.min(12, math.floor((winSize.x - 60) / 46))),
+        rows = math.max(1, math.min(6, math.floor((winSize.y - 245 - inputRows * 48) / 46))),
+    }
 
     resolve()
     view.selectedSlot = selectedSlot
@@ -457,10 +512,10 @@ function this.rebuild()
                     stretch = 1
                 },
                 content = ui.content({
-                    ItemPicker.Body(materials, {
+                    ItemPicker.Body(availableMaterials(), {
                         onPick = view.onPick,
                         refresh = function() this.rebuild() end,
-                    }),
+                    }, pickerDims),
                 })
             },
 
@@ -486,9 +541,8 @@ function this.rebuild()
 
     local dlg = Window({
         title = 'Crafting Station: ' .. (ctx.context.label or 'Unknown'),
-        -- body = ui.content(contentList),
         body = ui.content({ content }),
-        props = { anchor = v2(0.5, 0.5), relativePosition = v2(0.4, 0.5), size = WINDOW_SIZE },
+        props = prevProps or { anchor = v2(0.5, 0.5), relativePosition = v2(0.4, 0.5), size = WINDOW_SIZE },
         getElement = function() return element end,
     })
 
@@ -539,6 +593,7 @@ function this.open(handlerCtx)
     isOpen = true
     ItemPicker.reset()
     materials = collectMaterials()
+    stationTools = collectStationTools()
     ensureSelection()
     I.UI.setMode('Interface') -- show cursor; inventory remains available
     this.rebuild()
@@ -553,6 +608,7 @@ function this.close()
     placed = {}
     selectedSlot = nil
     materials = {}
+    stationTools = {}
     matched = nil
     canCraft = false
     I.UI.setMode() -- back to gameplay

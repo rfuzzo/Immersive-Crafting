@@ -11,11 +11,8 @@ local I = require('openmw.interfaces')
 
 local log = require('scripts.Immersive-Crafting.log')
 
-local box = require('scripts.s3.components.box')
-local column = require('scripts.s3.components.column')
-local grid = require('scripts.s3.components.grid')
-local text = require('scripts.s3.components.text')
-local spacer = require('scripts.s3.components.spacer')
+local c = require('scripts.Immersive-Crafting.ui.components')
+local box, column, grid, text, spacer = c.box, c.column, c.grid, c.text, c.spacer
 local Slot = require('scripts.Immersive-Crafting.ui.Slot')
 
 local v2 = util.vector2

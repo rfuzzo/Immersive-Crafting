@@ -13,18 +13,16 @@ local util = require('openmw.util')
 local async = require('openmw.async')
 local I = require('openmw.interfaces')
 
-local column = require('scripts.s3.components.column')
-local row = require('scripts.s3.components.row')
-local grid = require('scripts.s3.components.grid')
-local text = require('scripts.s3.components.text')
-local spacer = require('scripts.s3.components.spacer')
+local c = require('scripts.Immersive-Crafting.ui.components')
+local column, row, grid, text, spacer = c.column, c.row, c.grid, c.text, c.spacer
 
 local Slot = require('scripts.Immersive-Crafting.ui.Slot')
 
 local v2 = util.vector2
 local ICON_SIZE = v2(40, 40)
-local COLUMNS = 6
-local PAGE_SIZE = 12 -- 2 rows of 6
+-- fallback layout when the owner passes no dims
+local DEFAULT_COLUMNS = 6
+local DEFAULT_ROWS = 2
 
 local this = {}
 
@@ -67,12 +65,16 @@ local function pageButton(label, enabled, delta, view)
     }
 end
 
---- Build the embedded strip.
+--- Build the embedded strip. The owner computes `dims` from the live window
+--- size (alchemy-style auto layout); without dims a 6x2 fallback is used.
 ---@param items { recordId: string, icon: string?, count: integer }[] usable materials (pre-filtered)
 ---@param view { onPick: fun(recordId: string, iconPath: string?), refresh: fun() }
+---@param dims { columns: integer, rows: integer }?
 ---@return table layout
-function this.Body(items, view)
-    local pages = math.max(1, math.ceil(#items / PAGE_SIZE))
+function this.Body(items, view, dims)
+    local columns = math.max(1, (dims and dims.columns) or DEFAULT_COLUMNS)
+    local pageSize = columns * math.max(1, (dims and dims.rows) or DEFAULT_ROWS)
+    local pages = math.max(1, math.ceil(#items / pageSize))
     if page > pages then page = pages end
     if page < 1 then page = 1 end
 
@@ -93,8 +95,8 @@ function this.Body(items, view)
 
     -- item slots for the current page
     local slots = {}
-    local first = (page - 1) * PAGE_SIZE
-    for i = first + 1, math.min(first + PAGE_SIZE, #items) do
+    local first = (page - 1) * pageSize
+    for i = first + 1, math.min(first + pageSize, #items) do
         local entry = items[i]
         slots[#slots + 1] = Slot.Slot({
             name = 'pick_' .. entry.recordId,
@@ -108,7 +110,7 @@ function this.Body(items, view)
 
     local body
     if #slots > 0 then
-        body = grid({ name = 'materials_grid', columns = COLUMNS, items = slots })
+        body = grid({ name = 'materials_grid', columns = columns, items = slots })
     else
         body = text({ text = '(no usable materials)', template = I.MWUI.templates.textNormal })
     end

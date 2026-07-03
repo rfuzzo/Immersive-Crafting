@@ -145,6 +145,14 @@ Deferred / to verify:
   consumed, output moved to inventory); the window stays open for batches. Shared
   `ui/Slot.lua` renders every slot. Material counts refresh one interaction after a craft
   (global consume lands next frame).
+- ✅ **UI polish pass 2** *(2026-07-03)*: the `scripts.s3` dependency is gone — the few
+  builders we used live in `ui/components.lua` (row/column/grid/box/text/spacer/button).
+  The materials strip **decrements placed items** (an item in the grid disappears from the
+  strip) and **auto-fits its columns/rows to the live window size** (rebuilds preserve the
+  user's moved/resized geometry; a resize reflows on the next click). The Close button is
+  a bordered MWUI box button. The **Tools row is auto-detected from the inventory**: every
+  tool any recipe at this station uses shows up if the player carries a matching item
+  (alchemy-apparatus behaviour), padded to 3 slots, wrapping at 5 per row.
 
 ## Tiered recipes import (Minecraft-style progression)
 
