@@ -8,7 +8,8 @@ Usage:
         [--records-out docs/ic_records.md]
 
 CSV columns:
-    outcome, outcome_id, outcome_count, station, tool1..3, ingredient1..9, notes
+    outcome, outcome_id, outcome_count, duration, station, tool1..3, ingredient1..9, notes
+(`duration` = game seconds for timed process runs; empty/0 = instant craft)
 Comment lines starting with `#` are ignored.
 
 Mapping (see docs/SPEC.md):
@@ -130,6 +131,8 @@ def convert(rows):
             continue
 
         # ── lint: consumed vs reusable ────────────────────────────────────
+        if (row.get('duration') or '').strip() and kind == 'grid':
+            warnings.append(f'{rid}: duration is ignored on grid (shaped) recipes')
         for t in tools:
             if t in CONSUMED_MOLDS:
                 errors.append(f'{rid}: consumed mold "{t}" used as a tool (must be an ingredient)')
@@ -177,6 +180,13 @@ def convert(rows):
             for it in items:
                 inputs[it] = inputs.get(it, 0) + 1
             recipe['inputs'] = [{'id': k, 'count': v} for k, v in inputs.items()]
+            duration = (row.get('duration') or '').strip()
+            if duration:
+                try:
+                    recipe['duration'] = int(duration)
+                except ValueError:
+                    errors.append(f'{rid}: bad duration "{duration}"')
+                    continue
 
         if tools:
             recipe['tools'] = tools

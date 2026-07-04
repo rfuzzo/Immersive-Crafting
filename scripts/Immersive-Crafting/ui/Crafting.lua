@@ -46,6 +46,7 @@ local process = require('scripts.Immersive-Crafting.ui.CraftingProcess')
 local shaped = require('scripts.Immersive-Crafting.shapedCrafting')
 local processCrafting = require('scripts.Immersive-Crafting.processCrafting')
 local lib = require('scripts.Immersive-Crafting.lib')
+local processState = require('scripts.Immersive-Crafting.processState')
 local log = require('scripts.Immersive-Crafting.log')
 local components = require('scripts.Immersive-Crafting.ui.components')
 
@@ -393,6 +394,12 @@ local function resultSection()
         local n = matched.output.count or 1
         countLabel = n > 1 and n or nil
         caption = ('%s x%d'):format(matched.label or matched.id, n)
+        if matched.duration and matched.duration > 0 then
+            local dur = matched.duration >= 3600
+                and ('~%d h'):format(math.ceil(matched.duration / 3600))
+                or ('~%d min'):format(math.max(1, math.ceil(matched.duration / 60)))
+            caption = caption .. ('  (takes %s)'):format(dur)
+        end
         if not canCraft then caption = caption .. '  (not enough materials)' end
     else
         caption = '(no match)'
@@ -606,10 +613,28 @@ local function craftSdMeal()
 end
 
 --- Craft = "take the result": consume the placed inputs, grant the output.
+--- Recipes with a `duration` don't grant instantly: they START a timed run at
+--- the station (globalProcessing) — inputs are consumed up front, the window
+--- closes, the station card shows progress, and activating the station when
+--- done collects the output.
 function this.onCraft()
     if not matched or not canCraft then return end
     if matched.sdMeal then
         craftSdMeal()
+    elseif matched.duration and matched.duration > 0 and ctx.object then
+        local consume = {}
+        for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
+        core.sendGlobalEvent('ImmersiveCrafting_StartProcess', {
+            actor = self.object,
+            station = ctx.object,
+            recipeId = matched.id,
+            label = matched.label or matched.id,
+            consume = consume,
+            output = matched.output,
+            duration = matched.duration,
+        })
+        this.close() -- the run lives at the station now; its card shows progress
+        return
     else
         local consume = {}
         for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
@@ -644,6 +669,11 @@ end
 
 ---@param handlerCtx HandlerContext
 function this.open(handlerCtx)
+    -- a station with a running/finished process doesn't open the window
+    if handlerCtx.object and processState.forStation(handlerCtx.object.id) then
+        ui.showMessage('This station is busy')
+        return
+    end
     ctx = handlerCtx
     layout = ctx.context.layout
     placed = {}

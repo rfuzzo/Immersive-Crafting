@@ -11,6 +11,7 @@ local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local forageState = require('scripts.Immersive-Crafting.forageState')
 local farmState = require('scripts.Immersive-Crafting.farmState')
+local processState = require('scripts.Immersive-Crafting.processState')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
@@ -51,7 +52,7 @@ local function onOpenStation(data)
         log.error('OpenStation: no action for context ' .. tostring(data.contextId))
         return
     end
-    Crafting.toggle({ action = action, context = context })
+    Crafting.toggle({ action = action, context = context, object = data.object })
 end
 
 
@@ -182,6 +183,9 @@ return {
         ImmersiveCrafting_OpenStation = onOpenStation,
         ImmersiveCrafting_CropSync = function(data)
             farmState.apply(data and data.crops)
+        end,
+        ImmersiveCrafting_ProcessSync = function(data)
+            processState.apply(data and data.processes)
         end,
         ImmersiveCrafting_Notify = function(data)
             if data and data.text then ui.showMessage(data.text) end

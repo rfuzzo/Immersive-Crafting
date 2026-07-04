@@ -4,6 +4,7 @@ local I = require('openmw.interfaces')
 
 local log = require('scripts.Immersive-Crafting.log')
 local globalFarming = require('scripts.Immersive-Crafting.globalFarming')
+local globalProcessing = require('scripts.Immersive-Crafting.globalProcessing')
 
 local function onSave() return saveData end
 
@@ -143,10 +144,17 @@ end
 ---@param actor any
 local function onActivateStation(object, actor)
     if actor.type ~= types.Player then return end
+
+    -- a running/finished timed process owns the station's activation
+    -- (busy -> remaining-time message; done -> collect the output)
+    if globalProcessing.onStationActivated(object, actor) then
+        return false
+    end
+
     local recordId = object.recordId
     for _, c in ipairs(activateContexts) do
         if matchesActivateContext(recordId, c) then
-            actor:sendEvent('ImmersiveCrafting_OpenStation', { contextId = c.id })
+            actor:sendEvent('ImmersiveCrafting_OpenStation', { contextId = c.id, object = object })
             return false -- we handled it; skip default activation
         end
     end
@@ -170,6 +178,11 @@ return {
         ImmersiveCrafting_CraftShaped = onCraftShaped,
         ImmersiveCrafting_RegisterActivateContexts = onRegisterActivateContexts,
         ImmersiveCrafting_Plant = globalFarming.onPlant,
-        ImmersiveCrafting_RequestCropSync = globalFarming.onRequestSync,
+        ImmersiveCrafting_RequestCropSync = function(data)
+            globalFarming.onRequestSync(data)
+            globalProcessing.onRequestSync(data)
+        end,
+        ImmersiveCrafting_StartProcess = globalProcessing.onStart,
+        ImmersiveCrafting_CollectProcess = globalProcessing.onCollect,
     }
 }

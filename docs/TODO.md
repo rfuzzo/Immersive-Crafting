@@ -344,3 +344,35 @@ Verify in-game:
 Phase 2 (later): terrain planting — gaze at bare ground (castRay terrain hit = no
 hitObject), spacing cap via the registry, same lifecycle. v2 hooks: watering (SD water
 interop) shortening growTime; per-crop yield ranges; farming skill?
+
+## Timed processes (built 2026-07-04)
+
+The last big engine piece: process recipes with a `duration` (game seconds; CSV
+column `duration`, 27 recipes valued — ingots, charcoal, burnt molds, castings,
+bonemold, netch leather, clay pot/crucible/glass) no longer craft instantly.
+
+Flow (globalProcessing.lua + processState.lua mirror, farming-pattern):
+- **Start**: taking the result in the crafting window sends
+  `ImmersiveCrafting_StartProcess` — inputs verified then consumed up front, run
+  registered in global `saveData.processes` (one per station object), a persisted
+  GAME-time timer schedules completion (passes while sleeping; survives
+  save/load), window closes. Result caption shows "(takes ~N h)".
+- **While running**: the station card shows "<label> — in progress · Ready in
+  ~N h"; activating the station gives a remaining-time message; the crafting
+  window refuses to open ("This station is busy").
+- **Done**: notify toast; card flips to "ready! — Activate to collect";
+  activating the station grants the output and frees it (init.lua's activation
+  handler consults globalProcessing FIRST). Proximity stations collect via [F]
+  (`ImmersiveCrafting_CollectProcess`).
+- `ImmersiveCrafting_OpenStation` now carries the station **object** so the
+  window knows which station a run belongs to.
+
+Verify in-game:
+- full kiln loop: place ore+charcoal → take result → "ready in ~1 h" → wait/sleep
+  → activate → ingot collected; save/load mid-run
+- busy-station guards (window refuses, activation messages)
+- sd_meals + shaped recipes unaffected (still instant)
+
+Open (by design, later): cooking doneness states (simmering/cooked/burnt needs
+multi-stage, not just done); progress bar on the card (we have remaining time —
+a bar needs per-tick refresh like the hold bar); fuel-quality time modifiers.
