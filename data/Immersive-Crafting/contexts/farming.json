@@ -1,0 +1,9 @@
+[
+  {
+    "id": "planter",
+    "label": "Planter",
+    "recordIds": ["planter"],
+    "activationRange": 150,
+    "actions": ["farming"]
+  }
+]

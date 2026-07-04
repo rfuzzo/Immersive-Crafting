@@ -304,3 +304,43 @@ plant/grow/harvest loop (persistent per-planter state in global saveData — the
 first real consumer of the timed-process subsystem + `GRegistries.processes`),
 seeds (tag vanilla ingredients as seeds?), growth over game time (like forage
 cooldowns), planter as activate-context with its own layout. Design session first.
+
+## Farming Phase 1 — planter farming (ratified + built 2026-07-04)
+
+Decisions: **planters first** (terrain planting = Phase 2 on the same subsystem);
+**vegetable = seed** (plant the produce itself; no seed records); **planter stays
+proximity + [F]** (the item↔activator drop-swap remains a kiln/furnace task, not a
+farming dependency); **annuals + perennials** (per-crop `regrow`).
+
+Built:
+- **Crop lifecycle (global `globalFarming.lua`)**: `ImmersiveCrafting_Plant` consumes
+  one seed, spawns the crop's vanilla flora record above the planter (`+15z`, tune),
+  scales 0.3 → 0.65 → 1.0 via **persisted game-time timers** (grow while sleeping;
+  timers survive save/load); registry in global `saveData.crops`. Harvest = activating
+  the ripe plant: a `types.Container` activation handler intercepts **registered crop
+  objects only** (O(1) lookup; wild flora untouched) — unripe → message; ripe → grant
+  yield ×N, then remove (annual) or reset + reschedule (perennial). Player gets full
+  snapshots (`ImmersiveCrafting_CropSync` → `farmState.lua`) + `ImmersiveCrafting_Notify`
+  messages.
+- **Card-only UI (`handlers/farming.lua`)**: planter context (proximity, tag `planter` →
+  `ic_station_planter`): Empty + "[F] Plant <crop> (hold)"; **tap [F] cycles the seed**
+  (new `OnTap` on the handler base + short-press detection in the overlay's hold
+  machinery, threshold 0.3s); growing → "Ready in ~N h"; ripe → "Activate the plant to
+  harvest".
+- **Data**: `crops/crops.json` (kreshweed + marshmerrow perennial, saltrice annual —
+  the canonical plantation crops; 24h grow / 12h regrow), `farming` action/handler,
+  `planter` context, `GRegistries.crops` (player) + a global-side copy of the same
+  files.
+
+Verify in-game:
+- planting end-to-end (seed consumed, plant appears above the bed, `+15z` offset right
+  for the planter mesh), scale steps look sane, timers fire after sleep/wait
+- harvest: ripe activation grants + suppresses the container UI; unripe message;
+  perennial shrinks back; annual disappears
+- setScale on objects in inactive cells (pcall-guarded — check log for errors)
+- flora record ids (`flora_kreshweed_01`/`flora_marshmerrow_01`/`flora_saltrice_01`)
+- tap-vs-hold feel (0.3s threshold) with several seed types in the pack
+
+Phase 2 (later): terrain planting — gaze at bare ground (castRay terrain hit = no
+hitObject), spacing cap via the registry, same lifecycle. v2 hooks: watering (SD water
+interop) shortening growTime; per-crop yield ranges; farming skill?

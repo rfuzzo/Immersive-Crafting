@@ -244,6 +244,27 @@ local function fireActions()
     end
 end
 
+--- Dispatch OnTap for every action on the current context (short press on a
+--- hold-capable card, e.g. cycling the planter's seed selection).
+local function fireTaps()
+    if not currentContext then return end
+    for _, action in pairs(currentActions or {}) do
+        local handler = dataManager.resolveHandler(action.handler)
+        if handler and handler.OnTap then
+            ---@type HandlerContext
+            local ctx = {
+                action = action,
+                context = currentContext,
+                object = currentObject
+            }
+            handler:OnTap(ctx)
+        end
+    end
+end
+
+-- releases quicker than this (on a hold card) count as a tap, not an aborted hold
+local TAP_THRESHOLD = 0.3
+
 --- Drive the contextual action key each frame. Instant actions fire on the press
 --- edge; hold actions (foraging) accrue while the key is down and fire once the
 --- hold bar fills, then wait for release before they can fire again.
@@ -267,6 +288,12 @@ local function handleActionInput(pressed, dt)
                 hold.fired = true
             end
         else
+            -- a quick press-and-release on a hold card is a TAP (cycle selection)
+            if prevPressed and not pressed and not hold.fired
+                and hold.elapsed > 0 and hold.elapsed < TAP_THRESHOLD then
+                fireTaps()
+                updateOverlayUI()
+            end
             -- released, or the action is currently disabled: reset the bar
             hold.elapsed = 0
             hold.fired = false

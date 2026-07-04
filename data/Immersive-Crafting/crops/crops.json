@@ -1,0 +1,28 @@
+[
+  {
+    "id": "crop_kreshweed",
+    "label": "Kreshweed",
+    "seed": "ingred_kresh_fiber_01",
+    "plant": "flora_kreshweed_01",
+    "growTime": 86400,
+    "yield": { "id": "ingred_kresh_fiber_01", "count": 3 },
+    "regrow": 43200
+  },
+  {
+    "id": "crop_marshmerrow",
+    "label": "Marshmerrow",
+    "seed": "ingred_marshmerrow_01",
+    "plant": "flora_marshmerrow_01",
+    "growTime": 86400,
+    "yield": { "id": "ingred_marshmerrow_01", "count": 3 },
+    "regrow": 43200
+  },
+  {
+    "id": "crop_saltrice",
+    "label": "Saltrice",
+    "seed": "ingred_saltrice_01",
+    "plant": "flora_saltrice_01",
+    "growTime": 86400,
+    "yield": { "id": "ingred_saltrice_01", "count": 3 }
+  }
+]

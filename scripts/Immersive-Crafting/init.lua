@@ -3,6 +3,7 @@ local types = require('openmw.types')
 local I = require('openmw.interfaces')
 
 local log = require('scripts.Immersive-Crafting.log')
+local globalFarming = require('scripts.Immersive-Crafting.globalFarming')
 
 local function onSave() return saveData end
 
@@ -168,5 +169,7 @@ return {
         ImmersiveCrafting_Commit = onCommit,
         ImmersiveCrafting_CraftShaped = onCraftShaped,
         ImmersiveCrafting_RegisterActivateContexts = onRegisterActivateContexts,
+        ImmersiveCrafting_Plant = globalFarming.onPlant,
+        ImmersiveCrafting_RequestCropSync = globalFarming.onRequestSync,
     }
 }

@@ -60,5 +60,11 @@ function CAbstractHandler:OnActivate(ctx)
     error("CAbstractHandler:OnActivate(ctx) must be implemented by subclass")
 end
 
+--- Optional: a short TAP of the context key on a hold-action card (e.g. cycle
+--- the seed selection on a planter). Default: no-op.
+---@param ctx HandlerContext
+function CAbstractHandler:OnTap(ctx)
+end
+
 -- Return the CAbstractHandler class
 return CAbstractHandler

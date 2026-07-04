@@ -8,6 +8,7 @@ local CAction = require('scripts.Immersive-Crafting.models.action')
 local CRecipe = require('scripts.Immersive-Crafting.models.recipe')
 local CShapedRecipe = require('scripts.Immersive-Crafting.models.shapedRecipe')
 local CProcessRecipe = require('scripts.Immersive-Crafting.models.processRecipe')
+local CCrop = require('scripts.Immersive-Crafting.models.crop')
 local AbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 
 local vfs = require('openmw.vfs')
@@ -20,6 +21,7 @@ local this = {}
 ---@field recipes table<string, CRecipe>
 ---@field shapedRecipes table<string, CShapedRecipe>
 ---@field processRecipes table<string, CProcessRecipe>
+---@field crops table<string, CCrop>
 ---@field handlers table<string, CAbstractHandler>
 
 ---@type Registries
@@ -30,6 +32,7 @@ GRegistries = {
     recipes = {},
     shapedRecipes = {},
     processRecipes = {},
+    crops = {},
     processes = {},
 }
 
@@ -162,6 +165,26 @@ local function loadRecipes()
     end
 end
 
+local function loadCrops()
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "crops/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then
+                for _, entry in ipairs(data) do
+                    local c = CCrop:fromTable(entry)
+                    if c then
+                        mergeById(GRegistries.crops, c)
+                    else
+                        log.error(('Failed to load crop from %s'):format(filename))
+                    end
+                end
+            end
+        end
+    end
+
+    log.info(('Loaded %d crops'):format(len(GRegistries.crops)))
+end
+
 local function loadHandlers()
     -- go through all files in handlers folder and check for .lua files
     for filename in vfs.pathsWithPrefix(LUA_ROOT .. "handlers/") do
@@ -191,6 +214,7 @@ function this.loadAllData()
     loadActions()
     loadContexts()
     loadRecipes()
+    loadCrops()
     loadHandlers()
 
     log.info('All data loaded successfully.')

@@ -3,12 +3,14 @@
 local core = require('openmw.core')
 local types = require('openmw.types')
 local omwSelf = require('openmw.self')
+local ui = require('openmw.ui')
 
 local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local contextManager = require('scripts.Immersive-Crafting.contextManager')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local forageState = require('scripts.Immersive-Crafting.forageState')
+local farmState = require('scripts.Immersive-Crafting.farmState')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
@@ -62,6 +64,7 @@ local function onLoad(data)
     dataManager.loadAllData()
     registerActivateContexts()
     forageState.load(data and data.forage)
+    core.sendGlobalEvent('ImmersiveCrafting_RequestCropSync', {})
 
     log.info('Immersive Crafting player script loaded from save')
 end
@@ -177,5 +180,11 @@ return {
     },
     eventHandlers = {
         ImmersiveCrafting_OpenStation = onOpenStation,
+        ImmersiveCrafting_CropSync = function(data)
+            farmState.apply(data and data.crops)
+        end,
+        ImmersiveCrafting_Notify = function(data)
+            if data and data.text then ui.showMessage(data.text) end
+        end,
     }
 }
