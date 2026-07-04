@@ -1,5 +1,6 @@
 local self = require('openmw.self')
 local types = require('openmw.types')
+local I = require('openmw.interfaces')
 
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
@@ -67,7 +68,9 @@ function this.resolveProcessRecipe(placedIds, action, context)
 
     local best, bestScore = nil, -1
     for _, recipe in pairs(GRegistries.processRecipes or {}) do
-        if recipe.action == action.id and recipe.context == context.id then
+        -- Sun's Dusk meal recipes only exist when SD is loaded (soft dependency)
+        local available = not recipe.sdMeal or I.SunsDusk ~= nil
+        if available and recipe.action == action.id and recipe.context == context.id then
             if multisetMatch(placedIds, recipe.inputs) and this.hasTools(recipe.tools) then
                 local score = 0
                 for _, line in ipairs(recipe.inputs) do score = score + (line.count or 1) end

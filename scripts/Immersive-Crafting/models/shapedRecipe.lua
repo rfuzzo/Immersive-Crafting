@@ -11,7 +11,8 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field pattern string[] grid rows; each char is a key symbol, space = empty cell
 ---@field key table<string, string> symbol -> record id or FlexTag tag
 ---@field tools string[]|nil tool tags/ids required in inventory (outside the grid)
----@field output { id: string, count: integer } produced item (must be a real record)
+---@field output { id: string, count: integer }|nil produced item (real record). Omitted for sdMeal recipes.
+---@field sdMeal CRecipe.SdMeal|nil Sun's Dusk meal output (SunsDusk_createStew; requires SD)
 local CShapedRecipe = {}
 
 --- Deserialize from table
@@ -25,7 +26,7 @@ function CShapedRecipe:fromTable(tbl)
         or not tbl.action
         or not tbl.pattern
         or not tbl.key
-        or not tbl.output then
+        or not (tbl.output or tbl.sdMeal) then
         log.error('Invalid CShapedRecipe table: missing required fields')
         return nil
     end

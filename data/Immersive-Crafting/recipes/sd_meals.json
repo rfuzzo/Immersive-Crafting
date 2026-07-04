@@ -1,0 +1,30 @@
+[
+  {
+    "id": "grilled_scrib_jerky",
+    "label": "Scrib Jerky",
+    "context": "firepit",
+    "action": "processing",
+    "inputs": [
+      { "id": "Meat", "count": 1 },
+      { "id": "wood", "count": 1 }
+    ],
+    "output": { "id": "ingred_scrib_jerky_01", "count": 1 }
+  },
+  {
+    "id": "sd_hearty_stew",
+    "label": "Hearty Stew",
+    "context": "firepit",
+    "action": "processing",
+    "inputs": [
+      { "id": "Meat", "count": 2 },
+      { "id": "Vegetable", "count": 1 }
+    ],
+    "sdMeal": {
+      "name": "Hearty Stew",
+      "isSoup": true,
+      "category": "Hearty Meal",
+      "food": 160,
+      "drink": 40
+    }
+  }
+]

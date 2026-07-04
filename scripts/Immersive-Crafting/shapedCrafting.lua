@@ -1,5 +1,6 @@
 local self = require('openmw.self')
 local types = require('openmw.types')
+local I = require('openmw.interfaces')
 
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
@@ -126,7 +127,9 @@ function this.resolveShapedRecipe(grid, action, context)
     if not items then return nil end -- empty grid
 
     for _, recipe in pairs(GRegistries.shapedRecipes or {}) do
-        if recipe.action == action.id and recipe.context == context.id then
+        -- Sun's Dusk meal recipes only exist when SD is loaded (soft dependency)
+        local available = not recipe.sdMeal or I.SunsDusk ~= nil
+        if available and recipe.action == action.id and recipe.context == context.id then
             local pat = trim(patternToGrid(recipe.pattern, recipe.key))
             if pat and sameDims(items, pat) and cellsMatch(items, pat)
                 and this.hasTools(recipe.tools) then

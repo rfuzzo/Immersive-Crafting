@@ -232,3 +232,37 @@ Verify in-game:
 - `cell.waterLevel` semantics in exteriors (sea level 0) — tune the `near_water` band.
 - Gaze-vs-proximity priority feels right (tree prompt while standing at a station).
 - Cooldown durations (1 game hour ≈ 2 real minutes at default timescale).
+
+## Sun's Dusk interop (ratified 2026-07-04)
+
+**Division of labour: SD owns the needs system; IC owns (an alternative) cooking.**
+SD's own cooking stays enabled. Investigated from the SD 5.x scripts (see chat log):
+meals are runtime Potion records minted GLOBAL-side (`world.createRecord` — which
+**persists in saves**, correcting the old D1 caveat); hunger values live in SD's
+registries, keyed by record id; eating is detected via `onConsume` + lookup.
+
+- ✅ **`recipes/sunsdusk.json` retired** — its `sd_food_*` outputs never exist as
+  static records (SD mints a fresh record per cook).
+- ✅ **Lane B — SD meals from IC recipes:** recipes may carry `sdMeal { name, icon,
+  isSoup, category, food, drink, wake, warmth, sdRecipeId?, virtualFoodware? }`
+  instead of `output`. Crafting dispatches SD's global **`SunsDusk_createStew`**
+  (the same event SD's own UI sends): SD consumes the ingredients + a bowl/plate,
+  mints the meal with stat-bracket name + freshness, grants it. IC consumes
+  nothing for these. Values are raw-scale (F=160) and normalised /200 on send.
+  Recipes with `sdMeal` are **hidden when `I.SunsDusk` is absent** (soft dep).
+- ✅ **Generic cooked food:** IC recipes that output existing vanilla/TR/OAAB food
+  records get SD hunger values automatically — SD ships
+  `SD_food_and_drinks/vanilla_TD_OAAB.txt` covering them. Sample:
+  `grilled_scrib_jerky` (Meat + wood @ firepit → `ingred_scrib_jerky_01`, Medium
+  Meal 80 in SD's DB). Only `ic_*` food outputs would need our own TSV drop-in
+  (`SD_food_and_drinks/ImmersiveCrafting.txt`) — none exist yet.
+- Authoring rules for `sdMeal` recipes: **inputs must be Ingredient-type records**
+  (SD only consumes `types.Ingredient` — no misc water/wood in these recipes);
+  count values are per-meal; `sdRecipeId` optionally reuses SD recipe typing.
+
+Verify in-game (SD loaded):
+- `SunsDusk_createStew` payload accepted from an external mod (event is internal,
+  not the versioned interface — pin the SD version / re-check on SD updates).
+- Behaviour with **no bowls/plates** in inventory (fallback mesh path).
+- Meal freshness + hunger credit on eating an IC-crafted meal; jerky hunger credit.
+- Materials strip at the firepit shows meat/vegetables (tags `Meat`/`Vegetable`).

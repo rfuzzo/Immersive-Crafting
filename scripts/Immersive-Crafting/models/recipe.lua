@@ -10,6 +10,26 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field output table
 local CRecipe = {}
 
+---Sun's Dusk meal output (lane-B interop). The craft dispatches SD's global
+---`SunsDusk_createStew` event: SD mints the meal Potion record (stat-bracket
+---name, rolled buffs), consumes the recipe's ingredients AND a bowl/plate from
+---the inventory, registers freshness, and grants the meal. Requires Sun's Dusk
+---(recipes carrying this are hidden when I.SunsDusk is absent). Inputs must be
+---Ingredient-type records — SD only consumes types.Ingredient.
+---@class CRecipe.SdMeal
+---@field name string meal display name (SD appends the stat bracket)
+---@field icon string|nil icon path for the result slot / meal record
+---@field count integer|nil meals produced (default 1)
+---@field isSoup boolean|nil soup prefers bowls; solid food prefers plates
+---@field category string|nil SD consume category (e.g. "Hearty Meal")
+---@field food number|nil food value on SD's raw scale (e.g. 160); normalised /200 on send
+---@field drink number|nil drink value (raw scale)
+---@field wake number|nil wake value (raw scale)
+---@field warmth number|nil warmth value (NOT /200-scaled)
+---@field sdRecipeId string|nil optional SD cooking recipe id to reuse its typing
+---@field virtualFoodware boolean|nil true = no bowl/plate consumed
+---@field isToxic boolean|nil
+
 ---@class CRecipe.RecipeIngredient
 ---@field id Id
 ---@field count integer

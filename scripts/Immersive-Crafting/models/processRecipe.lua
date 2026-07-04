@@ -16,7 +16,8 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field inputs CProcessRecipe.Input[] counted, non-positional ingredients
 ---@field duration number|nil process time in seconds (timing deferred)
 ---@field tools string[]|nil tool tags/ids required in inventory (NOT consumed)
----@field output { id: string, count: integer } produced item (must be a real record)
+---@field output { id: string, count: integer }|nil produced item (real record). Omitted for sdMeal recipes.
+---@field sdMeal CRecipe.SdMeal|nil Sun's Dusk meal output — crafted via the SunsDusk_createStew event instead of a static record (see docs; requires SD; inputs must be Ingredient-type records)
 local CProcessRecipe = {}
 
 ---@class CProcessRecipe.Input
@@ -33,7 +34,7 @@ function CProcessRecipe:fromTable(tbl)
         or not tbl.context
         or not tbl.action
         or not tbl.inputs
-        or not tbl.output then
+        or not (tbl.output or tbl.sdMeal) then
         log.error('Invalid CProcessRecipe table: missing required fields')
         return nil
     end

@@ -381,7 +381,14 @@ end
 --- it consumes the placed inputs and moves the item into the inventory.
 local function resultSection()
     local resource, countLabel, caption
-    if matched then
+    if matched and matched.sdMeal then
+        -- Sun's Dusk meal: SD mints the record on craft; icon comes from the meal def
+        resource = textureForPath(matched.sdMeal.icon)
+        local n = matched.sdMeal.count or 1
+        countLabel = n > 1 and n or nil
+        caption = ('%s x%d  (meal)'):format(matched.label or matched.id, n)
+        if not canCraft then caption = caption .. '  (not enough materials)' end
+    elseif matched then
         resource = textureForPath(recordIconPath(matched.output.id))
         local n = matched.output.count or 1
         countLabel = n > 1 and n or nil
@@ -551,16 +558,52 @@ end
 
 -- ── events ───────────────────────────────────────────────────────────────────
 
+--- Sun's Dusk interop: hand the craft to SD's cooking executor. SD mints the
+--- meal record (with stat-bracket name + rolled buffs), consumes the listed
+--- ingredients AND a bowl/plate from the inventory itself, registers freshness,
+--- and grants the meal — so we consume nothing on our side.
+--- NOTE: SD only consumes Ingredient-type records; sdMeal recipe inputs must be
+--- ingredients. Values are on SD's raw scale (F=80 etc.) and normalised here.
+local function craftSdMeal()
+    local sd = matched.sdMeal
+    core.sendGlobalEvent('SunsDusk_createStew', {
+        self.object,
+        {
+            count = sd.count or 1,
+            recipeName = sd.name or matched.label or matched.id,
+            recipeIcon = sd.icon,
+            recipeId = sd.sdRecipeId, -- optional: reuse an SD recipe's typing
+            isSoup = sd.isSoup or false,
+            consumeCategory = sd.category,
+            foodValue = (sd.food or 0) / 200,
+            foodValue2 = (sd.food2 or 0) / 200,
+            drinkValue = (sd.drink or 0) / 200,
+            drinkValue2 = (sd.drink2 or 0) / 200,
+            wakeValue = (sd.wake or 0) / 200,
+            warmthValue = sd.warmth, -- warmth is not /200-scaled in SD
+            dynamicEffects = {},
+            shortBuff = false,
+            isToxic = sd.isToxic or false,
+            virtualFoodware = sd.virtualFoodware,
+            consumedIngredients = placedCounts(),
+        },
+    })
+end
+
 --- Craft = "take the result": consume the placed inputs, grant the output.
 function this.onCraft()
     if not matched or not canCraft then return end
-    local consume = {}
-    for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
-    core.sendGlobalEvent('ImmersiveCrafting_CraftShaped', {
-        actor = self.object,
-        consume = consume,
-        output = matched.output,
-    })
+    if matched.sdMeal then
+        craftSdMeal()
+    else
+        local consume = {}
+        for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
+        core.sendGlobalEvent('ImmersiveCrafting_CraftShaped', {
+            actor = self.object,
+            consume = consume,
+            output = matched.output,
+        })
+    end
     local label = matched.label or matched.id
     log.info('Crafted ' .. label)
     ui.showMessage('Crafted ' .. label)
