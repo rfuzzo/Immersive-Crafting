@@ -266,3 +266,41 @@ Verify in-game (SD loaded):
 - Behaviour with **no bowls/plates** in inventory (fallback mesh path).
 - Meal freshness + hunger credit on eating an IC-crafted meal; jerky hunger credit.
 - Materials strip at the firepit shows meat/vegetables (tags `Meat`/`Vegetable`).
+
+## SD interop round 2 (2026-07-04)
+
+- ✅ **Crafting window no longer jumps** — `Crafting.rebuild()` updates the window
+  body **in place** (`element.layout` mutation + `element:update()`); the window
+  element (and its dragged/resized geometry) is never recreated. The old
+  destroy/recreate path re-ran the relative→absolute conversion each click.
+- ✅ **SD firewood tagged `wood`** (`sd_wood_1` + publican/merchant variants) — SD
+  woodcutting output feeds our recipes directly.
+- ✅ **`CContext.recordPatterns` (+`recordPatternsExclude`)** — Lua patterns matched
+  against candidate record ids alongside recordIds/tags, in proximity, gaze, AND
+  the global activation handler. Used to adopt **SD's own cooking-fire detection**:
+  the `firepit` context now matches SD's activator name families (`fire`, `ember`,
+  `light_logpile`, `sd_wood_%d_lit`, `cauldron`, `grill`, `stove`; vetoes `firewat`,
+  `grille`) — activating an SD campfire opens our firepit station.
+- ✅ **Debug command**: console → `luap` → `I.ImmersiveCrafting.giveMaterials([n])`
+  grants every recipe ingredient (tags resolved via the first tagged
+  Ingredient/Misc/Potion record; default 5 each; logs unresolved matchers).
+
+### Water interop (designed, not built)
+
+SD water: bottles are dynamic Potion records tracked in `saveData.reverse[recordId]
+= { orig, q, liquid }` (orig = the empty container, liquid = 'water'|…), exposed via
+`I.SunsDusk.isConsumable(id)` → (entry, "drink"). Plan:
+- extend ingredient matching so a special matcher (e.g. `sd:water`) accepts any item
+  SD classifies as a water drink — `matchesTag` can't tag dynamic ids;
+- on consume, **return the empty container** (`entry.orig`) instead of deleting the
+  bottle (new behaviour in the craft executor for these inputs);
+- until built, recipes should avoid a literal `Water` ingredient or use tagged
+  static water items.
+
+### Next milestone: planters & vegetable farming
+
+Immersive Farming groundwork: `ic_station_planter` exists as a craftable. Needs:
+plant/grow/harvest loop (persistent per-planter state in global saveData — the
+first real consumer of the timed-process subsystem + `GRegistries.processes`),
+seeds (tag vanilla ingredients as seeds?), growth over game time (like forage
+cooldowns), planter as activate-context with its own layout. Design session first.

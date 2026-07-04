@@ -38,6 +38,19 @@
     },
     "actions": [
       "processing"
+    ],
+    "recordPatterns": [
+      "fire",
+      "ember",
+      "light_logpile",
+      "sd_wood_%d_lit",
+      "cauldron",
+      "grill",
+      "stove"
+    ],
+    "recordPatternsExclude": [
+      "firewat",
+      "grille"
     ]
   },
   {

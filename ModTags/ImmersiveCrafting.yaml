@@ -1,5 +1,9 @@
 wood:
   - ic_wood
+  # Sun's Dusk firewood (woodcutting yield + vendor stock) — soft interop
+  - sd_wood_1
+  - sd_wood_publican
+  - sd_wood_merchant
 stone:
   - ic_stone
 # clay is tagged in ImmersiveCrafting_Ingredients.yaml (real OAAB/TR clay records)

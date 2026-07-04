@@ -443,19 +443,15 @@ end
 
 -- ── window assembly ─────────────────────────────────────────────────────────
 
-function this.rebuild()
-    -- preserve the live window geometry (the user may have moved/resized it)
-    local prevProps = nil
-    if element and element.layout and element.layout.props then
-        local p = element.layout.props
-        prevProps = {
-            position = p.position,
-            size = p.size,
-            anchor = p.anchor,
-            relativePosition = p.relativePosition,
-        }
+--- Find a direct child layout by name in a ui.content collection.
+local function findChild(contentObj, name)
+    for i = 1, #contentObj do
+        if contentObj[i].name == name then return contentObj[i] end
     end
-    if element then element:destroy() end
+    return nil
+end
+
+function this.rebuild()
     if not isOpen or not ctx or not layout then return end
 
     local def = layouts[layout.kind]
@@ -466,7 +462,10 @@ function this.rebuild()
 
     -- the materials strip follows the window size (alchemy-style auto layout);
     -- a resize reflows on the next rebuild (i.e. the next click)
-    local winSize = (prevProps and prevProps.size) or WINDOW_SIZE
+    local winSize = WINDOW_SIZE
+    if element and element.layout and element.layout.props and element.layout.props.size then
+        winSize = element.layout.props.size
+    end
     local inputRows = layout.kind == 'grid' and (layout.size[1] or 2)
         or math.ceil(#(layout.inputs or {}) / 4)
     local pickerDims = {
@@ -546,10 +545,26 @@ function this.rebuild()
         }),
     }
 
+    -- Update the existing window's body in place: the window element (and its
+    -- position/size, incl. user drags/resizes) is never recreated, so it cannot
+    -- jump when a slot or material is clicked.
+    if element then
+        local foreground = findChild(element.layout.content, 'foreground')
+        local body = foreground and findChild(foreground.content, 'body')
+        if body then
+            body.content = ui.content({ content })
+            element:update()
+            return
+        end
+        -- unexpected shape: fall back to a full recreate
+        element:destroy()
+        element = nil
+    end
+
     local dlg = Window({
         title = 'Crafting Station: ' .. (ctx.context.label or 'Unknown'),
         body = ui.content({ content }),
-        props = prevProps or { anchor = v2(0.5, 0.5), relativePosition = v2(0.4, 0.5), size = WINDOW_SIZE },
+        props = { anchor = v2(0.5, 0.5), relativePosition = v2(0.4, 0.5), size = WINDOW_SIZE },
         getElement = function() return element end,
     })
 

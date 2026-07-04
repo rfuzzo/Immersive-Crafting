@@ -81,6 +81,31 @@ local function gatherNearby(maxRange)
     return list
 end
 
+--- Does a candidate record id match a context definition? recordIds match as
+--- exact id or FlexTag tag; recordPatterns match as Lua patterns on the
+--- lowercased id (with recordPatternsExclude vetoes) — used for name-based
+--- families like Sun's Dusk lit campfires.
+---@param recordId string
+---@param def CContext
+---@return boolean
+local function matchesDef(recordId, def)
+    for _, rid in ipairs(def.recordIds or {}) do
+        if lib.matchesTag(recordId, rid) then return true end
+    end
+    if def.recordPatterns then
+        local lowered = recordId:lower()
+        for _, pattern in ipairs(def.recordPatterns) do
+            if lowered:find(pattern) then
+                for _, veto in ipairs(def.recordPatternsExclude or {}) do
+                    if lowered:find(veto) then return false end
+                end
+                return true
+            end
+        end
+    end
+    return false
+end
+
 --- Are all required tags present among the candidates?
 ---@param candidates { recordId: string }[]
 ---@param requires string[]
@@ -127,17 +152,12 @@ local function findcurrentContexts(registries, maxRange)
             -- activating the object — see the global activation handler).
             local range = def.activationRange or 150
 
-            -- closest candidate that matches any of the context's recordIds (id or tag)
+            -- closest candidate that matches the context (id, tag, or pattern)
             local best = nil
             for _, cand in ipairs(candidates) do
-                if cand.distance <= range then
-                    for _, rid in ipairs(def.recordIds or {}) do
-                        if lib.matchesTag(cand.recordId, rid) then
-                            if not best or cand.distance < best.distance then
-                                best = cand
-                            end
-                            break
-                        end
+                if cand.distance <= range and matchesDef(cand.recordId, def) then
+                    if not best or cand.distance < best.distance then
+                        best = cand
                     end
                 end
             end
@@ -182,16 +202,13 @@ local function findGazeContext(registries)
     local distance = (res.hitPos - self.position):length()
 
     for _, def in pairs(registries.contexts) do
-        if def.trigger == 'gaze' and distance <= (def.activationRange or 200) then
-            for _, rid in ipairs(def.recordIds or {}) do
-                if lib.matchesTag(recordId, rid) then
-                    return {
-                        context = def,
-                        object = res.hitObject,
-                        distance = distance,
-                    }
-                end
-            end
+        if def.trigger == 'gaze' and distance <= (def.activationRange or 200)
+            and matchesDef(recordId, def) then
+            return {
+                context = def,
+                object = res.hitObject,
+                distance = distance,
+            }
         end
     end
     return nil

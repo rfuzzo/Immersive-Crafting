@@ -4,6 +4,8 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field id Id
 ---@field label string
 ---@field recordIds string[] Record ids OR FlexTag tags that identify this station (e.g. "bowl")
+---@field recordPatterns string[]|nil Lua patterns matched against candidate record ids (lowercased) — for name-based record families that can't be tagged, e.g. SD lit campfires ("sd_wood_%d_lit")
+---@field recordPatternsExclude string[]|nil patterns that veto a recordPatterns match (e.g. "firewat" vs the "fire" pattern)
 ---@field requires string[]|nil Extra FlexTag tags that must also be present nearby (e.g. "fire")
 ---@field trigger string|nil Detection: "proximity" (default), "activate" (activating the object opens it), "gaze" (crosshair raycast — for statics like trees/rocks), or "condition" (named predicate, no object)
 ---@field condition string|nil trigger:"condition" only — predicate name in conditions.lua (e.g. "near_water")

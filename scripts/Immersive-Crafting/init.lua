@@ -98,7 +98,7 @@ end
 -- "activate" contexts on load; on activating a matching activator we tell the player
 -- to open the station window (and suppress the default activation).
 
-local activateContexts = {} ---@type { id: string, recordIds: string[] }[]
+local activateContexts = {} ---@type { id: string, recordIds: string[], recordPatterns: string[]?, recordPatternsExclude: string[]? }[]
 local activationHandlerRegistered = false
 
 --- Global-context tag match: exact record id or FlexTag (I.FlexTagG) tag.
@@ -114,6 +114,28 @@ local function matchesTagGlobal(recordId, query)
     return false
 end
 
+--- id/tag match, or Lua-pattern match with vetoes (SD lit campfires etc.).
+---@param recordId string
+---@param c table pushed activate-context entry
+---@return boolean
+local function matchesActivateContext(recordId, c)
+    for _, rid in ipairs(c.recordIds or {}) do
+        if matchesTagGlobal(recordId, rid) then return true end
+    end
+    if c.recordPatterns then
+        local lowered = recordId:lower()
+        for _, pattern in ipairs(c.recordPatterns) do
+            if lowered:find(pattern) then
+                for _, veto in ipairs(c.recordPatternsExclude or {}) do
+                    if lowered:find(veto) then return false end
+                end
+                return true
+            end
+        end
+    end
+    return false
+end
+
 --- Activation handler for Activator objects. Returns false to suppress the default
 --- activation when we open one of our stations.
 ---@param object any
@@ -122,11 +144,9 @@ local function onActivateStation(object, actor)
     if actor.type ~= types.Player then return end
     local recordId = object.recordId
     for _, c in ipairs(activateContexts) do
-        for _, rid in ipairs(c.recordIds or {}) do
-            if matchesTagGlobal(recordId, rid) then
-                actor:sendEvent('ImmersiveCrafting_OpenStation', { contextId = c.id })
-                return false -- we handled it; skip default activation
-            end
+        if matchesActivateContext(recordId, c) then
+            actor:sendEvent('ImmersiveCrafting_OpenStation', { contextId = c.id })
+            return false -- we handled it; skip default activation
         end
     end
 end
