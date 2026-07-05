@@ -36,7 +36,16 @@ interfaces.Settings.registerGroup {
                 type = 'action',
                 key = 'ContextualAction',
             },
-        }
+        },
+        {
+            key = 'ForagingGivesWood',
+            renderer = 'checkbox',
+            name = 'Foraging gives wood',
+            description = "Gathering at trees also yields firewood, not just sticks. "
+                .. "Auto-enabled when Sun's Dusk is not installed; with Sun's Dusk, "
+                .. "leave this off and use its wood-chopping mechanic instead.",
+            default = false,
+        },
     },
 }
 

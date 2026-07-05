@@ -2,31 +2,49 @@
   {
     "id": "forage_tree",
     "label": "Tree",
-    "recordIds": ["tree"],
+    "recordIds": [
+      "tree"
+    ],
     "trigger": "gaze",
     "activationRange": 300,
     "forage": {
-      "verb": "Chop wood",
-      "label": "Wood",
-      "yield": { "id": "ic_wood", "count": 1 },
-      "tools": ["axe"],
+      "verb": "Gather wood",
+      "label": "Sticks",
+      "yield": {
+        "id": "ic_stick",
+        "count": 1,
+        "countMax": 3
+      },
+      "woodYield": {
+        "id": "ic_wood",
+        "count": 1
+      },
       "cooldown": 3600
     },
-    "actions": ["foraging"]
+    "actions": [
+      "foraging"
+    ]
   },
   {
     "id": "forage_rock",
     "label": "Rock",
-    "recordIds": ["rock"],
+    "recordIds": [
+      "rock"
+    ],
     "trigger": "gaze",
     "activationRange": 300,
     "forage": {
       "verb": "Gather stones",
       "label": "Stone",
-      "yield": { "id": "ic_stone", "count": 2 },
+      "yield": {
+        "id": "ic_stone",
+        "count": 2
+      },
       "cooldown": 3600
     },
-    "actions": ["foraging"]
+    "actions": [
+      "foraging"
+    ]
   },
   {
     "id": "forage_clay",
@@ -36,10 +54,17 @@
     "forage": {
       "verb": "Dig clay",
       "label": "Clay",
-      "yield": { "id": "AB_IngMine_Clay01", "count": 2 },
-      "tools": ["shovel"],
+      "yield": {
+        "id": "AB_IngMine_Clay01",
+        "count": 2
+      },
+      "tools": [
+        "shovel"
+      ],
       "cooldown": 1800
     },
-    "actions": ["foraging"]
+    "actions": [
+      "foraging"
+    ]
   }
 ]

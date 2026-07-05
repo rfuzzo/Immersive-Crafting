@@ -41,8 +41,12 @@ local OVERLAY_POS = v2(0.99, 0.70)
 local OVERLAY_ANCHOR = v2(1, 0)
 local LINE_W = 190
 
--- Width (in cells) of the ASCII hold bar drawn while a forage key is held.
-local HOLD_BAR_CELLS = 16
+-- Hold bar (drawn while a forage key is held): a bordered track with a solid
+-- gold fill, sized to the card's line width.
+local HOLD_BAR_H = 8
+local whiteTexture = ui.texture { path = 'white' }
+local HOLD_BAR_FILL = util.color.rgb(0.95, 0.78, 0.35)  -- matches the selected-slot gold
+local HOLD_BAR_TRACK = util.color.rgb(0.08, 0.07, 0.05) -- faint dark track behind the fill
 
 local this = {}
 
@@ -105,12 +109,37 @@ local function renderViewModel(viewModel, rows)
         rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
     end
 
-    -- hold progress bar: shown only while the key is actively held.
+    -- hold progress bar: shown only while the key is actively held. A solid
+    -- gold fill over a dark track inside an MWUI border.
     if viewModel.progress then
         local p = math.max(0, math.min(1, viewModel.progress))
-        local filled = math.floor(p * HOLD_BAR_CELLS + 0.5)
-        local bar = '[' .. string.rep('|', filled) .. string.rep('.', HOLD_BAR_CELLS - filled) .. ']'
-        rows[#rows + 1] = c.text({ text = bar, template = I.MWUI.templates.textHeader })
+        rows[#rows + 1] = {
+            template = I.MWUI.templates.box,
+            content = ui.content {
+                {
+                    type = ui.TYPE.Widget,
+                    props = { size = v2(LINE_W, HOLD_BAR_H) },
+                    content = ui.content {
+                        { -- track
+                            type = ui.TYPE.Image,
+                            props = {
+                                resource = whiteTexture,
+                                size = v2(LINE_W, HOLD_BAR_H),
+                                color = HOLD_BAR_TRACK,
+                            },
+                        },
+                        { -- fill
+                            type = ui.TYPE.Image,
+                            props = {
+                                resource = whiteTexture,
+                                size = v2(math.floor(LINE_W * p + 0.5), HOLD_BAR_H),
+                                color = HOLD_BAR_FILL,
+                            },
+                        },
+                    },
+                },
+            },
+        }
         rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
     end
 

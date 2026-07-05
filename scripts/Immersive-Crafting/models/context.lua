@@ -16,9 +16,10 @@ local log = require('scripts.Immersive-Crafting.log')
 local CContext = {}
 
 ---@class CContext.Forage
----@field yield { id: string, count: integer } granted item (real record id)
----@field verb string|nil action label (e.g. "Chop wood")
----@field label string|nil material name for messages (e.g. "Wood")
+---@field yield { id: string, count: integer, countMax: integer|nil } granted item (real record id); countMax makes the amount random (count..countMax)
+---@field woodYield { id: string, count: integer }|nil extra wood on top, granted only while "foraging gives wood" is active (setting ON, or Sun's Dusk absent)
+---@field verb string|nil action label (e.g. "Gather wood")
+---@field label string|nil material name for messages (e.g. "Sticks")
 ---@field tools string[]|nil required tool tags/ids in inventory (NOT consumed)
 ---@field cooldown number|nil recovery in GAME seconds (3600 = 1 game hour); default 1800
 ---@field holdTime number|nil seconds the forage key must be held (default 1.2)

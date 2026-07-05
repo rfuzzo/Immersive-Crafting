@@ -609,3 +609,25 @@ Verify in-game (needs SD):
 Open: no recipe uses sd:water yet (content is user-owned — e.g. future
 Immersive Cooking stews, farming watering); giveMaterials can't mint SD
 bottles (logs unresolved — use SD's own water sources when testing).
+
+## Forage polish: gather wood + real hold bar (built 2026-07-05)
+
+**Tree foraging reworked** (user request — SD's wood-chopping owns firewood):
+- forage_tree: verb "Gather wood", yields 1-3 STICKS (new `yield.countMax` =
+  random count..countMax), bare-handed (axe tool dropped — deadfall sticks
+  need no tool, and the chitin-dagger bootstrap needs a stick first).
+- `forage.woodYield` (ic_wood x1 on trees): granted ON TOP only while the
+  "foraging gives wood" rule is active — new checkbox setting
+  `ForagingGivesWood` (default off) OR Sun's Dusk absent (auto: without SD
+  there is no other firewood source, so trees must provide). Message reads
+  "You gather 2 x Sticks (+1 Wood)".
+
+**Hold bar**: the ASCII `[||||....]` text bar replaced by a real filled bar —
+MWUI box border, dark track, solid gold fill (same gold as the selected slot),
+LINE_W wide. Fills smoothly (overlay already re-renders every frame during a
+hold).
+
+Verify in-game:
+- with SD: trees give sticks only; toggle the setting -> +Wood appears
+- without SD: +Wood automatic
+- hold bar renders as a filled gold bar and resets on release/tap
