@@ -81,8 +81,10 @@ end)
 
 -- ── start ────────────────────────────────────────────────────────────────────
 
---- Event: start a timed process at a station. Inputs are consumed UP FRONT.
----@param data { actor: any, station: any, recipeId: string, label: string, consume: { id: string, count: integer }[], output: { id: string, count: integer }, duration: number }
+--- Event: start a timed process at a station. Inputs are consumed UP FRONT —
+--- including `returned` items (the mold sits in the kiln for the duration);
+--- those are granted back to the collector along with the output.
+---@param data { actor: any, station: any, recipeId: string, label: string, consume: { id: string, count: integer }[], returned: { id: string, count: integer }[]?, output: { id: string, count: integer }, duration: number }
 function this.onStart(data)
     if not (data and data.actor and data.station and data.output and data.duration) then return end
     local stationId = data.station.id
@@ -121,6 +123,7 @@ function this.onStart(data)
         recipeId = data.recipeId,
         label = data.label or data.recipeId,
         output = data.output,
+        returned = data.returned, -- items held by the station, given back on collect
         readyAt = core.getGameTime() + data.duration,
         done = false,
     }
@@ -134,7 +137,8 @@ end
 
 -- ── collect / activation hook ────────────────────────────────────────────────
 
---- Grant a finished run's output and clear it.
+--- Grant a finished run's output (plus anything the station held, e.g. the
+--- mold) and clear it.
 local function collect(actor, stationId)
     local e = processes()[stationId]
     if not e then return end
@@ -145,6 +149,15 @@ local function collect(actor, stationId)
     if not ok then
         log.error(('process: collect failed for "%s": %s'):format(tostring(e.output.id), tostring(err)))
         return
+    end
+    for _, entry in ipairs(e.returned or {}) do
+        local rok, rerr = pcall(function()
+            local created = world.createObject(entry.id, entry.count or 1)
+            created:moveInto(types.Actor.inventory(actor))
+        end)
+        if not rok then
+            log.error(('process: failed to return "%s": %s'):format(tostring(entry.id), tostring(rerr)))
+        end
     end
     processes()[stationId] = nil
     notify(actor, ('Collected %d x %s'):format(e.output.count or 1, e.label or e.output.id))

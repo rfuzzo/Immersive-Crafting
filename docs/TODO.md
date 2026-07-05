@@ -500,3 +500,34 @@ Open: while a timed run cooks, the "placed" mold stays in the player's
 inventory (could start a second kiln with the same mold — accepted for now,
 same trust level as tools); crucible could become a returned input at the
 furnace later instead of a tool.
+
+## Returned items v2: mold stays in the station; crucible demoted (built 2026-07-05)
+
+Bug fix (user report): during a TIMED run the returned mold no longer sits in
+the player's inventory — starting a run consumes EVERYTHING placed (the mold
+is physically in the kiln), the run entry stores a `returned` list (actual
+placed record ids, tags resolved), and collect grants output + returned items
+back. Instant crafts still simply never consume the returned part.
+`splitPlaced()` in Crafting.lua replaces consumeList and feeds both paths.
+
+Shaped recipes can now retain ingredients too: CShapedRecipe gained a
+top-level `returned: [{id, count}]` list (the ids still appear in
+pattern/key — they must be placed). The converter emits it automatically for
+RETURNED_ITEMS in grid ingredient columns.
+
+Crucible demoted from tool to plain ingredient (user ratified): it is
+consumed ONCE building the furnace — historically a "crucible furnace", the
+crucible is part of the structure — and the 9 casting recipes lost their
+redundant ic_crucible tool requirement. RETURNED_ITEMS = {armor mold} only;
+the ACKNOWLEDGED lint exception is gone, and returned items in a TOOL column
+are now a lint error.
+
+Verify in-game:
+- start a bonemold firing -> armor mold LEAVES the inventory; collect ->
+  mold + piece both granted; save/load mid-run keeps the returned list
+- casting at the furnace works without a crucible in inventory
+- instant craft with a returned ingredient consumes everything but it
+
+Note: returned items are re-created on collect (fresh instances — fine for
+plain misc molds, would lose condition/charges on equipment; revisit if
+returned ever covers enchantables).

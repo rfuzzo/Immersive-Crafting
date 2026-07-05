@@ -11,6 +11,7 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field pattern string[] grid rows; each char is a key symbol, space = empty cell
 ---@field key table<string, string> symbol -> record id or FlexTag tag
 ---@field tools string[]|nil tool tags/ids required in inventory (outside the grid)
+---@field returned { id: string, count: integer }[]|nil placed cells that are NOT consumed — given back on craft (reusable molds); ids also appear in pattern/key
 ---@field output { id: string, count: integer }|nil produced item (real record). Omitted for sdMeal recipes.
 ---@field sdMeal CRecipe.SdMeal|nil Sun's Dusk meal output (SunsDusk_createStew; requires SD)
 local CShapedRecipe = {}

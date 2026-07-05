@@ -24,12 +24,12 @@ Mapping (see docs/SPEC.md):
 
 Lint rules (design-critical, see the recipes handoff):
 - Weapon molds (raw + burnt) are CONSUMED -> must never appear in a tool column.
-- The burnt armor mold and the crucible are reusable TOOLS. In a PROCESS
-  recipe's ingredient columns they become `returned: true` input lines (placed
-  in a slot for the match — e.g. the kiln's Mold slot — but given back, not
-  consumed). In a GRID recipe's ingredients they are an error (grids consume
-  everything), except acknowledged pairs like the Furnace build, which
-  genuinely consumes its crucible.
+- RETURNED items (the burnt armor mold): appearing in ingredient columns they
+  are placed for the match but given back on craft/collect — emitted as
+  per-line `returned: true` for process recipes and a top-level `returned`
+  list for shaped (grid) recipes.
+- The crucible is a plain consumed ingredient: it is built INTO the furnace
+  (a crucible furnace), so casting recipes need no crucible tool.
 """
 import argparse
 import csv
@@ -57,10 +57,8 @@ CONSUMED_MOLDS = {
     for w in ('dagger', 'waraxe', 'spear', 'longsword', 'warhammer')
     for s in ('raw', 'burnt')
 }
-# reusable -> tools only
-REUSABLE_TOOLS = {'ic_mold_armor_burnt', 'ic_crucible'}
-# acknowledged exceptions: (recipe id, item) pairs allowed despite the rules
-ACKNOWLEDGED = {('ic_station_furnace', 'ic_crucible')}  # crucible built into the furnace
+# placed for the match but RETURNED on craft/collect (never truly consumed)
+RETURNED_ITEMS = {'ic_mold_armor_burnt'}
 
 
 def parse_rows(path):
@@ -139,12 +137,8 @@ def convert(rows):
         for t in tools:
             if t in CONSUMED_MOLDS:
                 errors.append(f'{rid}: consumed mold "{t}" used as a tool (must be an ingredient)')
-        for it in items:
-            if it in REUSABLE_TOOLS and kind == 'grid':
-                if (rid, it) in ACKNOWLEDGED:
-                    warnings.append(f'{rid}: reusable tool "{it}" consumed as ingredient (acknowledged)')
-                else:
-                    errors.append(f'{rid}: reusable tool "{it}" used as a grid ingredient (must be a tool)')
+            if t in RETURNED_ITEMS:
+                errors.append(f'{rid}: returned item "{t}" used as a tool (place it as an ingredient)')
 
         if rid in seen_ids:
             errors.append(f'{rid}: duplicate recipe id (also at {seen_ids[rid]})')
@@ -178,12 +172,18 @@ def convert(rows):
             pattern, key = to_pattern(slots, size)
             recipe['pattern'] = pattern
             recipe['key'] = key
+            ret = OrderedDict()
+            for it in items:
+                if it in RETURNED_ITEMS:
+                    ret[it] = ret.get(it, 0) + 1
+            if ret:
+                recipe['returned'] = [{'id': k, 'count': v} for k, v in ret.items()]
         else:
             inputs = OrderedDict()
             returned = OrderedDict()
             for it in items:
-                # reusable tools placed in a slot (kiln Mold slot) come back
-                if it in REUSABLE_TOOLS:
+                # returned items sit in a slot (kiln Mold slot) and come back
+                if it in RETURNED_ITEMS:
                     returned[it] = returned.get(it, 0) + 1
                 else:
                     inputs[it] = inputs.get(it, 0) + 1

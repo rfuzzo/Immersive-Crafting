@@ -1133,9 +1133,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "iron dagger",
       "count": 1
@@ -1157,9 +1154,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "iron war axe",
       "count": 1
@@ -1181,9 +1175,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "iron spear",
       "count": 1
@@ -1201,9 +1192,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "iron_cuirass",
       "count": 1
@@ -1225,9 +1213,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "steel dagger",
       "count": 1
@@ -1249,9 +1234,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "steel longsword",
       "count": 1
@@ -1273,9 +1255,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "steel war axe",
       "count": 1
@@ -1297,9 +1276,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "steel spear",
       "count": 1
@@ -1321,9 +1297,6 @@
       }
     ],
     "duration": 1800,
-    "tools": [
-      "ic_crucible"
-    ],
     "output": {
       "id": "steel warhammer",
       "count": 1

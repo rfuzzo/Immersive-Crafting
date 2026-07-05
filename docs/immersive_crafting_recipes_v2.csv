@@ -22,7 +22,7 @@ Burnt Spear Mold,ic_mold_spear_burnt,1,1800,Firepit,,,,ic_mold_spear_raw,Wood,Wo
 Burnt Longsword Mold,ic_mold_longsword_burnt,1,1800,Kiln,,,,ic_mold_longsword_raw,Charcoal,,,,,,,,Needs Kiln heat; fuel=Charcoal
 Burnt Warhammer Mold,ic_mold_warhammer_burnt,1,1800,Kiln,,,,ic_mold_warhammer_raw,Charcoal,Charcoal,,,,,,,Needs Kiln heat
 Raw Armor Mold,ic_mold_armor_raw,1,,Bushcrafting,chitin cuirass,,,Clay,Clay,Clay,Clay,,,,,,Template tool not consumed; generic armor mold
-Burnt Armor Mold,ic_mold_armor_burnt,1,1800,Kiln,,,,ic_mold_armor_raw,Charcoal,Charcoal,,,,,,,"Fired armor mold; reusable tool, NOT consumed on casting"
+Burnt Armor Mold,ic_mold_armor_burnt,1,1800,Kiln,,,,ic_mold_armor_raw,Charcoal,Charcoal,,,,,,,Fired armor mold; RETURNED ingredient — placed in the Mold slot and given back
 # ══════════════════════════════════════════════════════════════════
 # CRAFTABLE STATIONS
 # ══════════════════════════════════════════════════════════════════
@@ -39,7 +39,7 @@ Plank,ic_plank,1,,Bushcrafting,chitin war axe,,,Wood,Wood,,,,,,,,Split wood with
 Cloth,ic_cloth,1,,Crafting Table,,,,ic_string,ic_string,ic_string,,,,,,,Weave 3 strings
 Netch Leather,ic_netch_leather,1,3600,Tanning Rack,Knife,,,ic_netch_hide,Salt,,,,,,,,Better than plain hide
 Charcoal,ic_charcoal,1,7200,Charcoal Pit,,,,Wood,Wood,Wood,Wood,,,,,,Slow-burn; made at the Charcoal Pit
-Crucible,ic_crucible,1,3600,Kiln,,,,Clay,Clay,Clay,,,,,,,Holds molten metal; NOT consumed on use (tool)
+Crucible,ic_crucible,1,3600,Kiln,,,,Clay,Clay,Clay,,,,,,,Holds molten metal; consumed building the Furnace
 Clay Pot,ic_clay_pot,1,1800,Kiln,,,,Clay,Clay,,,,,,,,Fired storage vessel; wet clay needs no added water
 Bucket,ic_bucket,1,,Crafting Table,,,,ic_iron_ingot,ic_iron_ingot,ic_plank,,,,,,,Water/material transport
 # ══════════════════════════════════════════════════════════════════
@@ -84,18 +84,18 @@ Mortar and Pestle,ic_mortar_pestle,1,,Bushcrafting,,,,Stone,Stone,Stone,,,,,,,Gr
 # ══════════════════════════════════════════════════════════════════
 Iron Ingot,ic_iron_ingot,1,3600,Furnace,,,,Ore,Ore,Ore,ic_charcoal,ic_charcoal,,,,,Bloomery smelt: 3 ore + 2 charcoal
 Steel Ingot,ic_steel_ingot,1,5400,Furnace,,,,ic_iron_ingot,ic_iron_ingot,ic_charcoal,ic_charcoal,ic_charcoal,,,,,ALLOY: iron + carbon (charcoal) = steel
-iron dagger,iron dagger,1,1800,Furnace,ic_crucible,,,ic_iron_ingot,ic_mold_dagger_burnt,,,,,,,,"Mold consumed; crucible is tool, not consumed"
-iron war axe,iron war axe,1,1800,Furnace,ic_crucible,,,ic_iron_ingot,ic_iron_ingot,ic_mold_waraxe_burnt,,,,,,,Mold consumed
-iron spear,iron spear,1,1800,Furnace,ic_crucible,,,ic_iron_ingot,ic_iron_ingot,ic_mold_spear_burnt,,,,,,,Mold consumed
-iron_cuirass,iron_cuirass,1,1800,Furnace,ic_crucible,,,ic_iron_ingot,ic_iron_ingot,ic_iron_ingot,ic_iron_ingot,,,,,,
+iron dagger,iron dagger,1,1800,Furnace,,,,ic_iron_ingot,ic_mold_dagger_burnt,,,,,,,,Mold consumed; the built-in crucible does the pouring
+iron war axe,iron war axe,1,1800,Furnace,,,,ic_iron_ingot,ic_iron_ingot,ic_mold_waraxe_burnt,,,,,,,Mold consumed
+iron spear,iron spear,1,1800,Furnace,,,,ic_iron_ingot,ic_iron_ingot,ic_mold_spear_burnt,,,,,,,Mold consumed
+iron_cuirass,iron_cuirass,1,1800,Furnace,,,,ic_iron_ingot,ic_iron_ingot,ic_iron_ingot,ic_iron_ingot,,,,,,
 # ══════════════════════════════════════════════════════════════════
 # TIER 2 — MK2 STEEL (melee weapons — real Steel weapon records)
 # ══════════════════════════════════════════════════════════════════
-steel dagger,steel dagger,1,1800,Furnace,ic_crucible,,,ic_steel_ingot,ic_mold_dagger_burnt,,,,,,,,Mold consumed
-steel longsword,steel longsword,1,1800,Furnace,ic_crucible,,,ic_steel_ingot,ic_steel_ingot,ic_mold_longsword_burnt,,,,,,,Mold consumed
-steel war axe,steel war axe,1,1800,Furnace,ic_crucible,,,ic_steel_ingot,ic_steel_ingot,ic_mold_waraxe_burnt,,,,,,,Mold consumed
-steel spear,steel spear,1,1800,Furnace,ic_crucible,,,ic_steel_ingot,ic_steel_ingot,ic_mold_spear_burnt,,,,,,,Mold consumed
-steel warhammer,steel warhammer,1,1800,Furnace,ic_crucible,,,ic_steel_ingot,ic_steel_ingot,ic_steel_ingot,ic_mold_warhammer_burnt,,,,,,Mold consumed
+steel dagger,steel dagger,1,1800,Furnace,,,,ic_steel_ingot,ic_mold_dagger_burnt,,,,,,,,Mold consumed
+steel longsword,steel longsword,1,1800,Furnace,,,,ic_steel_ingot,ic_steel_ingot,ic_mold_longsword_burnt,,,,,,,Mold consumed
+steel war axe,steel war axe,1,1800,Furnace,,,,ic_steel_ingot,ic_steel_ingot,ic_mold_waraxe_burnt,,,,,,,Mold consumed
+steel spear,steel spear,1,1800,Furnace,,,,ic_steel_ingot,ic_steel_ingot,ic_mold_spear_burnt,,,,,,,Mold consumed
+steel warhammer,steel warhammer,1,1800,Furnace,,,,ic_steel_ingot,ic_steel_ingot,ic_steel_ingot,ic_mold_warhammer_burnt,,,,,,Mold consumed
 steel_cuirass,steel_cuirass,1,,Crafting Table,steel warhammer,,,ic_steel_ingot,ic_steel_ingot,ic_steel_ingot,ic_steel_ingot,,,,,,Hammer required to shape plate
 steel_helm,steel_helm,1,,Crafting Table,steel warhammer,,,ic_steel_ingot,ic_steel_ingot,,,,,,,,
 steel_boots,steel_boots,1,,Crafting Table,steel warhammer,,,ic_steel_ingot,ic_steel_ingot,,,,,,,,

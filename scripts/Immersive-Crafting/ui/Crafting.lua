@@ -509,12 +509,11 @@ local function resultSection()
                 or ('~%d min'):format(math.max(1, math.ceil(matched.duration / 60)))
             caption = caption .. ('  (takes %s)'):format(dur)
         end
+        local hasReturned = matched.returned and #matched.returned > 0
         for _, line in ipairs(matched.inputs or {}) do
-            if line.returned then
-                caption = caption .. '  (mold returned)'
-                break
-            end
+            if line.returned then hasReturned = true end
         end
+        if hasReturned then caption = caption .. '  (mold returned)' end
         if not canCraft then caption = caption .. '  (not enough materials)' end
     else
         caption = '(no match)'
@@ -756,28 +755,44 @@ local function craftSdMeal()
     })
 end
 
---- Consume list = everything placed minus the matched recipe's `returned`
---- lines (a reusable mold placed in the Mold slot must be there for the match
---- but stays with the player). Shaped recipes have no input lines — everything
---- placed is consumed.
-local function consumeList()
-    local counts = placedCounts()
+--- The matched recipe's returned lines: process recipes flag them per input
+--- line (`returned: true`); shaped recipes carry a separate `returned` list.
+local function returnedLines()
+    local lines = {}
     for _, line in ipairs((matched and matched.inputs) or {}) do
-        if line.returned then
-            local remaining = line.count or 1
-            for id, n in pairs(counts) do
-                if remaining <= 0 then break end
-                if lib.matchesTag(id, line.id) then
-                    local spare = math.min(n, remaining)
-                    counts[id] = (n - spare > 0) and (n - spare) or nil
-                    remaining = remaining - spare
-                end
+        if line.returned then lines[#lines + 1] = line end
+    end
+    for _, line in ipairs((matched and matched.returned) or {}) do
+        lines[#lines + 1] = line
+    end
+    return lines
+end
+
+--- Split everything placed into what is consumed and what comes back, per the
+--- matched recipe's returned lines. Returned entries carry the ACTUAL placed
+--- record ids (a returned line may be a tag). Instant crafts simply never
+--- consume the returned part; timed runs consume everything up front (the
+--- mold sits in the kiln) and the global side grants the returned part back
+--- on collect.
+---@return { id: string, count: integer }[] consume, { id: string, count: integer }[] returned
+local function splitPlaced()
+    local counts = placedCounts()
+    local returned = {}
+    for _, line in ipairs(returnedLines()) do
+        local remaining = line.count or 1
+        for id, n in pairs(counts) do
+            if remaining <= 0 then break end
+            if lib.matchesTag(id, line.id) then
+                local take = math.min(n, remaining)
+                counts[id] = (n - take > 0) and (n - take) or nil
+                returned[#returned + 1] = { id = id, count = take }
+                remaining = remaining - take
             end
         end
     end
     local consume = {}
     for id, count in pairs(counts) do consume[#consume + 1] = { id = id, count = count } end
-    return consume
+    return consume, returned
 end
 
 --- Craft = "take the result": consume the placed inputs, grant the output.
@@ -790,22 +805,28 @@ function this.onCraft()
     if matched.sdMeal then
         craftSdMeal()
     elseif matched.duration and matched.duration > 0 and ctx.object then
-        local consume = consumeList()
+        -- everything placed goes INTO the station (incl. the mold); the
+        -- returned part is granted back when the run is collected
+        local _, returned = splitPlaced()
+        local consume = {}
+        for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
         core.sendGlobalEvent('ImmersiveCrafting_StartProcess', {
             actor = self.object,
             station = ctx.object,
             recipeId = matched.id,
             label = matched.label or matched.id,
             consume = consume,
+            returned = returned,
             output = matched.output,
             duration = matched.duration,
         })
         this.close() -- the run lives at the station now; its card shows progress
         return
     else
+        local consume = splitPlaced() -- instant: the returned part never leaves the inventory
         core.sendGlobalEvent('ImmersiveCrafting_CraftShaped', {
             actor = self.object,
-            consume = consumeList(),
+            consume = consume,
             output = matched.output,
         })
     end
