@@ -376,3 +376,47 @@ Verify in-game:
 Open (by design, later): cooking doneness states (simmering/cooked/burnt needs
 multi-stage, not just done); progress bar on the card (we have remaining time —
 a bar needs per-tick refresh like the hold bar); fuel-quality time modifiers.
+
+## Carving + station slot roles (built 2026-07-05)
+
+Two ratified designs (user 2026-07-05):
+
+**Multi-match cycling ("carving").** One placement can now resolve to SEVERAL
+shaped recipes — `shapedCrafting.resolveShapedRecipes` returns all matches
+(sorted by id, stable) and the Result panel grows a `< i/n >` cycler when
+ambiguous; the shown match is what clicking the Result crafts, and the pick
+survives rebuilds (resolve re-finds the previous match id). This also fixes the
+old nondeterminism where same-pattern recipes shadowed each other randomly
+(steel helm/boots/greaves = 2 ingots each; the glass set). Content: 4 CARVING
+rows in the CSV (Crafting Table, 1 Wood + Knife → vanilla wooden cup / spoon /
+fork / knife — ids need verification vs the tes3-records dump).
+
+**Kiln/furnace slot roles + stacking slots.** Layouts per the ratified spec:
+kiln = Input / Reagent / Fuel / Mold, furnace = Input x3 / Fuel / Mold (the
+Reagent slot covers water/stone/salt-style additives; tanning rack already had
+Input/Reagent). To make big recipes fit (Iron Ingot = 3 Ore + 2 Charcoal),
+**process slots hold stacks** Minecraft-furnace-style: picking the same
+material again adds one to the selected slot (selection stays put on process
+layouts; grids still hold 1 per cell and auto-advance), clicking a filled slot
+takes one unit back, the count badge shows stack size. There is NO output slot:
+the Result panel is the output for instant crafts, and timed runs deliver at
+the station itself (card flips to "ready — Activate to collect").
+
+`CContext.SlotDef` gained optional `accepts` (ids/FlexTags) and
+`acceptsPatterns` (Lua patterns) — placement guidance only (the Mold slot takes
+only `ic_mold_*`; the materials strip filters to what the selected empty slot
+accepts). Recipe matching stays a forgiving counted multiset over ALL slots, so
+labels/filters never break a valid recipe.
+
+Verify in-game:
+- carving: 1 wood + knife at the table → cycler shows 4 outcomes, cycle + craft
+  each; steel helm/boots/greaves now all reachable from 2 ingots
+- kiln: 3 Ore stacked in Input + 2 Charcoal in Fuel → Iron Ingot run starts;
+  crucible (3 Clay + 2 Stone via Input+Reagent); mold slot refuses non-molds
+  and the strip filters to molds while it's selected
+- furnace castings: ingots stack in one Input, burnt weapon mold in Mold
+- vanilla woodenware record ids exist (user: check tes3-records dump)
+
+Open: process-recipe cycling (resolver still returns the single most-specific
+match — extend to a list if two process recipes ever tie); Fuel slot has no
+accepts filter yet (needs a Fuel FlexTag authored before it can be strict).

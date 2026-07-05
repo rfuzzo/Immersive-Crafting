@@ -112,19 +112,24 @@ function this.hasTools(tools)
     return true
 end
 
---- Resolve the shaped recipe matching a placed grid for this action/context.
+--- Resolve ALL shaped recipes matching a placed grid for this action/context.
+--- Several recipes may share a shape (carving: one wood block -> bowl OR cup OR
+--- spoon; the steel armor pieces: two ingots each) — the UI lets the player
+--- cycle through the matches. Sorted by id so the order is stable across
+--- rebuilds (GRegistries iteration order is not).
 ---@param grid table 2D array grid[row][col] = recordId|nil (from the crafting UI)
 ---@param action CAction
 ---@param context CContext
----@return CShapedRecipe?
-function this.resolveShapedRecipe(grid, action, context)
+---@return CShapedRecipe[] all matches (empty if none)
+function this.resolveShapedRecipes(grid, action, context)
+    local matches = {}
     if not GRegistries then
         log.error('GRegistries not initialized yet')
-        return nil
+        return matches
     end
 
     local items = trim(grid)
-    if not items then return nil end -- empty grid
+    if not items then return matches end -- empty grid
 
     for _, recipe in pairs(GRegistries.shapedRecipes or {}) do
         -- Sun's Dusk meal recipes only exist when SD is loaded (soft dependency)
@@ -133,12 +138,13 @@ function this.resolveShapedRecipe(grid, action, context)
             local pat = trim(patternToGrid(recipe.pattern, recipe.key))
             if pat and sameDims(items, pat) and cellsMatch(items, pat)
                 and this.hasTools(recipe.tools) then
-                return recipe
+                matches[#matches + 1] = recipe
             end
         end
     end
 
-    return nil
+    table.sort(matches, function(a, b) return tostring(a.id) < tostring(b.id) end)
+    return matches
 end
 
 return this

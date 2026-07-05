@@ -65,22 +65,23 @@
       "kind": "process",
       "inputs": [
         {
-          "key": "s1"
+          "key": "input",
+          "label": "Input"
         },
         {
-          "key": "s2"
+          "key": "reagent",
+          "label": "Reagent"
         },
         {
-          "key": "s3"
+          "key": "fuel",
+          "label": "Fuel"
         },
         {
-          "key": "s4"
-        },
-        {
-          "key": "s5"
-        },
-        {
-          "key": "s6"
+          "key": "mold",
+          "label": "Mold",
+          "acceptsPatterns": [
+            "^ic_mold_"
+          ]
         }
       ]
     },
@@ -100,16 +101,27 @@
       "kind": "process",
       "inputs": [
         {
-          "key": "s1"
+          "key": "input1",
+          "label": "Input"
         },
         {
-          "key": "s2"
+          "key": "input2",
+          "label": "Input"
         },
         {
-          "key": "s3"
+          "key": "input3",
+          "label": "Input"
         },
         {
-          "key": "s4"
+          "key": "fuel",
+          "label": "Fuel"
+        },
+        {
+          "key": "mold",
+          "label": "Mold",
+          "acceptsPatterns": [
+            "^ic_mold_"
+          ]
         }
       ]
     },

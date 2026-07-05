@@ -31,6 +31,8 @@ local CContext = {}
 ---@class CContext.SlotDef
 ---@field key string slot id, matched against a process recipe's `inputs` key (e.g. "fuel", "input")
 ---@field label string|nil label shown above the slot
+---@field accepts string[]|nil only items matching one of these ids/FlexTag tags may be placed here (UX guidance only — recipe matching stays a counted multiset over ALL slots)
+---@field acceptsPatterns string[]|nil like `accepts`, but Lua patterns against the lowercased record id (e.g. "^ic_mold_") — for record families without tags
 
 --- Deserialize from table
 ---@param tbl any

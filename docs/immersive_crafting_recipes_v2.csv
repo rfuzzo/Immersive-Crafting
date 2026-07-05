@@ -64,6 +64,14 @@ Bedroll Mk1,ic_bedroll_mk1,1,,Crafting Table,,,,ic_cloth,ic_cloth,ic_cloth,Plant
 Bowl,ic_bowl,1,,Crafting Table,Knife,,,Wood,Wood,,,,,,,,Carved
 Armor Mk1 (Hide),ic_armor_hide_mk1,1,,Crafting Table,,,,Hide,Hide,Hide,ic_string,ic_string,ic_string,,,,Lashed-hide basic armor
 # ══════════════════════════════════════════════════════════════════
+# TIER 1 — CARVING (Crafting Table: 1 wood + knife; all rows share the
+# same shape on purpose — the Result panel cycles between the outcomes)
+# ══════════════════════════════════════════════════════════════════
+Wooden Cup,misc_com_wood_cup_01,1,,Crafting Table,Knife,,,Wood,,,,,,,,,CARVING; vanilla record — verify id vs tes3-records
+Wooden Spoon,misc_com_wood_spoon_01,2,,Crafting Table,Knife,,,Wood,,,,,,,,,CARVING; vanilla record — verify id vs tes3-records
+Wooden Fork,misc_com_wood_fork,2,,Crafting Table,Knife,,,Wood,,,,,,,,,CARVING; vanilla record — verify id vs tes3-records
+Wooden Knife,misc_com_wood_knife,2,,Crafting Table,Knife,,,Wood,,,,,,,,,CARVING; vanilla record — verify id vs tes3-records
+# ══════════════════════════════════════════════════════════════════
 # TIER 1 — COOKING UTENSILS (Crafting Table; feeds Immersive Cooking)
 # ══════════════════════════════════════════════════════════════════
 Pan,ic_pan,1,,Crafting Table,,,,ic_iron_ingot,ic_iron_ingot,ic_iron_ingot,ic_stick,,,,,,Cooking station input

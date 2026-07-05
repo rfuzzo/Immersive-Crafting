@@ -907,6 +907,90 @@
     }
   },
   {
+    "id": "misc_com_wood_cup_01",
+    "label": "Wooden Cup",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "misc_com_wood_cup_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "misc_com_wood_spoon_01",
+    "label": "Wooden Spoon",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "misc_com_wood_spoon_01",
+      "count": 2
+    }
+  },
+  {
+    "id": "misc_com_wood_fork",
+    "label": "Wooden Fork",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "misc_com_wood_fork",
+      "count": 2
+    }
+  },
+  {
+    "id": "misc_com_wood_knife",
+    "label": "Wooden Knife",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "misc_com_wood_knife",
+      "count": 2
+    }
+  },
+  {
     "id": "ic_pan",
     "label": "Pan",
     "context": "crafting_table",

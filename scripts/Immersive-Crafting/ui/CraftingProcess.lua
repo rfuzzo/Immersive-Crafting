@@ -1,9 +1,11 @@
 --- PROCESS layout: N input slots (non-positional; chunked into rows of 4).
---- slotId = input.key. Slots may carry a label (e.g. the tanning rack's
---- Input/Reagent) or be generic (kiln s1..sN). Clicking an empty slot selects it
---- (the materials strip fills the selected slot); clicking a filled slot clears
---- it. The tools/result panels live in the shared window frame (Crafting.lua).
---- Matching is a counted multiset — position never matters.
+--- slotId = input.key. Slots may carry a label (kiln Input/Reagent/Fuel/Mold)
+--- or be generic (firepit s1..sN), and hold a STACK of one item (furnace-style;
+--- the count badge shows the stack size). Clicking an empty slot selects it
+--- (the materials strip fills the selected slot); clicking a filled slot takes
+--- one unit back. The tools/result panels live in the shared window frame
+--- (Crafting.lua). Matching is a counted multiset — position never matters;
+--- labels and `accepts` filters are placement guidance only.
 
 local ui = require('openmw.ui')
 local util = require('openmw.util')

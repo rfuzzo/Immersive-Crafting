@@ -15,11 +15,16 @@
 
     Interaction (no drag-and-drop, no Create button):
     - Clicking an empty input slot SELECTS it (highlighted); clicking a material in
-      the strip places it into the selected slot and auto-advances the selection to
-      the next empty slot. Clicking a filled slot clears it (and selects it).
+      the strip places it into the selected slot. Grid slots hold ONE item and the
+      selection auto-advances; process slots hold a STACK (furnace-style — picking
+      the same material again adds one) and the selection stays put. Clicking a
+      filled slot takes one unit back off it. Process slots may declare `accepts`
+      filters (e.g. the Mold slot only takes molds).
     - The RESULT slot shows the resolved recipe's output. Clicking it "takes" the
       item — that is the craft: inputs are consumed and the output is moved to the
       player's inventory (Minecraft-style). The window stays open for batches.
+      When one placement matches SEVERAL recipes (carving: one wood block -> bowl,
+      cup, spoon...), `< i/n >` next to Result cycles through the matches.
 
     The window shell (borders, drag/resize, title) is `ui/Window.lua`; the input
     area comes from the layout registry (grid → CraftingGrid, process →
@@ -64,11 +69,13 @@ local isOpen = false
 local ctx = nil ---@type HandlerContext?
 local layout = nil ---@type CContext.Layout?
 local element = nil
-local placed = {} ---@type table<string, {recordId:string, icon:string?}> slotId -> placed item
+local placed = {} ---@type table<string, {recordId:string, icon:string?, count:integer}> slotId -> placed stack (grid slots always hold 1; process slots stack)
 local selectedSlot = nil ---@type string? slot the next picked material goes into
 local materials = {} ---@type { recordId:string, icon:string?, count:integer }[]
 local stationTools = {} ---@type string[] distinct tool ids/tags used by this station's recipes
-local matched = nil ---@type CShapedRecipe|CProcessRecipe|nil
+local matchedList = {} ---@type (CShapedRecipe|CProcessRecipe)[] all recipes the placed items resolve to
+local matchedIndex = 1 ---@type integer which match the Result panel shows (cycle with < >)
+local matched = nil ---@type CShapedRecipe|CProcessRecipe|nil matchedList[matchedIndex]
 local canCraft = false
 local iconTextureCache = {} ---@type table<string, any>
 
@@ -137,11 +144,11 @@ local function inventoryCount(recordId)
     return total
 end
 
---- How many of each record id are placed across all slots.
+--- How many of each record id are placed across all slots (stacks counted).
 local function placedCounts()
     local counts = {}
     for _, cell in pairs(placed) do
-        counts[cell.recordId] = (counts[cell.recordId] or 0) + 1
+        counts[cell.recordId] = (counts[cell.recordId] or 0) + (cell.count or 1)
     end
     return counts
 end
@@ -218,14 +225,52 @@ local function collectMaterials()
     return list
 end
 
+-- ── slot filters (`accepts` on process slot defs) ───────────────────────────
+
+---@param slotId string?
+---@return CContext.SlotDef?
+local function slotDef(slotId)
+    if not slotId or not layout or layout.kind ~= 'process' then return nil end
+    for _, inp in ipairs(layout.inputs or {}) do
+        if inp.key == slotId then return inp end
+    end
+    return nil
+end
+
+--- May this item go into this slot? Slots without accepts/acceptsPatterns take
+--- anything (grid slots always do). This is placement UX only — recipe matching
+--- stays a forgiving multiset over all slot contents.
+---@param slotId string
+---@param recordId string
+---@return boolean
+local function slotAccepts(slotId, recordId)
+    local def = slotDef(slotId)
+    if not def then return true end
+    local accepts, patterns = def.accepts, def.acceptsPatterns
+    if not ((accepts and #accepts > 0) or (patterns and #patterns > 0)) then
+        return true
+    end
+    for _, q in ipairs(accepts or {}) do
+        if lib.matchesTag(recordId, q) then return true end
+    end
+    local lowered = recordId:lower()
+    for _, p in ipairs(patterns or {}) do
+        if lowered:find(p) then return true end
+    end
+    return false
+end
+
 --- Materials still pickable: inventory counts minus what is already placed in
---- the slots (placing an item visibly removes one from the strip).
+--- the slots (placing an item visibly removes one from the strip). While an
+--- EMPTY slot with an `accepts` filter is selected, the strip only shows what
+--- that slot takes (e.g. molds for the Mold slot).
 local function availableMaterials()
     local placedBy = placedCounts()
+    local filterSlot = (selectedSlot and not placed[selectedSlot]) and selectedSlot or nil
     local list = {}
     for _, entry in ipairs(materials) do
         local remaining = entry.count - (placedBy[entry.recordId] or 0)
-        if remaining > 0 then
+        if remaining > 0 and (not filterSlot or slotAccepts(filterSlot, entry.recordId)) then
             list[#list + 1] = { recordId = entry.recordId, icon = entry.icon, count = remaining }
         end
     end
@@ -271,10 +316,11 @@ local function slotOrder()
     return order
 end
 
---- Keep a sensible selection: if none (or it got filled), pick the first empty slot.
+--- Keep a sensible selection: if none, pick the first empty slot. A selection
+--- on a FILLED slot is kept — that's how process slots stack (picking the same
+--- material again adds to the selected stack).
 local function ensureSelection()
-    if selectedSlot and not placed[selectedSlot] then return end
-    selectedSlot = nil
+    if selectedSlot then return end
     for _, id in ipairs(slotOrder()) do
         if not placed[id] then
             selectedSlot = id
@@ -296,26 +342,41 @@ local function gridFromPlaced()
     return g
 end
 
---- All placed record ids, one per filled slot (process matching is non-positional).
+--- All placed record ids, one per unit — stacks expand (process matching is a
+--- non-positional counted multiset).
 local function placedList()
     local list = {}
     for _, cell in pairs(placed) do
-        list[#list + 1] = cell.recordId
+        for _ = 1, (cell.count or 1) do
+            list[#list + 1] = cell.recordId
+        end
     end
     return list
 end
 
---- Resolve the placed slots into a matched recipe + craftability for the layout.
+--- Resolve the placed slots into the matched recipe(s) + craftability.
+--- Grids can resolve to SEVERAL recipes (carving); the Result panel cycles
+--- through them, keeping the player's pick stable while the match set allows.
 local function resolve()
-    matched, canCraft = nil, false
+    local prevId = matched and matched.id
+    matchedList, matched, canCraft = {}, nil, false
     if not ctx or not layout then return end
 
     if layout.kind == 'grid' then
-        matched = shaped.resolveShapedRecipe(gridFromPlaced(), ctx.action, ctx.context)
+        matchedList = shaped.resolveShapedRecipes(gridFromPlaced(), ctx.action, ctx.context)
     elseif layout.kind == 'process' then
-        matched = processCrafting.resolveProcessRecipe(placedList(), ctx.action, ctx.context)
+        local best = processCrafting.resolveProcessRecipe(placedList(), ctx.action, ctx.context)
+        if best then matchedList = { best } end
     end
 
+    matchedIndex = 1
+    for i, r in ipairs(matchedList) do
+        if r.id == prevId then
+            matchedIndex = i
+            break
+        end
+    end
+    matched = matchedList[matchedIndex]
     canCraft = matched ~= nil and haveEnough()
 end
 
@@ -327,21 +388,58 @@ local view = {
     slotView = function(slotId)
         local cell = placed[slotId]
         if not cell then return nil end
-        return { resource = textureForPath(cell.icon) }
+        return {
+            resource = textureForPath(cell.icon),
+            count = (cell.count or 1) > 1 and cell.count or nil,
+        }
     end,
     onSlotClick = function(slotId)
-        -- Filled slot: clear it (and select it, so a new pick replaces it).
-        if placed[slotId] then
-            placed[slotId] = nil
+        -- Filled slot: take one unit off the stack (clears it at 1) and select
+        -- it, so a new pick replaces/refills it.
+        local cell = placed[slotId]
+        if cell then
+            if (cell.count or 1) > 1 then
+                cell.count = cell.count - 1
+            else
+                placed[slotId] = nil
+            end
         end
         selectedSlot = slotId
         this.rebuild()
     end,
     onPick = function(recordId, iconPath)
         ensureSelection()
-        if not selectedSlot then return end -- no empty slot left
-        placed[selectedSlot] = { recordId = recordId, icon = iconPath }
-        ensureSelection()                   -- auto-advance to the next empty slot
+        local isProcess = layout and layout.kind == 'process'
+        local target = selectedSlot
+
+        -- process slots stack: picking the material already in the selected
+        -- slot adds one (the strip only lists items with inventory remaining)
+        if isProcess and target and placed[target] and placed[target].recordId == recordId then
+            placed[target].count = (placed[target].count or 1) + 1
+            this.rebuild()
+            return
+        end
+
+        -- place into the selected slot if it's empty and takes this item;
+        -- otherwise into the first empty slot that does
+        if not (target and not placed[target] and slotAccepts(target, recordId)) then
+            target = nil
+            for _, id in ipairs(slotOrder()) do
+                if not placed[id] and slotAccepts(id, recordId) then
+                    target = id
+                    break
+                end
+            end
+        end
+        if not target then return end -- no slot takes this item
+
+        placed[target] = { recordId = recordId, icon = iconPath, count = 1 }
+        if isProcess then
+            selectedSlot = target -- stay: the next pick of the same material stacks
+        else
+            selectedSlot = nil
+            ensureSelection() -- grid: auto-advance to the next empty slot
+        end
         this.rebuild()
     end,
 }
@@ -378,8 +476,19 @@ local function toolsSection()
     }
 end
 
+--- Cycle the Result panel to another match (carving: same wood, many shapes).
+---@param delta integer +1 / -1, wraps around
+local function cycleMatch(delta)
+    local n = #matchedList
+    if n < 2 then return end
+    matchedIndex = ((matchedIndex - 1 + delta) % n) + 1
+    matched = matchedList[matchedIndex]
+    this.rebuild()
+end
+
 --- Result panel — the resolved output. CLICKING THE RESULT SLOT IS THE CRAFT:
---- it consumes the placed inputs and moves the item into the inventory.
+--- it consumes the placed inputs and moves the item into the inventory. When
+--- several recipes match the same placement, `< i/n >` cycles between them.
 local function resultSection()
     local resource, countLabel, caption
     if matched and matched.sdMeal then
@@ -413,11 +522,40 @@ local function resultSection()
         onClick = canCraft and function() this.onCraft() end or nil,
     })
 
+    -- header: "Result" plus the match cycler when the placement is ambiguous
+    local headerParts = {
+        { type = ui.TYPE.Text, props = { text = 'Result' }, template = I.MWUI.templates.textNormal },
+    }
+    if #matchedList > 1 then
+        headerParts[#headerParts + 1] = { type = ui.TYPE.Widget, props = { size = v2(12, 0) } }
+        headerParts[#headerParts + 1] = components.button({
+            name = 'result_prev',
+            label = '<',
+            onClick = function() cycleMatch(-1) end,
+        })
+        headerParts[#headerParts + 1] = { type = ui.TYPE.Widget, props = { size = v2(5, 0) } }
+        headerParts[#headerParts + 1] = {
+            type = ui.TYPE.Text,
+            props = { text = ('%d/%d'):format(matchedIndex, #matchedList) },
+            template = I.MWUI.templates.textNormal,
+        }
+        headerParts[#headerParts + 1] = { type = ui.TYPE.Widget, props = { size = v2(5, 0) } }
+        headerParts[#headerParts + 1] = components.button({
+            name = 'result_next',
+            label = '>',
+            onClick = function() cycleMatch(1) end,
+        })
+    end
+
     return {
         type = ui.TYPE.Flex,
         name = 'result_section',
         content = ui.content({
-            { type = ui.TYPE.Text,   props = { text = 'Result' }, template = I.MWUI.templates.textNormal },
+            {
+                type = ui.TYPE.Flex,
+                props = { align = ui.ALIGNMENT.Center, horizontal = true },
+                content = ui.content(headerParts),
+            },
             { type = ui.TYPE.Widget, props = { size = v2(0, 3) } },
             {
                 type = ui.TYPE.Flex,
@@ -697,6 +835,8 @@ function this.close()
     selectedSlot = nil
     materials = {}
     stationTools = {}
+    matchedList = {}
+    matchedIndex = 1
     matched = nil
     canCraft = false
     I.UI.setMode() -- back to gameplay
