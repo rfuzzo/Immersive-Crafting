@@ -2,10 +2,19 @@
     Materials strip — the item picker integrated INTO the crafting window,
     modelled after the vanilla alchemy window's ingredient list (no popup).
 
-    Renders a paged grid of the player's usable materials; clicking one calls
+    Renders a paged grid of entries; clicking one calls
     `view.onPick(recordId, iconPath)` (the crafting window places it into the
-    selected slot). The owner passes the pre-filtered item list; this module
-    only owns presentation + paging.
+    selected slot — or applies a recipe when the strip shows recipes). The
+    owner passes the pre-filtered entry list; this module only owns
+    presentation, paging and hover tooltips.
+
+    Entries: { recordId, icon?, count, label? } — `label` feeds the hover
+    tooltip (item/recipe name; falls back to the record id).
+
+    The header is configurable: `header = { title = 'Recipes', button =
+    { label = 'Materials', onClick = fn } }` renders a right-side toggle
+    button (the crafting window flips the strip between materials and the
+    recipe guide with it).
 ]]
 
 local ui = require('openmw.ui')
@@ -23,11 +32,14 @@ local ICON_SIZE = v2(40, 40)
 -- fallback layout when the owner passes no dims
 local DEFAULT_COLUMNS = 6
 local DEFAULT_ROWS = 2
+local TOOLTIP_OFFSET = v2(18, 22)
 
 local this = {}
 
 local page = 1
 local iconTextureCache = {} ---@type table<string, any>
+local tooltipElement = nil
+local tooltipLabel = nil ---@type string? label the current tooltip shows
 
 ---@param path string?
 ---@return any
@@ -43,8 +55,51 @@ local function textureForPath(path)
     return nil
 end
 
---- Reset paging (call when the window opens).
-function this.reset() page = 1 end
+-- ── hover tooltip ────────────────────────────────────────────────────────────
+
+function this.hideTooltip()
+    if tooltipElement then
+        tooltipElement:destroy()
+        tooltipElement = nil
+    end
+    tooltipLabel = nil
+end
+
+--- Show/move the tooltip next to the mouse (Notification layer: above Windows).
+--- Same label -> just follow the mouse; new label -> recreate.
+---@param label string
+---@param mousePos any
+local function showTooltip(label, mousePos)
+    if tooltipElement and tooltipLabel == label then
+        tooltipElement.layout.props.position = mousePos + TOOLTIP_OFFSET
+        tooltipElement:update()
+        return
+    end
+    this.hideTooltip()
+    tooltipLabel = label
+    tooltipElement = ui.create({
+        layer = 'Notification',
+        name = 'itempicker_tooltip',
+        template = I.MWUI.templates.boxTransparent,
+        props = { position = mousePos + TOOLTIP_OFFSET },
+        content = ui.content {
+            {
+                template = I.MWUI.templates.padding,
+                content = ui.content {
+                    text({ text = label, template = I.MWUI.templates.textNormal }),
+                },
+            },
+        },
+    })
+end
+
+--- Reset paging and hide the tooltip (call when the window opens / mode flips).
+function this.reset()
+    page = 1
+    this.hideTooltip()
+end
+
+-- ── header ───────────────────────────────────────────────────────────────────
 
 ---@param label string
 ---@param enabled boolean
@@ -53,7 +108,6 @@ function this.reset() page = 1 end
 local function pageButton(label, enabled, delta, view)
     return {
         type = ui.TYPE.Text,
-        -- template = enabled and I.MWUI.templates.textNormal or I.MWUI.templates.disabled,
         template = I.MWUI.templates.textNormal,
         props = { text = label, textSize = 16 },
         events = enabled and {
@@ -67,30 +121,43 @@ end
 
 --- Build the embedded strip. The owner computes `dims` from the live window
 --- size (alchemy-style auto layout); without dims a 6x2 fallback is used.
----@param items { recordId: string, icon: string?, count: integer }[] usable materials (pre-filtered)
+---@param items { recordId: string, icon: string?, count: integer, label: string? }[] entries (pre-filtered)
 ---@param view { onPick: fun(recordId: string, iconPath: string?), refresh: fun() }
 ---@param dims { columns: integer, rows: integer }?
+---@param header { title: string?, button: { label: string, onClick: fun() }? }?
 ---@return table layout
-function this.Body(items, view, dims)
+function this.Body(items, view, dims, header)
+    -- the strip is rebuilt in place — any tooltip now points at a dead widget
+    this.hideTooltip()
+
     local columns = math.max(1, (dims and dims.columns) or DEFAULT_COLUMNS)
     local pageSize = columns * math.max(1, (dims and dims.rows) or DEFAULT_ROWS)
     local pages = math.max(1, math.ceil(#items / pageSize))
     if page > pages then page = pages end
     if page < 1 then page = 1 end
 
-    -- header: title + pager (pager only when it matters)
-    local headerChildren = { text({ text = 'Materials', template = I.MWUI.templates.textNormal }) }
+    -- header: title + pager (pager only when it matters) + optional toggle
+    local headerChildren = {
+        text({ text = (header and header.title) or 'Materials', template = I.MWUI.templates.textNormal }),
+    }
     if pages > 1 then
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(14, 0) } })
         headerChildren[#headerChildren + 1] = pageButton('<', page > 1, -1, view)
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(6, 0) } })
         headerChildren[#headerChildren + 1] = text({
             text = ('%d/%d'):format(page, pages),
-            template = I.MWUI.templates
-                .textNormal
+            template = I.MWUI.templates.textNormal,
         })
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(6, 0) } })
         headerChildren[#headerChildren + 1] = pageButton('>', page < pages, 1, view)
+    end
+    if header and header.button then
+        headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(18, 0) } })
+        headerChildren[#headerChildren + 1] = c.button({
+            name = 'strip_toggle',
+            label = header.button.label,
+            onClick = header.button.onClick,
+        })
     end
 
     -- item slots for the current page
@@ -98,21 +165,32 @@ function this.Body(items, view, dims)
     local first = (page - 1) * pageSize
     for i = first + 1, math.min(first + pageSize, #items) do
         local entry = items[i]
-        slots[#slots + 1] = Slot.Slot({
+        local tipLabel = entry.label or entry.recordId
+        local slot = Slot.Slot({
             name = 'pick_' .. entry.recordId,
             resource = textureForPath(entry.icon),
             count = entry.count > 1 and entry.count or nil,
             size = ICON_SIZE,
             noborder = true,
-            onClick = function() view.onPick(entry.recordId, entry.icon) end,
+            onClick = function()
+                this.hideTooltip()
+                view.onPick(entry.recordId, entry.icon)
+            end,
         })
+        -- hover tooltip: show on focus, follow the mouse, hide on leave
+        slot.events = slot.events or {}
+        slot.events.focusLoss = async:callback(function() this.hideTooltip() end)
+        slot.events.mouseMove = async:callback(function(mouseEvent)
+            showTooltip(tipLabel, mouseEvent.position)
+        end)
+        slots[#slots + 1] = slot
     end
 
     local body
     if #slots > 0 then
         body = grid({ name = 'materials_grid', columns = columns, items = slots })
     else
-        body = text({ text = '(no usable materials)', template = I.MWUI.templates.textNormal })
+        body = text({ text = '(nothing here)', template = I.MWUI.templates.textNormal })
     end
 
     return column({

@@ -60,25 +60,24 @@ local function Window(opts)
             if not element then return end
             element.layout.userData.lastMouseDownPosition = mouseEvent.position
 
-            -- Convert any relativeSize to absolute size
-            if element.layout.props.relativeSize then
-                local widthAbsolute = element.layout.props.relativeSize.x * ui.screenSize().x
-                local heightAbsolute = element.layout.props.relativeSize.y * ui.screenSize().y
-                element.layout.props.size = v2(widthAbsolute, heightAbsolute)
-                element.layout.props.relativeSize = nil
+            -- First interaction: pin the window at its CURRENT on-screen spot.
+            -- Never convert relativePosition via ui.screenSize() — that returns
+            -- raw pixels while layout coordinates are UI-scale units, so the
+            -- conversion moved the window on the first click (the old
+            -- "window jumps when placing an ingredient" bug). The event itself
+            -- knows where the window is: position - offset, already in layout
+            -- coordinates.
+            local props = element.layout.props
+            if props.relativePosition or props.anchor then
+                props.position = mouseEvent.position - mouseEvent.offset
+                props.anchor = nil
+                props.relativePosition = nil
             end
-
-            -- Convert any relativePosition to absolute position
-            if element.layout.props.relativePosition then
-                local xAbsolute = element.layout.props.relativePosition.x * ui.screenSize().x
-                local yAbsolute = element.layout.props.relativePosition.y * ui.screenSize().y
-                if element.layout.props.anchor then
-                    xAbsolute = xAbsolute - element.layout.props.anchor.x * element.layout.props.size.x
-                    yAbsolute = yAbsolute - element.layout.props.anchor.y * element.layout.props.size.y
-                    element.layout.props.anchor = nil
-                end
-                element.layout.props.position = v2(xAbsolute, yAbsolute)
-                element.layout.props.relativePosition = nil
+            if props.relativeSize then
+                -- our windows pass an absolute size; fallback for completeness
+                props.size = v2(props.relativeSize.x * ui.screenSize().x,
+                    props.relativeSize.y * ui.screenSize().y)
+                props.relativeSize = nil
             end
 
             local elemX, elemY = element.layout.props.position.x, element.layout.props.position.y
@@ -152,6 +151,14 @@ local function Window(opts)
             end
 
             element:update()
+        end),
+        mouseRelease = async:callback(function()
+            local element = getElement()
+            if not element then return end
+            -- clear the drag state so a later click elsewhere can never apply
+            -- a stale delta (phantom window jump)
+            element.layout.userData.lastMouseDownPosition = nil
+            element.layout.userData.edgeWhenMouseDown = nil
         end),
     }
 

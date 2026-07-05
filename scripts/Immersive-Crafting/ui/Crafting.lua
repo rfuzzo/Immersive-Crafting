@@ -40,7 +40,11 @@
 
     The materials strip lists only inventory items usable at this station (matching
     any recipe ingredient by id or FlexTag tag); if nothing matches (e.g. tags not
-    authored yet) it falls back to the full inventory.
+    authored yet) it falls back to the full inventory. Entries show a hover tooltip
+    (item name). The strip's header has a RECIPES toggle — the recipe guide: the
+    same paged strip showing every recipe at this station (output icon + count,
+    tooltip = name); clicking one auto-places its ingredients from the inventory
+    (best-effort, gaps stay empty) and reports what is missing.
 ]]
 
 local I = require('openmw.interfaces')
@@ -81,8 +85,9 @@ local selectedSlot = nil ---@type string? input slot the next picked material go
 local toolSlots = {} ---@type table<integer, {recordId:string, icon:string?}> 1..TOOL_SLOTS -> player-slotted tool (alchemy apparatus style; never consumed)
 local selectedToolSlot = nil ---@type integer? tool slot awaiting a pick (mutually exclusive with selectedSlot)
 local autoFilled = {} ---@type table<string, boolean> recipe ids whose tools were already auto-slotted (so clearing a tool by hand sticks)
-local materials = {} ---@type { recordId:string, icon:string?, count:integer }[]
+local materials = {} ---@type { recordId:string, icon:string?, count:integer, label:string? }[]
 local stationTools = {} ---@type string[] distinct tool ids/tags used by this station's recipes (filters the strip while a tool slot is selected)
+local stripMode = 'materials' ---@type string 'materials' | 'recipes' (the strip doubles as a recipe guide)
 local matchedList = {} ---@type (CShapedRecipe|CProcessRecipe)[] all recipes the placed items resolve to
 local matchedIndex = 1 ---@type integer which match the Result panel shows (cycle with < >)
 local matched = nil ---@type CShapedRecipe|CProcessRecipe|nil matchedList[matchedIndex]
@@ -141,6 +146,14 @@ end
 local function itemIconPath(item)
     local ok, rec = pcall(function() return item.type.record(item) end)
     if ok and rec and rec.icon and rec.icon ~= '' then return rec.icon end
+    return nil
+end
+
+---@param item any inventory item
+---@return string? display name (tooltip label)
+local function itemName(item)
+    local ok, rec = pcall(function() return item.type.record(item) end)
+    if ok and rec and rec.name and rec.name ~= '' then return rec.name end
     return nil
 end
 
@@ -238,7 +251,7 @@ local function collectMaterials()
                     end
                 end
                 if usable then
-                    local entry = { recordId = rid, icon = itemIconPath(item), count = 0 }
+                    local entry = { recordId = rid, icon = itemIconPath(item), count = 0, label = itemName(item) }
                     order[#order + 1] = entry
                     byId[rid] = entry
                 else
@@ -301,7 +314,12 @@ local function toolMaterials()
             seen[item.recordId] = true
             for _, q in ipairs(stationTools) do
                 if lib.matchesTag(item.recordId, q) then
-                    list[#list + 1] = { recordId = item.recordId, icon = itemIconPath(item), count = 1 }
+                    list[#list + 1] = {
+                        recordId = item.recordId,
+                        icon = itemIconPath(item),
+                        count = 1,
+                        label = itemName(item),
+                    }
                     break
                 end
             end
@@ -323,7 +341,7 @@ local function availableMaterials()
     for _, entry in ipairs(materials) do
         local remaining = entry.count - (placedBy[entry.recordId] or 0)
         if remaining > 0 and (not filterSlot or slotAccepts(filterSlot, entry.recordId)) then
-            list[#list + 1] = { recordId = entry.recordId, icon = entry.icon, count = remaining }
+            list[#list + 1] = { recordId = entry.recordId, icon = entry.icon, count = remaining, label = entry.label }
         end
     end
     return list
@@ -457,6 +475,153 @@ local function resolve()
     end
 
     canCraft = matched ~= nil and haveEnough() and #missingTools(matched) == 0
+end
+
+-- ── recipe guide (the strip's second mode: pick an outcome) ──────────────────
+
+--- All recipes available at this station, sorted by display name.
+local function stationRecipes()
+    local list = {}
+    local function add(r)
+        if r.context == ctx.context.id and r.action == ctx.action.id
+            and (not r.sdMeal or I.SunsDusk ~= nil) then
+            list[#list + 1] = r
+        end
+    end
+    for _, r in pairs(GRegistries.shapedRecipes or {}) do add(r) end
+    for _, r in pairs(GRegistries.processRecipes or {}) do add(r) end
+    table.sort(list, function(a, b)
+        return tostring(a.label or a.id):lower() < tostring(b.label or b.id):lower()
+    end)
+    return list
+end
+
+--- Strip entries for the recipe guide: one per recipe, output icon + count.
+local function recipeEntries()
+    local entries = {}
+    for _, r in ipairs(stationRecipes()) do
+        local icon, n
+        if r.sdMeal then
+            icon, n = r.sdMeal.icon, r.sdMeal.count or 1
+        else
+            icon, n = recordIconPath(r.output.id), r.output.count or 1
+        end
+        entries[#entries + 1] = {
+            recordId = r.id,
+            icon = icon,
+            count = n,
+            label = r.label or r.id,
+        }
+    end
+    return entries
+end
+
+--- Snapshot of the inventory as a claimable pool { recordId, icon, available }.
+local function inventoryPool()
+    local pool, order = {}, {}
+    for _, item in ipairs(types.Actor.inventory(self):getAll()) do
+        local rid = item.recordId
+        local e = pool[rid]
+        if not e then
+            e = { recordId = rid, icon = itemIconPath(item), available = 0 }
+            pool[rid] = e
+            order[#order + 1] = e
+        end
+        e.available = e.available + (item.count or 1)
+    end
+    return order
+end
+
+--- "Pick an outcome": auto-place the recipe's ingredients from the inventory
+--- (grid recipes cell by cell, process recipes as stacks into accepting
+--- slots), reset the tool auto-fill so the recipe's tools snap in, and report
+--- what is still missing. Placement is best-effort: gaps stay empty for the
+--- player to fill.
+---@param recipeId string
+local function applyRecipe(recipeId)
+    local recipe
+    for _, r in pairs(GRegistries.shapedRecipes or {}) do
+        if r.id == recipeId then recipe = r end
+    end
+    if not recipe then
+        for _, r in pairs(GRegistries.processRecipes or {}) do
+            if r.id == recipeId then recipe = r end
+        end
+    end
+    if not recipe then return end
+
+    placed = {}
+    selectedSlot = nil
+    selectedToolSlot = nil
+    autoFilled = {} -- the recipe's tools may auto-slot on the next resolve
+
+    local pool = inventoryPool()
+    --- Claim up to n items matching a tag/id from the pool.
+    ---@return { recordId: string, icon: string?, count: integer }[] claimed, integer short
+    local function claim(matcher, n)
+        local claimed = {}
+        for _, e in ipairs(pool) do
+            if n <= 0 then break end
+            if e.available > 0 and lib.matchesTag(e.recordId, matcher) then
+                local take = math.min(e.available, n)
+                e.available = e.available - take
+                n = n - take
+                claimed[#claimed + 1] = { recordId = e.recordId, icon = e.icon, count = take }
+            end
+        end
+        return claimed, n
+    end
+
+    local missing = {} ---@type table<string, integer> matcher -> short count
+    if recipe.pattern then
+        for r, rowStr in ipairs(recipe.pattern) do
+            for col = 1, #rowStr do
+                local sym = rowStr:sub(col, col)
+                if sym ~= ' ' and sym ~= '.' then
+                    local matcher = recipe.key[sym]
+                    local got = claim(matcher, 1)
+                    if got[1] then
+                        placed[('%d:%d'):format(r, col)] =
+                            { recordId = got[1].recordId, icon = got[1].icon, count = 1 }
+                    else
+                        missing[matcher] = (missing[matcher] or 0) + 1
+                    end
+                end
+            end
+        end
+    elseif recipe.inputs then
+        for _, line in ipairs(recipe.inputs) do
+            local got, short = claim(line.id, line.count or 1)
+            if short > 0 then missing[line.id] = (missing[line.id] or 0) + short end
+            for _, stack in ipairs(got) do
+                for _, sid in ipairs(slotOrder()) do
+                    if not placed[sid] and slotAccepts(sid, stack.recordId) then
+                        placed[sid] = { recordId = stack.recordId, icon = stack.icon, count = stack.count }
+                        break
+                    end
+                end
+            end
+        end
+    end
+
+    stripMode = 'materials' -- back to materials: fill the gaps, then craft
+    ItemPicker.reset()
+    ensureSelection()
+
+    if next(missing) then
+        local parts = {}
+        for matcher, n in pairs(missing) do
+            parts[#parts + 1] = (n > 1 and (n .. 'x ') or '') .. matcher
+        end
+        ui.showMessage('Missing: ' .. table.concat(parts, ', '))
+    end
+    this.rebuild()
+end
+
+local function toggleStrip()
+    stripMode = stripMode == 'materials' and 'recipes' or 'materials'
+    ItemPicker.reset()
+    this.rebuild()
 end
 
 -- ── slot view passed to body builders ────────────────────────────────────────
@@ -776,10 +941,21 @@ function this.rebuild()
                     stretch = 1
                 },
                 content = ui.content({
-                    ItemPicker.Body(availableMaterials(), {
+                    stripMode == 'recipes'
+                    and ItemPicker.Body(recipeEntries(), {
+                        onPick = function(recipeId) applyRecipe(recipeId) end,
+                        refresh = function() this.rebuild() end,
+                    }, pickerDims, {
+                        title = 'Recipes',
+                        button = { label = 'Materials', onClick = toggleStrip },
+                    })
+                    or ItemPicker.Body(availableMaterials(), {
                         onPick = view.onPick,
                         refresh = function() this.rebuild() end,
-                    }, pickerDims),
+                    }, pickerDims, {
+                        title = 'Materials',
+                        button = { label = 'Recipes', onClick = toggleStrip },
+                    }),
                 })
             },
 
@@ -975,12 +1151,15 @@ function this.open(handlerCtx)
     toolSlots = {}
     selectedToolSlot = nil
     autoFilled = {}
+    stripMode = 'materials'
     isOpen = true
     ItemPicker.reset()
     materials = collectMaterials()
     stationTools = collectStationTools()
     ensureSelection()
-    I.UI.setMode('Interface') -- show cursor; inventory remains available
+    -- cursor active, NO vanilla windows (the materials strip replaces the
+    -- inventory; opening it too just covered our window)
+    I.UI.setMode('Interface', { windows = {} })
     this.rebuild()
 end
 
@@ -988,6 +1167,7 @@ function this.close()
     isOpen = false
     if element then element:destroy() end
     element = nil
+    ItemPicker.reset() -- also hides any hover tooltip (it lives outside the window element)
     ctx = nil
     layout = nil
     placed = {}

@@ -631,3 +631,42 @@ Verify in-game:
 - with SD: trees give sticks only; toggle the setting -> +Wood appears
 - without SD: +Wood automatic
 - hold bar renders as a filled gold bar and resets on release/tap
+
+## Crafting-window polish round (built 2026-07-05)
+
+Four user reports, all fixed:
+
+- **Window jump on first click — ROOT CAUSE FOUND.** Window.lua's mousePress
+  converted relativePosition -> absolute via ui.screenSize() (raw pixels),
+  but layout coordinates are UI-SCALE units — the first click after every
+  open moved the window (tools seemed fine only because a click had already
+  converted it). Now the press pins the window via the event itself
+  (position - offset, already in layout coords, scale-proof); edge-resize
+  detection now also runs in one coordinate space. Added mouseRelease to
+  clear drag state (no stale-delta phantom jumps).
+- **No vanilla windows**: the crafting window opens with
+  setMode('Interface', { windows = {} }) — cursor only, no inventory
+  (the materials strip replaces it).
+- **Hover tooltips in the strip**: entries carry a `label` (record name /
+  recipe name); ItemPicker shows a boxTransparent tooltip on the
+  Notification layer that follows the mouse (moved in place, not recreated;
+  hidden on click/rebuild/close).
+- **Recipe guide v1 ("pick an outcome")**: the strip header gained a
+  Recipes/Materials toggle. Recipes mode lists every recipe at this station
+  (paged, output icon + count badge, tooltip = name, sdMeal entries gated on
+  SD). Clicking one AUTO-PLACES its ingredients from the inventory —
+  grid recipes cell by cell, process recipes as stacks into accepting slots
+  (mold to the Mold slot), tool auto-fill re-armed so its tools snap in —
+  then flips back to Materials; anything short is reported as
+  "Missing: 2x Clay, ...". Best-effort: gaps stay empty for hand-filling.
+
+Verify in-game:
+- open window fresh -> first ingredient click no longer moves it; drag +
+  resize still work; release outside then click inside: no jump
+- F opens ONLY our window (cursor, no inventory)
+- tooltips on materials, tools (while tool slot selected) and recipes
+- recipe guide: pick Iron Ingot at the furnace -> ore+charcoal auto-stack;
+  pick a bonemold piece at the kiln -> paste/charcoal/mold slotted right
+
+Open: recipe-guide niceties — ghost icons for missing ingredients in the
+slots (COLORS.missing exists), sort craftable recipes first, filter/search.
