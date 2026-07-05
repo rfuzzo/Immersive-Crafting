@@ -531,3 +531,37 @@ Verify in-game:
 Note: returned items are re-created on collect (fresh instances — fine for
 plain misc molds, would lose condition/charges on equipment; revisit if
 returned ever covers enchantables).
+
+## Player-managed tool slots (ratified + built 2026-07-05)
+
+The auto-detected Tools row (unbounded — bushcrafting was pushing 8 owned
+tools) replaced by 3 PLAYER-MANAGED tool slots, vanilla-alchemy style
+(3 = the CSV's tool1..3 cap, so any single recipe fits):
+
+- Click a tool slot -> the materials strip switches to the station's tools
+  (stationTools filter); pick to slot it; click a filled slot to take it back.
+  Slotted tools are never consumed and never enter the station (unlike
+  returned molds) — they're "in hand".
+- Two-stage matching: resolvers (shaped + process) now match by INPUTS ONLY
+  (their inventory hasTools checks removed); craftability is tools ⊆ slotted,
+  decided in the window. Input-matched recipes with missing tools still show
+  in the Result panel with "(needs Knife)" — fixes the old silent failure —
+  and sort after tool-satisfied matches (id tiebreak keeps order stable).
+- Alchemy-style AUTO-FILL: the shown match's owned-but-unslotted tools snap
+  into free slots automatically, once per recipe id (autoFilled set), so
+  hand-clearing a tool sticks; the set resets when the placement changes.
+  Common flow stays zero-click: place wood -> knife snaps in -> craft.
+- Tool choice now disambiguates same-input recipes (2 Clay + slotted chitin
+  dagger = dagger mold; slot the war axe instead for the axe mold) — the
+  cycler remains for genuinely identical placements.
+
+Verify in-game:
+- knife auto-slots when placing wood at bushcrafting; clearing it flips the
+  caption to "(needs Knife)" and blocks the craft until re-slotted
+- tool-slot click -> strip shows only tools; input-slot click switches back
+- mold recipes: slotting dagger vs war axe changes which mold sorts first
+- sd meals with tools (pan) auto-fill correctly
+
+Open: tool QUALITY tiers (slot the steel axe vs chitin axe -> speed/yield
+modifiers) — natural next step on this foundation; per-station tool-slot
+persistence across window sessions (currently per-session, auto-fill covers).

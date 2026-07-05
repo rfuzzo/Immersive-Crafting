@@ -20,11 +20,18 @@
       the same material again adds one) and the selection stays put. Clicking a
       filled slot takes one unit back off it. Process slots may declare `accepts`
       filters (e.g. the Mold slot only takes molds).
+    - The TOOLS row is 3 player-managed slots (alchemy apparatus style): click a
+      tool slot and the strip switches to the station's tools; slotted tools are
+      never consumed and never enter the station. Matching is by inputs only —
+      a match whose tools aren't slotted shows "(needs X)" and can't be taken.
+      The shown match's owned tools are AUTO-SLOTTED into free slots (once per
+      recipe, so clearing one by hand sticks until the placement changes).
     - The RESULT slot shows the resolved recipe's output. Clicking it "takes" the
       item — that is the craft: inputs are consumed and the output is moved to the
       player's inventory (Minecraft-style). The window stays open for batches.
       When one placement matches SEVERAL recipes (carving: one wood block -> bowl,
-      cup, spoon...), `< i/n >` next to Result cycles through the matches.
+      cup, spoon...), `< i/n >` next to Result cycles through the matches; tool
+      choice disambiguates same-input recipes (slot the dagger -> dagger mold).
 
     The window shell (borders, drag/resize, title) is `ui/Window.lua`; the input
     area comes from the layout registry (grid → CraftingGrid, process →
@@ -70,9 +77,12 @@ local ctx = nil ---@type HandlerContext?
 local layout = nil ---@type CContext.Layout?
 local element = nil
 local placed = {} ---@type table<string, {recordId:string, icon:string?, count:integer}> slotId -> placed stack (grid slots always hold 1; process slots stack)
-local selectedSlot = nil ---@type string? slot the next picked material goes into
+local selectedSlot = nil ---@type string? input slot the next picked material goes into
+local toolSlots = {} ---@type table<integer, {recordId:string, icon:string?}> 1..TOOL_SLOTS -> player-slotted tool (alchemy apparatus style; never consumed)
+local selectedToolSlot = nil ---@type integer? tool slot awaiting a pick (mutually exclusive with selectedSlot)
+local autoFilled = {} ---@type table<string, boolean> recipe ids whose tools were already auto-slotted (so clearing a tool by hand sticks)
 local materials = {} ---@type { recordId:string, icon:string?, count:integer }[]
-local stationTools = {} ---@type string[] distinct tool ids/tags used by this station's recipes
+local stationTools = {} ---@type string[] distinct tool ids/tags used by this station's recipes (filters the strip while a tool slot is selected)
 local matchedList = {} ---@type (CShapedRecipe|CProcessRecipe)[] all recipes the placed items resolve to
 local matchedIndex = 1 ---@type integer which match the Result panel shows (cycle with < >)
 local matched = nil ---@type CShapedRecipe|CProcessRecipe|nil matchedList[matchedIndex]
@@ -161,16 +171,38 @@ local function haveEnough()
     return true
 end
 
---- Is `query` (tool tag/id) in the player's inventory? Returns its icon path too.
+--- Is `query` (tool tag/id) in the player's inventory? Returns the matching
+--- item's icon path and record id too (for auto-slotting).
 ---@param query string
----@return boolean owned, string? iconPath
+---@return boolean owned, string? iconPath, string? recordId
 local function toolInfo(query)
     for _, item in ipairs(types.Actor.inventory(self):getAll()) do
         if lib.matchesTag(item.recordId, query) then
-            return true, itemIconPath(item)
+            return true, itemIconPath(item), item.recordId
         end
     end
-    return false, nil
+    return false, nil, nil
+end
+
+--- Is any slotted tool satisfying this tool tag/id?
+---@param query string
+---@return boolean
+local function toolSlotted(query)
+    for _, cell in pairs(toolSlots) do
+        if lib.matchesTag(cell.recordId, query) then return true end
+    end
+    return false
+end
+
+--- The matched recipe's tool requirements not yet covered by the slotted tools.
+---@param recipe table
+---@return string[] missing tool tags/ids
+local function missingTools(recipe)
+    local missing = {}
+    for _, t in ipairs(recipe.tools or {}) do
+        if not toolSlotted(t) then missing[#missing + 1] = t end
+    end
+    return missing
 end
 
 -- ── materials (integrated picker data) ───────────────────────────────────────
@@ -260,11 +292,31 @@ local function slotAccepts(slotId, recordId)
     return false
 end
 
+--- Inventory items usable as a tool at this station (strip contents while a
+--- tool slot is selected). Tools are never consumed, so no count juggling.
+local function toolMaterials()
+    local list, seen = {}, {}
+    for _, item in ipairs(types.Actor.inventory(self):getAll()) do
+        if not seen[item.recordId] then
+            seen[item.recordId] = true
+            for _, q in ipairs(stationTools) do
+                if lib.matchesTag(item.recordId, q) then
+                    list[#list + 1] = { recordId = item.recordId, icon = itemIconPath(item), count = 1 }
+                    break
+                end
+            end
+        end
+    end
+    return list
+end
+
 --- Materials still pickable: inventory counts minus what is already placed in
 --- the slots (placing an item visibly removes one from the strip). While an
 --- EMPTY slot with an `accepts` filter is selected, the strip only shows what
---- that slot takes (e.g. molds for the Mold slot).
+--- that slot takes (e.g. molds for the Mold slot); while a TOOL slot is
+--- selected, it shows the station-relevant tools instead.
 local function availableMaterials()
+    if selectedToolSlot then return toolMaterials() end
     local placedBy = placedCounts()
     local filterSlot = (selectedSlot and not placed[selectedSlot]) and selectedSlot or nil
     local list = {}
@@ -369,6 +421,14 @@ local function resolve()
         matchedList = processCrafting.resolveProcessRecipes(placedList(), ctx.action, ctx.context)
     end
 
+    -- matching is by inputs only; tool-satisfied matches sort first (id
+    -- breaks ties, so the order stays deterministic)
+    table.sort(matchedList, function(a, b)
+        local ta, tb = #missingTools(a) == 0, #missingTools(b) == 0
+        if ta ~= tb then return ta end
+        return tostring(a.id) < tostring(b.id)
+    end)
+
     matchedIndex = 1
     for i, r in ipairs(matchedList) do
         if r.id == prevId then
@@ -377,7 +437,26 @@ local function resolve()
         end
     end
     matched = matchedList[matchedIndex]
-    canCraft = matched ~= nil and haveEnough()
+
+    -- alchemy-style auto-fill: slot the shown match's owned-but-unslotted
+    -- tools into free tool slots — once per recipe, so clearing one by hand
+    -- sticks (autoFilled resets when the placement changes)
+    if matched and not autoFilled[matched.id] then
+        autoFilled[matched.id] = true
+        for _, t in ipairs(missingTools(matched)) do
+            local owned, iconPath, recordId = toolInfo(t)
+            if owned then
+                for i = 1, TOOL_SLOTS do
+                    if not toolSlots[i] then
+                        toolSlots[i] = { recordId = recordId, icon = iconPath }
+                        break
+                    end
+                end
+            end
+        end
+    end
+
+    canCraft = matched ~= nil and haveEnough() and #missingTools(matched) == 0
 end
 
 -- ── slot view passed to body builders ────────────────────────────────────────
@@ -405,9 +484,20 @@ local view = {
             end
         end
         selectedSlot = slotId
+        selectedToolSlot = nil
+        autoFilled = {} -- placement changed: auto-fill may run again
         this.rebuild()
     end,
     onPick = function(recordId, iconPath)
+        -- a selected tool slot claims the pick (tools are never consumed)
+        if selectedToolSlot then
+            toolSlots[selectedToolSlot] = { recordId = recordId, icon = iconPath }
+            selectedToolSlot = nil
+            ensureSelection()
+            this.rebuild()
+            return
+        end
+        autoFilled = {} -- placement changed: auto-fill may run again
         ensureSelection()
         local isProcess = layout and layout.kind == 'process'
         local target = selectedSlot
@@ -446,24 +536,32 @@ local view = {
 
 -- ── window sections (alchemy-style) ─────────────────────────────────────────
 
---- Tools row — apparatus-style, AUTO-DETECTED from the inventory (like the
---- alchemy window showing the apparatus you own): every tool any recipe at
---- this station can use shows up here if the player carries a matching item.
+--- A tool slot was clicked: a filled one gives the tool back (and selects the
+--- slot so a new pick lands there); an empty one just selects it. Selecting a
+--- tool slot deselects the input slot (the strip switches to tools).
+local function onToolSlotClick(i)
+    toolSlots[i] = nil
+    selectedToolSlot = i
+    selectedSlot = nil
+    this.rebuild()
+end
+
+--- Tools row — apparatus-style, PLAYER-MANAGED (fixed slots the player puts
+--- tools into, like the alchemy apparatus): click a slot, pick a tool from the
+--- strip. resolve() auto-fills the shown match's owned tools into free slots.
+--- Slotted tools are never consumed and never enter the station.
 local function toolsSection()
     local slots = {}
-    for _, query in ipairs(stationTools) do
-        local owned, iconPath = toolInfo(query)
-        if owned then
-            slots[#slots + 1] = Slot.Slot({
-                name = 'tool_' .. query,
-                resource = textureForPath(iconPath),
-                size = TOOL_ICON,
-            })
-        end
-    end
-    -- pad to a minimum width so the section keeps its apparatus look
-    while #slots < TOOL_SLOTS do
-        slots[#slots + 1] = Slot.Slot({ name = 'tool_pad_' .. #slots, size = TOOL_ICON, state = 'empty' })
+    for i = 1, TOOL_SLOTS do
+        local cell = toolSlots[i]
+        local state = (selectedToolSlot == i and not cell) and 'selected' or 'empty'
+        slots[#slots + 1] = Slot.Slot({
+            name = 'tool_slot_' .. i,
+            resource = cell and textureForPath(cell.icon) or nil,
+            size = TOOL_ICON,
+            state = state,
+            onClick = function() onToolSlotClick(i) end,
+        })
     end
     return {
         type = ui.TYPE.Flex,
@@ -471,7 +569,7 @@ local function toolsSection()
         content = ui.content({
             { type = ui.TYPE.Text,   props = { text = 'Tools' }, template = I.MWUI.templates.textNormal },
             { type = ui.TYPE.Widget, props = { size = v2(0, 3) } },
-            components.grid({ name = 'tools_grid', columns = 5, items = slots }),
+            components.grid({ name = 'tools_grid', columns = TOOL_SLOTS, items = slots }),
         }),
     }
 end
@@ -497,7 +595,12 @@ local function resultSection()
         local n = matched.sdMeal.count or 1
         countLabel = n > 1 and n or nil
         caption = ('%s x%d  (meal)'):format(matched.label or matched.id, n)
-        if not canCraft then caption = caption .. '  (not enough materials)' end
+        local missing = missingTools(matched)
+        if #missing > 0 then
+            caption = caption .. ('  (needs %s)'):format(table.concat(missing, ', '))
+        elseif not canCraft then
+            caption = caption .. '  (not enough materials)'
+        end
     elseif matched then
         resource = textureForPath(recordIconPath(matched.output.id))
         local n = matched.output.count or 1
@@ -514,7 +617,12 @@ local function resultSection()
             if line.returned then hasReturned = true end
         end
         if hasReturned then caption = caption .. '  (mold returned)' end
-        if not canCraft then caption = caption .. '  (not enough materials)' end
+        local missing = missingTools(matched)
+        if #missing > 0 then
+            caption = caption .. ('  (needs %s)'):format(table.concat(missing, ', '))
+        elseif not canCraft then
+            caption = caption .. '  (not enough materials)'
+        end
     else
         caption = '(no match)'
     end
@@ -864,6 +972,9 @@ function this.open(handlerCtx)
     layout = ctx.context.layout
     placed = {}
     selectedSlot = nil
+    toolSlots = {}
+    selectedToolSlot = nil
+    autoFilled = {}
     isOpen = true
     ItemPicker.reset()
     materials = collectMaterials()
@@ -881,6 +992,9 @@ function this.close()
     layout = nil
     placed = {}
     selectedSlot = nil
+    toolSlots = {}
+    selectedToolSlot = nil
+    autoFilled = {}
     materials = {}
     stationTools = {}
     matchedList = {}

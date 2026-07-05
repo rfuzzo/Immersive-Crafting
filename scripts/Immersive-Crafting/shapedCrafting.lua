@@ -1,5 +1,3 @@
-local self = require('openmw.self')
-local types = require('openmw.types')
 local I = require('openmw.interfaces')
 
 local lib = require('scripts.Immersive-Crafting.lib')
@@ -92,31 +90,13 @@ local function cellsMatch(items, pat)
     return true
 end
 
---- Are all required tools present in the player's inventory?
----@param tools string[]|nil
----@return boolean
-function this.hasTools(tools)
-    if not tools or #tools == 0 then return true end
-    local inv = types.Actor.inventory(self)
-    local items = inv:getAll()
-    for _, tool in ipairs(tools) do
-        local found = false
-        for _, item in ipairs(items) do
-            if lib.matchesTag(item.recordId, tool) then
-                found = true
-                break
-            end
-        end
-        if not found then return false end
-    end
-    return true
-end
-
 --- Resolve ALL shaped recipes matching a placed grid for this action/context.
 --- Several recipes may share a shape (carving: one wood block -> bowl OR cup OR
 --- spoon; the steel armor pieces: two ingots each) — the UI lets the player
 --- cycle through the matches. Sorted by id so the order is stable across
 --- rebuilds (GRegistries iteration order is not).
+--- NOTE: matching is by INPUTS only — whether the recipe's `tools` are
+--- satisfied is the UI's job (tools ⊆ the window's slotted tools).
 ---@param grid table 2D array grid[row][col] = recordId|nil (from the crafting UI)
 ---@param action CAction
 ---@param context CContext
@@ -136,8 +116,7 @@ function this.resolveShapedRecipes(grid, action, context)
         local available = not recipe.sdMeal or I.SunsDusk ~= nil
         if available and recipe.action == action.id and recipe.context == context.id then
             local pat = trim(patternToGrid(recipe.pattern, recipe.key))
-            if pat and sameDims(items, pat) and cellsMatch(items, pat)
-                and this.hasTools(recipe.tools) then
+            if pat and sameDims(items, pat) and cellsMatch(items, pat) then
                 matches[#matches + 1] = recipe
             end
         end

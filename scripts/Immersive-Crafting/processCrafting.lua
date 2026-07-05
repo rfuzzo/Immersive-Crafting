@@ -1,30 +1,9 @@
-local self = require('openmw.self')
-local types = require('openmw.types')
 local I = require('openmw.interfaces')
 
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
 local this = {}
-
---- Are all required tools present in the player's inventory? (Tools are NEVER consumed.)
----@param tools string[]|nil
----@return boolean
-function this.hasTools(tools)
-    if not tools or #tools == 0 then return true end
-    local items = types.Actor.inventory(self):getAll()
-    for _, tool in ipairs(tools) do
-        local found = false
-        for _, item in ipairs(items) do
-            if lib.matchesTag(item.recordId, tool) then
-                found = true
-                break
-            end
-        end
-        if not found then return false end
-    end
-    return true
-end
 
 --- Exact multiset match: every counted input line must be satisfied by distinct
 --- placed items, and no placed item may be left over (everything placed is
@@ -58,6 +37,8 @@ end
 --- the UI cycles through the matches. Sorted by id for a stable order
 --- (multiset matching is exact/no-leftovers, so every match consumes the same
 --- total; there is no "more specific" winner to prefer).
+--- NOTE: matching is by INPUTS only — whether the recipe's `tools` are
+--- satisfied is the UI's job (tools ⊆ the window's slotted tools).
 ---@param placedIds string[] record ids of the placed items (one per filled slot)
 ---@param action CAction
 ---@param context CContext
@@ -74,7 +55,7 @@ function this.resolveProcessRecipes(placedIds, action, context)
         -- Sun's Dusk meal recipes only exist when SD is loaded (soft dependency)
         local available = not recipe.sdMeal or I.SunsDusk ~= nil
         if available and recipe.action == action.id and recipe.context == context.id then
-            if multisetMatch(placedIds, recipe.inputs) and this.hasTools(recipe.tools) then
+            if multisetMatch(placedIds, recipe.inputs) then
                 matches[#matches + 1] = recipe
             end
         end
