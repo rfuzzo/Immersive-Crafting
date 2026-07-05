@@ -25,6 +25,7 @@ local core = require('openmw.core')
 local async = require('openmw.async')
 
 local log = require('scripts.Immersive-Crafting.log')
+local globalLiquids = require('scripts.Immersive-Crafting.globalLiquids')
 
 local this = {}
 
@@ -108,12 +109,28 @@ function this.onStart(data)
     end
     for _, entry in ipairs(data.consume or {}) do
         local needed = entry.count or 1
+        local removed = 0
         for _, item in ipairs(inv:getAll()) do
             if needed <= 0 then break end
             if item.recordId == entry.id then
                 local take = math.min(needed, item.count or 1)
                 local ok = pcall(function() item:remove(take) end)
-                if ok then needed = needed - take end
+                if ok then
+                    needed = needed - take
+                    removed = removed + take
+                end
+            end
+        end
+        -- SD water interop: the water is poured in NOW, so the empty container
+        -- comes back immediately (it does not sit in the station like a mold)
+        local orig = removed > 0 and globalLiquids.emptyContainerFor(entry.id)
+        if orig then
+            local ok, err = pcall(function()
+                local created = world.createObject(orig, removed)
+                created:moveInto(inv)
+            end)
+            if not ok then
+                log.error(('process: failed to return container "%s": %s'):format(tostring(orig), tostring(err)))
             end
         end
     end

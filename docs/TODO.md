@@ -285,7 +285,7 @@ Verify in-game (SD loaded):
   grants every recipe ingredient (tags resolved via the first tagged
   Ingredient/Misc/Potion record; default 5 each; logs unresolved matchers).
 
-### Water interop (designed, not built)
+### Water interop (BUILT 2026-07-05 — see "SD water interop" section below)
 
 SD water: bottles are dynamic Potion records tracked in `saveData.reverse[recordId]
 = { orig, q, liquid }` (orig = the empty container, liquid = 'water'|…), exposed via
@@ -565,3 +565,47 @@ Verify in-game:
 Open: tool QUALITY tiers (slot the steel axe vs chitin axe -> speed/yield
 modifiers) — natural next step on this foundation; per-station tool-slot
 persistence across window sessions (currently per-session, auto-fill covers).
+
+## SD water interop (built 2026-07-05)
+
+Recipes can consume water without eating the container: the bottle is emptied
+into the craft and the empty waterskin/cup stays with the player.
+
+**Matcher — `sd:<liquid>` in any ingredient/tool cell** (`sd:water`,
+`sd:sujamma`, `sd:liquid` = any). SD bottles are dynamic Potion records
+(untaggable), but every one is minted with `mwscript = "sd_liquid_tracker"` —
+readable from the record in ANY context, so "is this an SD liquid" is instant
+player-side (sdLiquids.lua). WHICH liquid lives only in SD's global registry
+(`saveData.reverse[id] = {orig, q, liquid}`), so unknown ids do one global
+round-trip (ImmersiveCrafting_ClassifyLiquids -> _LiquidSync, answered via
+SD's GLOBAL I.SunsDusk.isConsumable -> ({orig,q,liquid}, "drink")) into a
+player mirror. First sight of a fresh bottle can miss one frame; every later
+resolve sees it. NOTE: SD's PLAYER-side isConsumable does NOT cover drinks —
+that's why the round-trip exists.
+
+**Consume — return the empty container**: both executors (onCraftShaped and
+globalProcessing.onStart) ask globalLiquids.emptyContainerFor(id) after
+removing a consumed input and grant `orig` back (count-aware). Timed runs
+return the container IMMEDIATELY at start — the water is poured in now; the
+skin does not sit in the station like a returned mold.
+
+**Whole-bottle semantics (accepted)**: one placed bottle = one water unit; the
+bottle's full content goes into the craft regardless of fill level (pick a
+small bottle). Charge-level splitting (consume 250ml, get the q-1 bottle
+back) would need SD's internal record minting or its
+SunsDusk_WaterBottles_downgradeWaterItem event, whose contract (caller
+removes, handler grants next level, +consumedWater side effects) is fragile
+across our event ordering — revisit only if the waste ever hurts.
+
+Converter: `sd:` refs are engine matchers, excluded from the record/tag report.
+
+Verify in-game (needs SD):
+- recipe cell `sd:water` -> filled waterskin appears in the strip and matches;
+  crafting removes the bottle and grants the empty container back
+- timed run with sd:water -> empty skin back at START, output on collect
+- sujamma/tea bottles do NOT match sd:water; sd:liquid matches all
+- without SD loaded: sd:* matchers simply never match, nothing errors
+
+Open: no recipe uses sd:water yet (content is user-owned — e.g. future
+Immersive Cooking stews, farming watering); giveMaterials can't mint SD
+bottles (logs unresolved — use SD's own water sources when testing).

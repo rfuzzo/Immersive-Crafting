@@ -5,6 +5,7 @@ local I = require('openmw.interfaces')
 local log = require('scripts.Immersive-Crafting.log')
 local globalFarming = require('scripts.Immersive-Crafting.globalFarming')
 local globalProcessing = require('scripts.Immersive-Crafting.globalProcessing')
+local globalLiquids = require('scripts.Immersive-Crafting.globalLiquids')
 
 local function onSave() return saveData end
 
@@ -62,7 +63,8 @@ local function onCommit(data)
 end
 
 --- Shaped-crafting executor: consume placed items from the actor's INVENTORY
---- (by record id), then grant the output.
+--- (by record id), then grant the output. Consumed Sun's Dusk liquid bottles
+--- give the empty container back (the water is used; the waterskin remains).
 ---@param data table { actor: any, consume: { id: string, count: integer }[], output: { id: string, count: integer } }
 local function onCraftShaped(data)
     if not (data and data.actor) then
@@ -75,6 +77,7 @@ local function onCraftShaped(data)
 
     for _, entry in ipairs(data.consume or {}) do
         local needed = entry.count or 1
+        local removed = 0
         for _, item in ipairs(inv:getAll()) do
             if needed <= 0 then break end
             if item.recordId == entry.id then
@@ -82,6 +85,7 @@ local function onCraftShaped(data)
                 local ok, err = pcall(function() item:remove(take) end)
                 if ok then
                     needed = needed - take
+                    removed = removed + take
                 else
                     log.error(('craft: failed to remove "%s": %s'):format(tostring(entry.id), tostring(err)))
                 end
@@ -89,6 +93,11 @@ local function onCraftShaped(data)
         end
         if needed > 0 then
             log.warn(('craft: not enough "%s" in inventory'):format(tostring(entry.id)))
+        end
+        -- SD water interop: an emptied bottle leaves its container behind
+        local orig = removed > 0 and globalLiquids.emptyContainerFor(entry.id)
+        if orig then
+            grantOutput(data.actor, { id = orig, count = removed })
         end
     end
 
@@ -184,5 +193,6 @@ return {
         end,
         ImmersiveCrafting_StartProcess = globalProcessing.onStart,
         ImmersiveCrafting_CollectProcess = globalProcessing.onCollect,
+        ImmersiveCrafting_ClassifyLiquids = globalLiquids.onClassify,
     }
 }

@@ -4,6 +4,7 @@ local self = require('openmw.self')
 local interfaces = require('openmw.interfaces')
 
 local log = require('scripts.Immersive-Crafting.log')
+local sdLiquids = require('scripts.Immersive-Crafting.sdLiquids')
 
 local this = {}
 
@@ -60,10 +61,17 @@ end
 
 --- Does a record id satisfy a query (a recipe ingredient id or a context entry)?
 --- Two-tier: (1) exact record id, (2) FlexTag tag. No wildcard.
+--- Special matcher: `sd:<liquid>` (e.g. `sd:water`, `sd:liquid` for any) —
+--- Sun's Dusk dynamic bottle records, which can never be tagged (sdLiquids).
 ---@param recordId string an object's record id
----@param query Id a record id or a FlexTag tag (e.g. "Meat", "bowl")
+---@param query Id a record id, FlexTag tag (e.g. "Meat", "bowl") or sd:<liquid>
 ---@return boolean
 function this.matchesTag(recordId, query)
+    -- 0. special matchers
+    if query:sub(1, 3) == 'sd:' then
+        return sdLiquids.matches(recordId, query:sub(4))
+    end
+
     -- 1. exact record id (case-insensitive)
     if recordId:lower() == query:lower() then
         return true

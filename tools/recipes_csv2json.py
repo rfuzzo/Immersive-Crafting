@@ -147,7 +147,9 @@ def convert(rows):
 
         # ── bookkeeping for the report ────────────────────────────────────
         for ref in items + tools:
-            if ref.startswith('ic_'):
+            if ref.startswith('sd:'):
+                pass  # engine matcher (Sun's Dusk dynamic liquids) — not a record/tag
+            elif ref.startswith('ic_'):
                 ic_refs.add(ref)
             elif ref[:1].isupper():
                 assumed_tags.add(ref)

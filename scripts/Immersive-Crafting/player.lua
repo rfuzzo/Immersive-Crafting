@@ -11,6 +11,7 @@ local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local equipGate = require('scripts.Immersive-Crafting.equipGate')
 local forageState = require('scripts.Immersive-Crafting.forageState')
+local sdLiquids = require('scripts.Immersive-Crafting.sdLiquids')
 local farmState = require('scripts.Immersive-Crafting.farmState')
 local processState = require('scripts.Immersive-Crafting.processState')
 local lib = require('scripts.Immersive-Crafting.lib')
@@ -191,6 +192,9 @@ return {
         end,
         ImmersiveCrafting_Notify = function(data)
             if data and data.text then ui.showMessage(data.text) end
+        end,
+        ImmersiveCrafting_LiquidSync = function(data)
+            sdLiquids.apply(data)
         end,
     }
 }
