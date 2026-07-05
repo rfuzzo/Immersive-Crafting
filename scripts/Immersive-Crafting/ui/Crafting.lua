@@ -355,8 +355,9 @@ local function placedList()
 end
 
 --- Resolve the placed slots into the matched recipe(s) + craftability.
---- Grids can resolve to SEVERAL recipes (carving); the Result panel cycles
---- through them, keeping the player's pick stable while the match set allows.
+--- Both layouts can resolve to SEVERAL recipes (carving; bonemold helm vs
+--- boots); the Result panel cycles through them, keeping the player's pick
+--- stable while the match set allows.
 local function resolve()
     local prevId = matched and matched.id
     matchedList, matched, canCraft = {}, nil, false
@@ -365,8 +366,7 @@ local function resolve()
     if layout.kind == 'grid' then
         matchedList = shaped.resolveShapedRecipes(gridFromPlaced(), ctx.action, ctx.context)
     elseif layout.kind == 'process' then
-        local best = processCrafting.resolveProcessRecipe(placedList(), ctx.action, ctx.context)
-        if best then matchedList = { best } end
+        matchedList = processCrafting.resolveProcessRecipes(placedList(), ctx.action, ctx.context)
     end
 
     matchedIndex = 1

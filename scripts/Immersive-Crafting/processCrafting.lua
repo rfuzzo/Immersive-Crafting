@@ -52,36 +52,36 @@ local function multisetMatch(placedIds, inputs)
     return total == #placedIds
 end
 
---- Resolve the process recipe matching the placed items for this action/context.
---- Non-positional: only the multiset of placed items matters. When several
---- recipes match, the one requiring the most items (most specific) wins.
+--- Resolve ALL process recipes matching the placed items for this action/context.
+--- Non-positional: only the multiset of placed items matters. Several recipes
+--- may claim the same multiset (bonemold helm vs boots = 1 chitin dust each) —
+--- the UI cycles through the matches. Sorted by id for a stable order
+--- (multiset matching is exact/no-leftovers, so every match consumes the same
+--- total; there is no "more specific" winner to prefer).
 ---@param placedIds string[] record ids of the placed items (one per filled slot)
 ---@param action CAction
 ---@param context CContext
----@return CProcessRecipe?
-function this.resolveProcessRecipe(placedIds, action, context)
+---@return CProcessRecipe[] all matches (empty if none)
+function this.resolveProcessRecipes(placedIds, action, context)
+    local matches = {}
     if not GRegistries then
         log.error('GRegistries not initialized yet')
-        return nil
+        return matches
     end
-    if #placedIds == 0 then return nil end
+    if #placedIds == 0 then return matches end
 
-    local best, bestScore = nil, -1
     for _, recipe in pairs(GRegistries.processRecipes or {}) do
         -- Sun's Dusk meal recipes only exist when SD is loaded (soft dependency)
         local available = not recipe.sdMeal or I.SunsDusk ~= nil
         if available and recipe.action == action.id and recipe.context == context.id then
             if multisetMatch(placedIds, recipe.inputs) and this.hasTools(recipe.tools) then
-                local score = 0
-                for _, line in ipairs(recipe.inputs) do score = score + (line.count or 1) end
-                if score > bestScore then
-                    best, bestScore = recipe, score
-                end
+                matches[#matches + 1] = recipe
             end
         end
     end
 
-    return best
+    table.sort(matches, function(a, b) return tostring(a.id) < tostring(b.id) end)
+    return matches
 end
 
 return this

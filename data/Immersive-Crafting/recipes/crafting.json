@@ -462,18 +462,17 @@
   {
     "id": "ic_station_furnace",
     "label": "Furnace",
-    "context": "kiln",
-    "action": "processing",
-    "inputs": [
-      {
-        "id": "Stone",
-        "count": 4
-      },
-      {
-        "id": "ic_crucible",
-        "count": 1
-      }
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AB ",
+      "   "
     ],
+    "key": {
+      "A": "Stone",
+      "B": "ic_crucible"
+    },
     "output": {
       "id": "ic_station_furnace",
       "count": 1
@@ -567,10 +566,6 @@
       {
         "id": "Clay",
         "count": 3
-      },
-      {
-        "id": "Stone",
-        "count": 2
       }
     ],
     "duration": 3600,
@@ -588,10 +583,6 @@
       {
         "id": "Clay",
         "count": 2
-      },
-      {
-        "id": "Water",
-        "count": 1
       }
     ],
     "duration": 1800,
@@ -1087,7 +1078,7 @@
   {
     "id": "ic_iron_ingot",
     "label": "Iron Ingot",
-    "context": "kiln",
+    "context": "furnace",
     "action": "processing",
     "inputs": [
       {
@@ -1108,7 +1099,7 @@
   {
     "id": "ic_steel_ingot",
     "label": "Steel Ingot",
-    "context": "kiln",
+    "context": "furnace",
     "action": "processing",
     "inputs": [
       {
@@ -1452,10 +1443,6 @@
       {
         "id": "ic_chitin_dust",
         "count": 2
-      },
-      {
-        "id": "Water",
-        "count": 1
       }
     ],
     "duration": 3600,
@@ -1476,10 +1463,6 @@
       {
         "id": "ic_chitin_dust",
         "count": 1
-      },
-      {
-        "id": "Water",
-        "count": 1
       }
     ],
     "duration": 3600,
@@ -1496,10 +1479,6 @@
     "inputs": [
       {
         "id": "ic_chitin_dust",
-        "count": 1
-      },
-      {
-        "id": "Water",
         "count": 1
       }
     ],
@@ -1518,10 +1497,6 @@
       {
         "id": "ic_chitin_dust",
         "count": 2
-      },
-      {
-        "id": "Water",
-        "count": 1
       }
     ],
     "duration": 3600,
@@ -1539,10 +1514,6 @@
       {
         "id": "ic_chitin_dust",
         "count": 2
-      },
-      {
-        "id": "Water",
-        "count": 1
       }
     ],
     "duration": 3600,
@@ -1618,12 +1589,16 @@
   {
     "id": "ic_glass_component",
     "label": "Glass Component",
-    "context": "kiln",
+    "context": "furnace",
     "action": "processing",
     "inputs": [
       {
         "id": "Raw Glass",
         "count": 2
+      },
+      {
+        "id": "Salt",
+        "count": 1
       },
       {
         "id": "ic_charcoal",

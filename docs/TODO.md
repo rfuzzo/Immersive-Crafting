@@ -420,3 +420,51 @@ Verify in-game:
 Open: process-recipe cycling (resolver still returns the single most-specific
 match — extend to a list if two process recipes ever tie); Fuel slot has no
 accepts filter yet (needs a Fuel FlexTag authored before it can be strict).
+
+## Kiln = ceramics, Furnace = metallurgy + equipment gating (ratified + built 2026-07-05)
+
+Historically-grounded station split (user ratified): kilns are ceramics tech
+and CANNOT smelt; smelting/alloys are furnace (bloomery) tech. The tech tree is
+now structural: kiln -> fires the crucible -> crucible builds the furnace ->
+furnace unlocks metals and alloys.
+
+**Kiln (Input / Fuel / Mold, 1 input):** ceramics only — clay pot (2 Clay, the
+water was dropped: wet clay), crucible (3 Clay, stones dropped), bonemold
+(chitin dust, water dropped), firing raw molds. Max 2 distinct stacks fits.
+
+**Furnace (Input x3 / Fuel / Mold):** all smelting + alloys + casting. Iron
+Ingot (3 Ore + 2 Charcoal) and Steel (iron + charcoal = carbon, historically
+real carburization) moved here; Glass Component became a showcase 3-stack
+ALLOY (2 Raw Glass + 1 Salt flux + 2 Charcoal — real glass = sand+soda+lime).
+Furnace BUILD moved from the kiln to a Crafting Table shaped recipe (4 Stone +
+crucible — you build a furnace, you don't fire one).
+
+**Process multi-match cycling:** dropping water made bonemold helm/boots (and
+greaves/shield) identical inputs — resolveProcessRecipes now returns ALL
+matches (the old most-items-wins score was vestigial: exact multiset matching
+forces equal totals) and the Result cycler works at process stations too.
+
+**Equipment skill gating (ALL armor — looted, bought, crafted):** new
+`equipGate.lua` (player script, 0.5s throttle) strips worn armor whose
+requirement exceeds the governing skill, with a "(Heavy Armor 60 needed)"
+message. Zero authored data: requirement = the record's baseArmor (Morrowind
+sets share one AR per set: iron 10 ... glass 50, ebony 60, daedric 80 — maps
+straight onto 0-100 skill), pieces at/below MIN_REQUIREMENT=15 are always
+wearable (iron/chitin/hide). Governing skill computed the engine's way: weight
+vs slot reference GMST (iHelmWeight...) x fLightMaxMod/fMedMaxMod. Vanilla
+already scales armor RATING by skill, so "less efficient" was free; this adds
+the hard gate.
+
+Verify in-game:
+- kiln fits every recipe in 3 slots; furnace smelts iron/steel/glass; furnace
+  build appears at the crafting table (needs crucible in the grid)
+- 1 chitin dust at kiln -> cycle helm/boots; 2 -> greaves/shield
+- equip glass armor at Light Armor < 50 -> stripped + message; skill-up ->
+  wearable; boots/helm on beast races still engine-blocked
+- verify types.Actor.setEquipment strips cleanly in self context and GMST
+  names resolve (iHelmWeight, fLightMaxMod, fMedMaxMod)
+
+Open: alloy tier follow-ups (ebony smelting, daedric = ebony + daedra essence
+at a special condition/station, dwemer = melt-down scavenge only); gating mode
+setting (block vs debuff-while-worn vs off) — block only for now; make
+SKILL_FACTOR/MIN_REQUIREMENT + per-record overrides data-driven (JSON) later.

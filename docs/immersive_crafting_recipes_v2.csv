@@ -31,7 +31,7 @@ Charcoal Pit,ic_station_charcoalpit,1,,Bushcrafting,,,,Wood,Wood,Stone,Stone,,,,
 Crafting Table,ic_station_craftingtable,1,,Bushcrafting,chitin war axe,,,ic_plank,ic_plank,ic_plank,ic_plank,,,,,,Axe needed to shape planks
 Planter,ic_station_planter,1,,Bushcrafting,,,,ic_plank,ic_plank,Stone,Stone,,,,,,Raised bed — feeds Farming mod
 Tanning Rack,ic_station_tanningrack,1,,Bushcrafting,,,,ic_stick,ic_stick,ic_string,ic_string,,,,,,Lashed frame
-Furnace,ic_station_furnace,1,,Kiln,,,,Stone,Stone,Stone,Stone,ic_crucible,,,,,Requires an existing Kiln nearby to build
+Furnace,ic_station_furnace,1,,Crafting Table,,,,Stone,Stone,Stone,Stone,ic_crucible,,,,,Built: crucible set into a stone hearth (crucible consumed)
 # ══════════════════════════════════════════════════════════════════
 # TIER 0.5 — REFINED MATERIALS
 # ══════════════════════════════════════════════════════════════════
@@ -39,8 +39,8 @@ Plank,ic_plank,1,,Bushcrafting,chitin war axe,,,Wood,Wood,,,,,,,,Split wood with
 Cloth,ic_cloth,1,,Crafting Table,,,,ic_string,ic_string,ic_string,,,,,,,Weave 3 strings
 Netch Leather,ic_netch_leather,1,3600,Tanning Rack,Knife,,,ic_netch_hide,Salt,,,,,,,,Better than plain hide
 Charcoal,ic_charcoal,1,7200,Charcoal Pit,,,,Wood,Wood,Wood,Wood,,,,,,Slow-burn; made at the Charcoal Pit
-Crucible,ic_crucible,1,3600,Kiln,,,,Clay,Clay,Clay,Stone,Stone,,,,,Holds molten metal; NOT consumed on use (tool)
-Clay Pot,ic_clay_pot,1,1800,Kiln,,,,Clay,Clay,Water,,,,,,,Fired storage vessel
+Crucible,ic_crucible,1,3600,Kiln,,,,Clay,Clay,Clay,,,,,,,Holds molten metal; NOT consumed on use (tool)
+Clay Pot,ic_clay_pot,1,1800,Kiln,,,,Clay,Clay,,,,,,,,Fired storage vessel; wet clay needs no added water
 Bucket,ic_bucket,1,,Crafting Table,,,,ic_iron_ingot,ic_iron_ingot,ic_plank,,,,,,,Water/material transport
 # ══════════════════════════════════════════════════════════════════
 # TIER 1 — MK1 CHITIN TOOLS & WEAPONS (Bushcrafting, primitive bootstrap)
@@ -82,8 +82,8 @@ Mortar and Pestle,ic_mortar_pestle,1,,Bushcrafting,,,,Stone,Stone,Stone,,,,,,,Gr
 # ══════════════════════════════════════════════════════════════════
 # TIER 2 — SMELTING & CASTING (Kiln + Furnace)
 # ══════════════════════════════════════════════════════════════════
-Iron Ingot,ic_iron_ingot,1,3600,Kiln,,,,Ore,Ore,Ore,ic_charcoal,ic_charcoal,,,,,3 ore + 2 fuel
-Steel Ingot,ic_steel_ingot,1,5400,Kiln,,,,ic_iron_ingot,ic_iron_ingot,ic_charcoal,ic_charcoal,ic_charcoal,,,,,Extra carbon (charcoal) refines iron to steel
+Iron Ingot,ic_iron_ingot,1,3600,Furnace,,,,Ore,Ore,Ore,ic_charcoal,ic_charcoal,,,,,Bloomery smelt: 3 ore + 2 charcoal
+Steel Ingot,ic_steel_ingot,1,5400,Furnace,,,,ic_iron_ingot,ic_iron_ingot,ic_charcoal,ic_charcoal,ic_charcoal,,,,,ALLOY: iron + carbon (charcoal) = steel
 iron dagger,iron dagger,1,1800,Furnace,ic_crucible,,,ic_iron_ingot,ic_mold_dagger_burnt,,,,,,,,"Mold consumed; crucible is tool, not consumed"
 iron war axe,iron war axe,1,1800,Furnace,ic_crucible,,,ic_iron_ingot,ic_iron_ingot,ic_mold_waraxe_burnt,,,,,,,Mold consumed
 iron spear,iron spear,1,1800,Furnace,ic_crucible,,,ic_iron_ingot,ic_iron_ingot,ic_mold_spear_burnt,,,,,,,Mold consumed
@@ -104,18 +104,18 @@ steel_shield,steel_shield,1,,Crafting Table,steel warhammer,,,ic_steel_ingot,ic_
 # ══════════════════════════════════════════════════════════════════
 # TIER 2 — MK2 BONEMOLD (armor + ranged ONLY — no melee records exist)
 # ══════════════════════════════════════════════════════════════════
-bonemold_cuirass,bonemold_cuirass,1,3600,Kiln,ic_mold_armor_burnt,,,ic_chitin_dust,ic_chitin_dust,Water,,,,,,,"Armor mold is a reusable tool (NOT consumed); fires in Kiln, not Furnace"
-bonemold_helm,bonemold_helm,1,3600,Kiln,,,,ic_chitin_dust,Water,,,,,,,,
-bonemold_boots,bonemold_boots,1,3600,Kiln,,,,ic_chitin_dust,Water,,,,,,,,
-bonemold_greaves,bonemold_greaves,1,3600,Kiln,,,,ic_chitin_dust,ic_chitin_dust,Water,,,,,,,
-bonemold_shield,bonemold_shield,1,3600,Kiln,,,,ic_chitin_dust,ic_chitin_dust,Water,,,,,,,
+bonemold_cuirass,bonemold_cuirass,1,3600,Kiln,ic_mold_armor_burnt,,,ic_chitin_dust,ic_chitin_dust,,,,,,,,"Armor mold is a reusable tool (NOT consumed); fires in Kiln, not Furnace"
+bonemold_helm,bonemold_helm,1,3600,Kiln,,,,ic_chitin_dust,,,,,,,,,Same input as boots — cycle the Result
+bonemold_boots,bonemold_boots,1,3600,Kiln,,,,ic_chitin_dust,,,,,,,,,Same input as helm — cycle the Result
+bonemold_greaves,bonemold_greaves,1,3600,Kiln,,,,ic_chitin_dust,ic_chitin_dust,,,,,,,,Same input as shield — cycle the Result
+bonemold_shield,bonemold_shield,1,3600,Kiln,,,,ic_chitin_dust,ic_chitin_dust,,,,,,,,Same input as greaves — cycle the Result
 bonemold long bow,bonemold long bow,1,,Crafting Table,Knife,,,ic_plank,ic_plank,ic_string,ic_string,,,,,,
 bonemold arrow,bonemold arrow,20,,Bushcrafting,Knife,,,ic_stick,ic_chitin_dust,,,,,,,,"x20 batch, quantity handled by handler"
 bonemold bolt,bonemold bolt,20,,Bushcrafting,Knife,,,ic_stick,ic_chitin_dust,,,,,,,,x20 batch
 # ══════════════════════════════════════════════════════════════════
 # TIER 3 — MK3 GLASS (weapons + armor, both tracks converge, stretch tier)
 # ══════════════════════════════════════════════════════════════════
-Glass Component,ic_glass_component,1,3600,Kiln,,,,Raw Glass,Raw Glass,ic_charcoal,ic_charcoal,,,,,,"Hot-worked volcanic glass, not cast"
+Glass Component,ic_glass_component,1,3600,Furnace,,,,Raw Glass,Raw Glass,Salt,ic_charcoal,ic_charcoal,,,,,"ALLOY: glass + salt flux, hot-worked not cast"
 glass dagger,glass dagger,1,,Crafting Table,steel warhammer,,,ic_glass_component,ic_netch_leather,,,,,,,,Hammer shapes hot glass; leather-wrapped grip
 glass longsword,glass longsword,1,,Crafting Table,steel warhammer,,,ic_glass_component,ic_glass_component,ic_netch_leather,,,,,,,
 glass war axe,glass war axe,1,,Crafting Table,steel warhammer,,,ic_glass_component,ic_glass_component,ic_plank,,,,,,,

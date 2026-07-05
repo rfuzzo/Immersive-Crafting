@@ -68,7 +68,6 @@ Records the recipe data depends on. Custom outputs need real plugin records
 - `Salt`
 - `Stone`
 - `String`
-- `Water`
 - `Wood`
 
 ## Vanilla record references (verify against the tes3-records dump)

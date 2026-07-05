@@ -9,6 +9,7 @@ local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local contextManager = require('scripts.Immersive-Crafting.contextManager')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
+local equipGate = require('scripts.Immersive-Crafting.equipGate')
 local forageState = require('scripts.Immersive-Crafting.forageState')
 local farmState = require('scripts.Immersive-Crafting.farmState')
 local processState = require('scripts.Immersive-Crafting.processState')
@@ -89,6 +90,7 @@ local function onUpdate(dt)
     end
 
     overlay.onUpdate(dt)
+    equipGate.onUpdate(dt)
 end
 
 -- The contextual action key is polled every frame inside the overlay's onUpdate

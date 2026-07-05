@@ -69,10 +69,6 @@
           "label": "Input"
         },
         {
-          "key": "reagent",
-          "label": "Reagent"
-        },
-        {
           "key": "fuel",
           "label": "Fuel"
         },
