@@ -670,3 +670,37 @@ Verify in-game:
 
 Open: recipe-guide niceties — ghost icons for missing ingredients in the
 slots (COLORS.missing exists), sort craftable recipes first, filter/search.
+
+## Station drop-swap: item <-> activator (built 2026-07-05)
+
+Fixes the user report: activating a placed kiln PICKED IT UP (stations are
+misc items). Now placed stations are ACTIVATORS, driven by
+data/Immersive-Crafting/stations/stations.json ({item, activator} pairs):
+
+- **Place**: globalStations.onObjectActive swaps a station ITEM lying in a
+  cell (just dropped, or pre-existing) for its `_a` activator at the same
+  position/rotation (one off the stack). If the activator record isn't in
+  the load order yet (plugin not built), it logs and leaves the item alone —
+  nothing breaks before the ESP exists.
+- **Pack up**: hold F (1.5s) on a placed station's card ->
+  ImmersiveCrafting_PackStation -> activator removed, item granted back.
+  Refused while a timed run occupies the station ("collect its work first").
+  The overlay's F-guard for activate contexts now allows HOLD actions only
+  (instant F still does nothing there — activation opens the station).
+- **Records**: records/Activator/ic_station_{firepit,kiln,furnace,
+  charcoalpit,tanningrack}_a.yaml — meshes currently mirror the misc
+  placeholders; USER picks proper meshes from the tes3-records dump (the
+  agent environment cannot reach rfuzzo.github.io — network policy blocks
+  it) and rebuilds the plugin with tes3util. NOTE: the committed `tes3util`
+  binary is the macOS arm64 build (Mach-O) — it cannot run in the Linux
+  agent container; commit a Linux x86_64 build if the agent should ever run
+  it. The station contexts also carry the `_a` ids in recordIds directly, so
+  detection works without tagging.
+- Crafting Table + Planter stay proximity-triggered misc items on purpose:
+  activating them = picking them up IS the pack-up mechanic there.
+
+Verify in-game (after the plugin with the Activator records is built):
+- drop kiln item -> activator appears in place; activate -> station opens
+  (not picked up); hold F on its card -> packed back into the inventory
+- busy kiln refuses packing; collect first, then pack works
+- dropping a STACK of stations converts one; the rest stays lying as items

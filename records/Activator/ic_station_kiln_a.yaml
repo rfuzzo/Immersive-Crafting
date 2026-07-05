@@ -1,0 +1,6 @@
+type: Activator
+flags: ""
+id: ic_station_kiln_a
+name: Kiln
+script: ""
+mesh: m\Misc_Redware_Flask.NIF

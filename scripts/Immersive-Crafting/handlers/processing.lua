@@ -1,9 +1,28 @@
 local core = require('openmw.core')
+local omwSelf = require('openmw.self')
 
 local CAbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local processState = require('scripts.Immersive-Crafting.processState')
+local io = require('scripts.Immersive-Crafting.io')
 local log = require('scripts.Immersive-Crafting.log')
+
+-- Placed IC stations (drop-swapped activators) can be PACKED UP by holding F
+-- (globalStations does the swap; busy stations refuse).
+local PACK_HOLD = 1.5
+local packable = nil ---@type table<string, boolean>? activator record id -> packable
+
+local function isPackable(object)
+    if not object then return false end
+    if not packable then
+        packable = {}
+        local list = io.loadJsonFile('data/Immersive-Crafting/stations/stations.json') or {}
+        for _, entry in ipairs(list) do
+            if entry.activator then packable[entry.activator:lower()] = true end
+        end
+    end
+    return packable[object.recordId] or false
+end
 
 --- "~N min" / "~N h" of remaining GAME time.
 local function fmtRemaining(readyAt)
@@ -71,11 +90,16 @@ function CProcessingHandler:evaluate(ctx)
                 details = { ("%d input slots"):format(#inputs) }
             end
         end
+        -- placed IC stations offer hold-F pack-up under the info card
+        local action = nil
+        if isPackable(ctx.object) then
+            action = { id = 'pack', label = 'Pack up', enabled = true, hold = PACK_HOLD }
+        end
         ---@type ViewModel
         return {
             status = "Activate to use",
             details = details,
-            action = nil,
+            action = action,
         }
     end
 
@@ -94,15 +118,25 @@ end
 ---@param ctx HandlerContext
 function CProcessingHandler:OnActivate(ctx)
     -- proximity stations: [F] while a run is finished collects it; while it's
-    -- still working, do nothing (the card shows the remaining time). Activate
-    -- stations never reach here (init.lua intercepts their activation).
+    -- still working, do nothing (the card shows the remaining time).
     local run = ctx.object and processState.forStation(ctx.object.id)
     if run then
         if run.done then
-            local omwSelf = require('openmw.self')
             core.sendGlobalEvent('ImmersiveCrafting_CollectProcess', {
                 actor = omwSelf.object,
                 stationId = ctx.object.id,
+            })
+        end
+        return
+    end
+
+    -- activate-triggered stations never open the window from here (activating
+    -- the object does that) — completing the hold on their card PACKS them up
+    if ctx.context.trigger == 'activate' then
+        if isPackable(ctx.object) then
+            core.sendGlobalEvent('ImmersiveCrafting_PackStation', {
+                actor = omwSelf.object,
+                station = ctx.object,
             })
         end
         return

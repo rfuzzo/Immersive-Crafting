@@ -1,0 +1,7 @@
+[
+  { "item": "ic_station_firepit", "activator": "ic_station_firepit_a" },
+  { "item": "ic_station_kiln", "activator": "ic_station_kiln_a" },
+  { "item": "ic_station_furnace", "activator": "ic_station_furnace_a" },
+  { "item": "ic_station_charcoalpit", "activator": "ic_station_charcoalpit_a" },
+  { "item": "ic_station_tanningrack", "activator": "ic_station_tanningrack_a" }
+]

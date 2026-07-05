@@ -300,10 +300,16 @@ local TAP_THRESHOLD = 0.3
 ---@param pressed boolean current key state
 ---@param dt number
 local function handleActionInput(pressed, dt)
-    -- no card, or an activate-only station (opened by activating the object): the
-    -- key does nothing here. Keep the edge tracker in sync so we don't fire late.
-    if not overlayElement or not currentContext or not currentActions
-        or currentContext.trigger == 'activate' then
+    -- no card: the key does nothing. Keep the edge tracker in sync so we
+    -- don't fire late.
+    if not overlayElement or not currentContext or not currentActions then
+        prevPressed = pressed
+        return
+    end
+    -- activate-triggered stations are opened by activating the object, so F
+    -- never fires INSTANT actions on them — but HOLD actions are allowed
+    -- (holding F on a placed station's card packs it up).
+    if currentContext.trigger == 'activate' and hold.duration == 0 then
         prevPressed = pressed
         return
     end

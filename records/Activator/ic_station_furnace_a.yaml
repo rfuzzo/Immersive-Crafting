@@ -1,0 +1,6 @@
+type: Activator
+flags: ""
+id: ic_station_furnace_a
+name: Furnace
+script: ""
+mesh: n\Ingred_Scrap_Metal_01.nif

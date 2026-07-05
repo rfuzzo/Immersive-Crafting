@@ -3,7 +3,8 @@
     "id": "firepit",
     "label": "Firepit",
     "recordIds": [
-      "firepit"
+      "firepit",
+      "ic_station_firepit_a"
     ],
     "activationRange": 150,
     "trigger": "activate",
@@ -57,7 +58,8 @@
     "id": "kiln",
     "label": "Kiln",
     "recordIds": [
-      "kiln"
+      "kiln",
+      "ic_station_kiln_a"
     ],
     "activationRange": 150,
     "trigger": "activate",
@@ -89,7 +91,8 @@
     "id": "furnace",
     "label": "Furnace",
     "recordIds": [
-      "furnace"
+      "furnace",
+      "ic_station_furnace_a"
     ],
     "activationRange": 150,
     "trigger": "activate",
@@ -129,7 +132,8 @@
     "id": "charcoal_pit",
     "label": "Charcoal Pit",
     "recordIds": [
-      "charcoal_pit"
+      "charcoal_pit",
+      "ic_station_charcoalpit_a"
     ],
     "activationRange": 150,
     "trigger": "activate",
@@ -187,7 +191,8 @@
     "id": "tanning_rack",
     "label": "Tanning Rack",
     "recordIds": [
-      "tanning_rack"
+      "tanning_rack",
+      "ic_station_tanningrack_a"
     ],
     "activationRange": 150,
     "trigger": "activate",

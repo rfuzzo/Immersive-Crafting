@@ -6,6 +6,7 @@ local log = require('scripts.Immersive-Crafting.log')
 local globalFarming = require('scripts.Immersive-Crafting.globalFarming')
 local globalProcessing = require('scripts.Immersive-Crafting.globalProcessing')
 local globalLiquids = require('scripts.Immersive-Crafting.globalLiquids')
+local globalStations = require('scripts.Immersive-Crafting.globalStations')
 
 local function onSave() return saveData end
 
@@ -181,7 +182,12 @@ local function onRegisterActivateContexts(data)
 end
 
 return {
-    engineHandlers = { onLoad = onLoad, onInit = onLoad, onSave = onSave },
+    engineHandlers = {
+        onLoad = onLoad,
+        onInit = onLoad,
+        onSave = onSave,
+        onObjectActive = globalStations.onObjectActive,
+    },
     eventHandlers = {
         ImmersiveCrafting_Commit = onCommit,
         ImmersiveCrafting_CraftShaped = onCraftShaped,
@@ -194,5 +200,6 @@ return {
         ImmersiveCrafting_StartProcess = globalProcessing.onStart,
         ImmersiveCrafting_CollectProcess = globalProcessing.onCollect,
         ImmersiveCrafting_ClassifyLiquids = globalLiquids.onClassify,
+        ImmersiveCrafting_PackStation = globalStations.onPack,
     }
 }
