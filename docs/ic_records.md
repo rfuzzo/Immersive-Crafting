@@ -7,6 +7,7 @@ Records the recipe data depends on. Custom outputs need real plugin records
 
 - `ic_armor_hide_mk1`
 - `ic_bedroll_mk1`
+- `ic_bonemold_paste`
 - `ic_bowl`
 - `ic_bucket`
 - `ic_charcoal`
@@ -56,6 +57,7 @@ Records the recipe data depends on. Custom outputs need real plugin records
 
 ## Assumed Tagger tags (capitalised ingredient/tool names)
 
+- `Bonemeal`
 - `Charcoal`
 - `Clay`
 - `Fibre`
@@ -65,6 +67,7 @@ Records the recipe data depends on. Custom outputs need real plugin records
 - `Ore`
 - `Plant`
 - `Raw Glass`
+- `Resin`
 - `Salt`
 - `Stone`
 - `String`

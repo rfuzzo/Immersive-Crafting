@@ -509,6 +509,12 @@ local function resultSection()
                 or ('~%d min'):format(math.max(1, math.ceil(matched.duration / 60)))
             caption = caption .. ('  (takes %s)'):format(dur)
         end
+        for _, line in ipairs(matched.inputs or {}) do
+            if line.returned then
+                caption = caption .. '  (mold returned)'
+                break
+            end
+        end
         if not canCraft then caption = caption .. '  (not enough materials)' end
     else
         caption = '(no match)'
@@ -750,6 +756,30 @@ local function craftSdMeal()
     })
 end
 
+--- Consume list = everything placed minus the matched recipe's `returned`
+--- lines (a reusable mold placed in the Mold slot must be there for the match
+--- but stays with the player). Shaped recipes have no input lines — everything
+--- placed is consumed.
+local function consumeList()
+    local counts = placedCounts()
+    for _, line in ipairs((matched and matched.inputs) or {}) do
+        if line.returned then
+            local remaining = line.count or 1
+            for id, n in pairs(counts) do
+                if remaining <= 0 then break end
+                if lib.matchesTag(id, line.id) then
+                    local spare = math.min(n, remaining)
+                    counts[id] = (n - spare > 0) and (n - spare) or nil
+                    remaining = remaining - spare
+                end
+            end
+        end
+    end
+    local consume = {}
+    for id, count in pairs(counts) do consume[#consume + 1] = { id = id, count = count } end
+    return consume
+end
+
 --- Craft = "take the result": consume the placed inputs, grant the output.
 --- Recipes with a `duration` don't grant instantly: they START a timed run at
 --- the station (globalProcessing) — inputs are consumed up front, the window
@@ -760,8 +790,7 @@ function this.onCraft()
     if matched.sdMeal then
         craftSdMeal()
     elseif matched.duration and matched.duration > 0 and ctx.object then
-        local consume = {}
-        for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
+        local consume = consumeList()
         core.sendGlobalEvent('ImmersiveCrafting_StartProcess', {
             actor = self.object,
             station = ctx.object,
@@ -774,11 +803,9 @@ function this.onCraft()
         this.close() -- the run lives at the station now; its card shows progress
         return
     else
-        local consume = {}
-        for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
         core.sendGlobalEvent('ImmersiveCrafting_CraftShaped', {
             actor = self.object,
-            consume = consume,
+            consume = consumeList(),
             output = matched.output,
         })
     end

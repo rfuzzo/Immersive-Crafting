@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_bonemold_paste
+name: Bonemold Paste
+script: ""
+mesh: n\Ingred_Muck_01.nif
+icon: n\Tx_muck_01.tga
+data:
+  weight: 1.0
+  value: 4
+  flags: ""

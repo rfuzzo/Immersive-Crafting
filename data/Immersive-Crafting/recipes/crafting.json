@@ -1435,20 +1435,47 @@
     }
   },
   {
+    "id": "ic_bonemold_paste",
+    "label": "Bonemold Paste",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "B "
+    ],
+    "key": {
+      "A": "Bonemeal",
+      "B": "Resin"
+    },
+    "tools": [
+      "Mortar and Pestle"
+    ],
+    "output": {
+      "id": "ic_bonemold_paste",
+      "count": 1
+    }
+  },
+  {
     "id": "bonemold_cuirass",
     "label": "bonemold_cuirass",
     "context": "kiln",
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_chitin_dust",
+        "id": "ic_bonemold_paste",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
         "count": 2
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
       }
     ],
     "duration": 3600,
-    "tools": [
-      "ic_mold_armor_burnt"
-    ],
     "output": {
       "id": "bonemold_cuirass",
       "count": 1
@@ -1461,8 +1488,17 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_chitin_dust",
+        "id": "ic_bonemold_paste",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
       }
     ],
     "duration": 3600,
@@ -1478,8 +1514,17 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_chitin_dust",
+        "id": "ic_bonemold_paste",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
       }
     ],
     "duration": 3600,
@@ -1495,8 +1540,17 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_chitin_dust",
+        "id": "ic_bonemold_paste",
         "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
       }
     ],
     "duration": 3600,
@@ -1512,8 +1566,17 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_chitin_dust",
+        "id": "ic_bonemold_paste",
         "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
       }
     ],
     "duration": 3600,

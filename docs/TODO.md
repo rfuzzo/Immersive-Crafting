@@ -468,3 +468,35 @@ Open: alloy tier follow-ups (ebony smelting, daedric = ebony + daedra essence
 at a special condition/station, dwemer = melt-down scavenge only); gating mode
 setting (block vs debuff-while-worn vs off) — block only for now; make
 SKILL_FACTOR/MIN_REQUIREMENT + per-record overrides data-driven (JSON) later.
+
+## Bonemold = paste + mold + kiln, returned inputs (built 2026-07-05)
+
+Bonemold reworked to the ratified mental model ("paste into a mold, fire it"):
+lore says bonemold is ground bone bound in RESIN (not clay/water), and vanilla
+ships both ingredients — so the chain is all-vanilla inputs:
+
+1. **Bonemold Paste** (new `ic_bonemold_paste` misc record, muck mesh as
+   placeholder): 2 Bonemeal + 1 Resin at Bushcrafting with the Mortar & Pestle
+   (tags `Bonemeal`, `Resin` — tag vanilla ingred_bonemeal_01,
+   ingred_resin_01, ingred_shalk_resin_01).
+2. **Fire at the kiln**: paste stack (Input) + Charcoal (Fuel) + the burnt
+   armor mold in the MOLD slot — every bonemold recipe now uses all three kiln
+   slots. Helm/boots (1 paste) and greaves/shield (2) still cycle.
+
+**New engine feature — `returned` inputs:** a process-recipe input line with
+`returned: true` must be PLACED for the match but is not consumed (the mold
+comes back). Converter emits it automatically when a REUSABLE_TOOLS item
+appears in a process recipe's ingredient columns (grid ingredients still
+error, acknowledged Furnace-build excepted); `consumeList()` in Crafting.lua
+subtracts returned lines for both instant crafts and timed StartProcess runs
+(the mold simply never leaves the inventory), and the Result caption shows
+"(mold returned)". Arrows/bolts keep using chitin dust, so that chain stays.
+
+Verify in-game: paste craft; helm fire (mold slot accepts the burnt armor
+mold, strip filters to molds); after collect the mold is still in inventory;
+cuirass = 3 paste + 2 charcoal + mold fits the 3 kiln slots.
+
+Open: while a timed run cooks, the "placed" mold stays in the player's
+inventory (could start a second kiln with the same mold — accepted for now,
+same trust level as tools); crucible could become a returned input at the
+furnace later instead of a tool.

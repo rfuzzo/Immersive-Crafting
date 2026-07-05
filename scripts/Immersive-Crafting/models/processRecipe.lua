@@ -5,9 +5,10 @@ local log = require('scripts.Immersive-Crafting.log')
 ---Unlike shaped recipes there is no grid shape: `inputs` is a counted multiset
 ---(e.g. 3 Ore + 2 Charcoal) matched against whatever is placed in the station's
 ---generic slots, regardless of position. `tools` are required from the player's
----inventory and are NEVER consumed; all placed inputs ARE consumed on craft.
----`duration` is the process time in seconds (the timed process itself is
----deferred; see docs/TODO.md).
+---inventory and are NEVER consumed; all placed inputs ARE consumed on craft —
+---except lines marked `returned` (a reusable mold placed in the Mold slot must
+---be present for the match but comes back to the player). `duration` is the
+---process time in GAME seconds.
 ---@class CProcessRecipe
 ---@field id Id registry key
 ---@field label string display name of the result
@@ -23,6 +24,7 @@ local CProcessRecipe = {}
 ---@class CProcessRecipe.Input
 ---@field id string record id or FlexTag tag
 ---@field count integer how many are required
+---@field returned boolean|nil must be placed for the match but is NOT consumed (reusable molds)
 
 --- Deserialize from table
 ---@param tbl any

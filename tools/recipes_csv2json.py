@@ -24,9 +24,12 @@ Mapping (see docs/SPEC.md):
 
 Lint rules (design-critical, see the recipes handoff):
 - Weapon molds (raw + burnt) are CONSUMED -> must never appear in a tool column.
-- The burnt armor mold and the crucible are reusable TOOLS -> must never appear
-  in an ingredient column (exception: the Furnace build consumes a crucible as
-  a component; reported as an acknowledged warning).
+- The burnt armor mold and the crucible are reusable TOOLS. In a PROCESS
+  recipe's ingredient columns they become `returned: true` input lines (placed
+  in a slot for the match — e.g. the kiln's Mold slot — but given back, not
+  consumed). In a GRID recipe's ingredients they are an error (grids consume
+  everything), except acknowledged pairs like the Furnace build, which
+  genuinely consumes its crucible.
 """
 import argparse
 import csv
@@ -137,11 +140,11 @@ def convert(rows):
             if t in CONSUMED_MOLDS:
                 errors.append(f'{rid}: consumed mold "{t}" used as a tool (must be an ingredient)')
         for it in items:
-            if it in REUSABLE_TOOLS:
+            if it in REUSABLE_TOOLS and kind == 'grid':
                 if (rid, it) in ACKNOWLEDGED:
                     warnings.append(f'{rid}: reusable tool "{it}" consumed as ingredient (acknowledged)')
                 else:
-                    errors.append(f'{rid}: reusable tool "{it}" used as an ingredient (must be a tool)')
+                    errors.append(f'{rid}: reusable tool "{it}" used as a grid ingredient (must be a tool)')
 
         if rid in seen_ids:
             errors.append(f'{rid}: duplicate recipe id (also at {seen_ids[rid]})')
@@ -177,9 +180,17 @@ def convert(rows):
             recipe['key'] = key
         else:
             inputs = OrderedDict()
+            returned = OrderedDict()
             for it in items:
-                inputs[it] = inputs.get(it, 0) + 1
-            recipe['inputs'] = [{'id': k, 'count': v} for k, v in inputs.items()]
+                # reusable tools placed in a slot (kiln Mold slot) come back
+                if it in REUSABLE_TOOLS:
+                    returned[it] = returned.get(it, 0) + 1
+                else:
+                    inputs[it] = inputs.get(it, 0) + 1
+            recipe['inputs'] = (
+                [{'id': k, 'count': v} for k, v in inputs.items()]
+                + [{'id': k, 'count': v, 'returned': True} for k, v in returned.items()]
+            )
             duration = (row.get('duration') or '').strip()
             if duration:
                 try:
