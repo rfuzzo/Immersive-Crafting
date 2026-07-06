@@ -483,5 +483,135 @@
       "id": "glass_shield",
       "count": 1
     }
+  },
+  {
+    "id": "bonemold_pauldron_l",
+    "label": "bonemold_pauldron_l",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_pauldron_l",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_pauldron_r",
+    "label": "bonemold_pauldron_r",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_pauldron_r",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_bracer_left",
+    "label": "bonemold_bracer_left",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_bracer_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_bracer_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_bracer_right",
+    "label": "bonemold_bracer_right",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_bracer_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_bracer_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_towershield",
+    "label": "bonemold_towershield",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_tower_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_towershield",
+      "count": 1
+    }
   }
 ]

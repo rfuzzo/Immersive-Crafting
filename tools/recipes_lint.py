@@ -61,8 +61,8 @@ RETURNED_ITEMS = {f'ic_mold_{p}_burnt' for p in _ARMOR_MOLD_PARTS}
 WEAPON_KW = ['dagger', 'war axe', 'waraxe', 'spear', 'longsword', 'warhammer',
              'claymore', 'halberd', 'club', 'shortsword', 'short bow', 'long bow',
              'bow', 'arrow', 'bolt', 'mace', 'staff', 'katana', 'tanto', 'wakizashi']
-ARMOUR_KW = ['cuirass', 'helm', 'boots', 'greaves', 'shield', 'pauldron',
-             'gauntlet', 'bracer', 'armor', 'armour', 'skirt']
+ARMOUR_KW = ['cuirass', 'helm', 'boots', 'greaves', 'shield', 'towershield',
+             'pauldron', 'gauntlet', 'bracer', 'armor', 'armour', 'skirt']
 
 
 def category_of(output_id):
