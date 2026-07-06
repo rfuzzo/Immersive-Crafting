@@ -1,7 +1,7 @@
 type: MiscItem
 flags: ""
-id: ic_mold_armor_burnt
-name: Burnt Armor Mold
+id: ic_mold_cuirass_burnt
+name: Burnt Cuirass Mold
 script: ""
 mesh: m\Misc_LW_Flask.NIF
 icon: m\Misc_LW_Flask.tga

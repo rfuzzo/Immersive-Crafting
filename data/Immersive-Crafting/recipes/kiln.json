@@ -84,27 +84,6 @@
     }
   },
   {
-    "id": "ic_mold_armor_burnt",
-    "label": "Burnt Armor Mold",
-    "context": "kiln",
-    "action": "processing",
-    "inputs": [
-      {
-        "id": "ic_mold_armor_raw",
-        "count": 1
-      },
-      {
-        "id": "Charcoal",
-        "count": 2
-      }
-    ],
-    "duration": 1800,
-    "output": {
-      "id": "ic_mold_armor_burnt",
-      "count": 1
-    }
-  },
-  {
     "id": "ic_crucible",
     "label": "Crucible",
     "context": "kiln",
@@ -135,6 +114,216 @@
     "duration": 1800,
     "output": {
       "id": "ic_clay_pot",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_cuirass_burnt",
+    "label": "Burnt Cuirass Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_cuirass_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_cuirass_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_boots_burnt",
+    "label": "Burnt Boots Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_boots_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_boots_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_greaves_burnt",
+    "label": "Burnt Greaves Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_greaves_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_greaves_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_helm_burnt",
+    "label": "Burnt Helm Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_helm_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_helm_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_pauldron_left_burnt",
+    "label": "Burnt Left Pauldron Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_pauldron_left_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_pauldron_left_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_pauldron_right_burnt",
+    "label": "Burnt Right Pauldron Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_pauldron_right_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_pauldron_right_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_bracer_left_burnt",
+    "label": "Burnt Left Bracer Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_bracer_left_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_bracer_left_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_bracer_right_burnt",
+    "label": "Burnt Right Bracer Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_bracer_right_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_bracer_right_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_shield_burnt",
+    "label": "Burnt Shield Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_shield_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_shield_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_tower_shield_burnt",
+    "label": "Burnt Tower Shield Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_tower_shield_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_tower_shield_burnt",
       "count": 1
     }
   }

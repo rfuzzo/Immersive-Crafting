@@ -125,31 +125,6 @@
     }
   },
   {
-    "id": "ic_mold_armor_raw",
-    "label": "Raw Armor Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "Clay",
-      "W": "cuirass"
-    },
-    "returned": [
-      {
-        "id": "cuirass",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_armor_raw",
-      "count": 1
-    }
-  },
-  {
     "id": "ic_station_charcoalpit",
     "label": "Charcoal Pit",
     "context": "crafting_table",
@@ -460,6 +435,256 @@
     ],
     "output": {
       "id": "ic_grill",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_cuirass_raw",
+    "label": "Raw Cuirass Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "cuirass"
+    },
+    "returned": [
+      {
+        "id": "cuirass",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_cuirass_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_boots_raw",
+    "label": "Raw Boots Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "boots"
+    },
+    "returned": [
+      {
+        "id": "boots",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_boots_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_greaves_raw",
+    "label": "Raw Greaves Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "greaves"
+    },
+    "returned": [
+      {
+        "id": "greaves",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_greaves_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_helm_raw",
+    "label": "Raw Helm Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "helmet"
+    },
+    "returned": [
+      {
+        "id": "helmet",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_helm_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_pauldron_left_raw",
+    "label": "Raw Left Pauldron Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "pauldron"
+    },
+    "returned": [
+      {
+        "id": "pauldron",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_pauldron_left_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_pauldron_right_raw",
+    "label": "Raw Right Pauldron Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "pauldron"
+    },
+    "returned": [
+      {
+        "id": "pauldron",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_pauldron_right_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_bracer_left_raw",
+    "label": "Raw Left Bracer Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "bracer"
+    },
+    "returned": [
+      {
+        "id": "bracer",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_bracer_left_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_bracer_right_raw",
+    "label": "Raw Right Bracer Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "bracer"
+    },
+    "returned": [
+      {
+        "id": "bracer",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_bracer_right_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_shield_raw",
+    "label": "Raw Shield Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "shield"
+    },
+    "returned": [
+      {
+        "id": "shield",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_shield_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_tower_shield_raw",
+    "label": "Raw Tower Shield Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AWA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay",
+      "W": "shield"
+    },
+    "returned": [
+      {
+        "id": "shield",
+        "count": 1
+      }
+    ],
+    "output": {
+      "id": "ic_mold_tower_shield_raw",
       "count": 1
     }
   }

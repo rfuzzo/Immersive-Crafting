@@ -124,7 +124,7 @@
         "count": 4
       },
       {
-        "id": "ic_mold_armor_burnt",
+        "id": "ic_mold_cuirass_burnt",
         "count": 1,
         "returned": true
       },
@@ -259,7 +259,7 @@
         "count": 2
       },
       {
-        "id": "ic_mold_armor_burnt",
+        "id": "ic_mold_cuirass_burnt",
         "count": 1,
         "returned": true
       }
@@ -285,7 +285,7 @@
         "count": 1
       },
       {
-        "id": "ic_mold_armor_burnt",
+        "id": "ic_mold_helm_burnt",
         "count": 1,
         "returned": true
       }
@@ -311,7 +311,7 @@
         "count": 1
       },
       {
-        "id": "ic_mold_armor_burnt",
+        "id": "ic_mold_boots_burnt",
         "count": 1,
         "returned": true
       }
@@ -337,7 +337,7 @@
         "count": 1
       },
       {
-        "id": "ic_mold_armor_burnt",
+        "id": "ic_mold_greaves_burnt",
         "count": 1,
         "returned": true
       }
@@ -363,7 +363,7 @@
         "count": 1
       },
       {
-        "id": "ic_mold_armor_burnt",
+        "id": "ic_mold_shield_burnt",
         "count": 1,
         "returned": true
       }

@@ -52,7 +52,7 @@ CONSUMED_MOLDS = {
 # reusable (unlike single-use weapon molds): the generic one plus the burnt
 # per-part molds (boots, greaves, helm, l/r pauldron, l/r bracer, shield,
 # tower shield).
-_ARMOR_MOLD_PARTS = ('armor', 'boots', 'greaves', 'helm',
+_ARMOR_MOLD_PARTS = ('cuirass', 'boots', 'greaves', 'helm',
                      'pauldron_left', 'pauldron_right',
                      'bracer_left', 'bracer_right', 'shield', 'tower_shield')
 RETURNED_ITEMS = {f'ic_mold_{p}_burnt' for p in _ARMOR_MOLD_PARTS}

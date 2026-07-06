@@ -20,14 +20,32 @@ ModTags FlexTag YAMLs.
 - `ic_glass_component`
 - `ic_grill`
 - `ic_iron_ingot`
-- `ic_mold_armor_burnt`
-- `ic_mold_armor_raw`
+- `ic_mold_boots_burnt`
+- `ic_mold_boots_raw`
+- `ic_mold_bracer_left_burnt`
+- `ic_mold_bracer_left_raw`
+- `ic_mold_bracer_right_burnt`
+- `ic_mold_bracer_right_raw`
+- `ic_mold_cuirass_burnt`
+- `ic_mold_cuirass_raw`
 - `ic_mold_dagger_burnt`
 - `ic_mold_dagger_raw`
+- `ic_mold_greaves_burnt`
+- `ic_mold_greaves_raw`
+- `ic_mold_helm_burnt`
+- `ic_mold_helm_raw`
 - `ic_mold_longsword_burnt`
 - `ic_mold_longsword_raw`
+- `ic_mold_pauldron_left_burnt`
+- `ic_mold_pauldron_left_raw`
+- `ic_mold_pauldron_right_burnt`
+- `ic_mold_pauldron_right_raw`
+- `ic_mold_shield_burnt`
+- `ic_mold_shield_raw`
 - `ic_mold_spear_burnt`
 - `ic_mold_spear_raw`
+- `ic_mold_tower_shield_burnt`
+- `ic_mold_tower_shield_raw`
 - `ic_mold_waraxe_burnt`
 - `ic_mold_waraxe_raw`
 - `ic_mold_warhammer_burnt`
@@ -79,6 +97,9 @@ ModTags FlexTag YAMLs.
 ## Vanilla record references (verify against the records dump)
 
 - `axe`
+- `boots`
+- `bracer`
+- `charcoal`
 - `chitin`
 - `chitin club`
 - `chitin_plate`
@@ -86,9 +107,13 @@ ModTags FlexTag YAMLs.
 - `crucible`
 - `cuirass`
 - `dagger`
+- `greaves`
+- `helmet`
 - `iron_ingot`
 - `longsword`
+- `pauldron`
 - `plank`
+- `shield`
 - `spear`
 - `steel warhammer`
 - `stick`
