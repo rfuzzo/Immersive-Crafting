@@ -785,3 +785,14 @@ Verify in-game:
 - harvest annual -> card offers "Plant Saltrice" first (memory), no cycling
 - pick up planter with sown seed -> seed returned; memory forgotten
 - setting OFF -> dropped seeds stay on the ground; cycling unaffected
+
+## Slot accepts: patterns -> tags (2026-07-06)
+
+User ratified: `accepts` filters should be TAGS like everything else. The
+kiln/furnace Mold slots' `acceptsPatterns: ["^ic_mold_.*_burnt$"]` replaced by
+`accepts: ["mold_burnt"]`; new `mold_burnt` + `mold_raw` FlexTags in
+ModTags/ImmersiveCrafting.yaml (6 records each). `acceptsPatterns` stays as an
+engine capability but is now documented as ONLY for record families that
+cannot be tagged (other mods' dynamic/mass records — same rule as
+CContext.recordPatterns for SD fires); no data uses it anymore.
+Verify in-game: mold slot still claims burnt molds only (via the tag).
