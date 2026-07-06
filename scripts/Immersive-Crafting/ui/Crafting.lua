@@ -964,6 +964,13 @@ function this.rebuild()
         return
     end
 
+    -- Recompute the usable-materials list EVERY rebuild, not once at open:
+    -- matching depends on FlexTag, whose tag files stagger in over several
+    -- seconds after load — a window opened before they finish would otherwise
+    -- cache a list with whole tags missing (the kiln's empty-Fuel-strip bug)
+    -- until closed and reopened.
+    materials = collectMaterials()
+
     -- the materials strip follows the window size (alchemy-style auto layout);
     -- a resize reflows on the next rebuild (i.e. the next click)
     local winSize = windowSize
@@ -1209,8 +1216,7 @@ function this.onCraft()
     -- next frame, so material counts refresh on the next interaction)
     placed = {}
     ensureSelection()
-    materials = collectMaterials()
-    this.rebuild()
+    this.rebuild() -- recomputes the materials list
 end
 
 -- ── public API ──────────────────────────────────────────────────────────────
@@ -1251,7 +1257,6 @@ function this.open(handlerCtx)
     stripMode = 'materials'
     isOpen = true
     ItemPicker.reset()
-    materials = collectMaterials()
     stationTools = collectStationTools()
     ensureSelection()
     -- cursor active, NO vanilla windows (the materials strip replaces the
