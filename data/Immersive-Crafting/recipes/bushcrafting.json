@@ -1,0 +1,214 @@
+[
+  {
+    "id": "ic_stick",
+    "label": "Stick",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "ic_stick",
+      "count": 4
+    }
+  },
+  {
+    "id": "ic_fibre",
+    "label": "Fibre",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "Plant"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "ic_fibre",
+      "count": 4
+    }
+  },
+  {
+    "id": "ic_string",
+    "label": "String",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "  "
+    ],
+    "key": {
+      "A": "Fibre"
+    },
+    "output": {
+      "id": "ic_string",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_station_firepit",
+    "label": "Firepit (built)",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "BB"
+    ],
+    "key": {
+      "A": "Stone",
+      "B": "Wood"
+    },
+    "output": {
+      "id": "ic_station_firepit",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_water_bladder",
+    "label": "Water Bladder",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AB",
+      "B "
+    ],
+    "key": {
+      "A": "Hide",
+      "B": "String"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "ic_water_bladder",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_chitin_dust",
+    "label": "Chitin Dust",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "chitin"
+    },
+    "tools": [
+      "Mortar and Pestle"
+    ],
+    "output": {
+      "id": "ic_chitin_dust",
+      "count": 4
+    }
+  },
+  {
+    "id": "ic_station_craftingtable",
+    "label": "Crafting Table",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "AA"
+    ],
+    "key": {
+      "A": "plank"
+    },
+    "tools": [
+      "axe"
+    ],
+    "output": {
+      "id": "ic_station_craftingtable",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_plank",
+    "label": "Plank",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "  "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "axe"
+    ],
+    "output": {
+      "id": "ic_plank",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_spit",
+    "label": "Spit",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AB",
+      "B "
+    ],
+    "key": {
+      "A": "ic_iron_ingot",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "ic_spit",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mortar_pestle",
+    "label": "Mortar and Pestle",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "A "
+    ],
+    "key": {
+      "A": "Stone"
+    },
+    "output": {
+      "id": "ic_mortar_pestle",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_bonemold_paste",
+    "label": "Bonemold Paste",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "B "
+    ],
+    "key": {
+      "A": "Bonemeal",
+      "B": "Resin"
+    },
+    "tools": [
+      "Mortar and Pestle"
+    ],
+    "output": {
+      "id": "ic_bonemold_paste",
+      "count": 1
+    }
+  }
+]

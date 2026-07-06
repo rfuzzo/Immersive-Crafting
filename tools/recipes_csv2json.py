@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 """Convert the tiered crafting recipes CSV into the engine's recipe JSON.
 
+⚠️  LEGACY / DECOUPLED (2026-07-06): the recipe JSON is now HAND-MAINTAINED and
+    split per context (recipes/bushcrafting.json, kiln.json, weapons.json,
+    armour.json, …). The CSV has diverged from those files, so running this
+    regenerates a single monolithic crafting.json from STALE data and would
+    shadow/undo hand edits. The default --out points at a scratch path to avoid
+    clobbering; pass --out explicitly only if you deliberately re-adopt the CSV
+    as the source of truth. Kept as a reference/one-shot generator.
+
 Usage:
     python3 tools/recipes_csv2json.py \
         [--csv docs/immersive_crafting_recipes_v2.csv] \
-        [--out data/Immersive-Crafting/recipes/crafting.json] \
+        [--out /tmp/ic_recipes_regen.json] \
         [--records-out docs/ic_records.md]
 
 CSV columns:
@@ -243,7 +251,9 @@ def write_records_doc(path, report):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--csv', default='docs/immersive_crafting_recipes_v2.csv')
-    ap.add_argument('--out', default='data/Immersive-Crafting/recipes/crafting.json')
+    # NOT the live data path: the recipe JSON is hand-maintained + split per
+    # context now (see the module docstring). Default to a scratch file.
+    ap.add_argument('--out', default='/tmp/ic_recipes_regen.json')
     ap.add_argument('--records-out', default='docs/ic_records.md')
     args = ap.parse_args()
 

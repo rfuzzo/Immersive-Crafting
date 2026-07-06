@@ -1,0 +1,486 @@
+[
+  {
+    "id": "chitin cuirass",
+    "label": "chitin cuirass",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "BB ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_chitin_plate",
+      "B": "ic_string"
+    },
+    "output": {
+      "id": "chitin cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "chitin helm",
+    "label": "chitin helm",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_chitin_plate",
+      "B": "ic_string"
+    },
+    "output": {
+      "id": "chitin helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "chitin boots",
+    "label": "chitin boots",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_chitin_plate",
+      "B": "ic_string"
+    },
+    "output": {
+      "id": "chitin boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "chitin greaves",
+    "label": "chitin greaves",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_chitin_plate",
+      "B": "ic_string"
+    },
+    "output": {
+      "id": "chitin greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "chitin_shield",
+    "label": "chitin_shield",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "B  ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_chitin_plate",
+      "B": "ic_plank"
+    },
+    "output": {
+      "id": "chitin_shield",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_armor_hide_mk1",
+    "label": "Armor Mk1 (Hide)",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "BBB",
+      "   "
+    ],
+    "key": {
+      "A": "Hide",
+      "B": "ic_string"
+    },
+    "output": {
+      "id": "ic_armor_hide_mk1",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_cuirass",
+    "label": "iron_cuirass",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_iron_ingot",
+        "count": 4
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 3
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_cuirass",
+    "label": "steel_cuirass",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "A  ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_steel_ingot"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "steel_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_helm",
+    "label": "steel_helm",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_steel_ingot"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "steel_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_boots",
+    "label": "steel_boots",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_steel_ingot"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "steel_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_greaves",
+    "label": "steel_greaves",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_steel_ingot"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "steel_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_shield",
+    "label": "steel_shield",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_steel_ingot"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "steel_shield",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_cuirass",
+    "label": "bonemold_cuirass",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_helm",
+    "label": "bonemold_helm",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_boots",
+    "label": "bonemold_boots",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_greaves",
+    "label": "bonemold_greaves",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_shield",
+    "label": "bonemold_shield",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_shield",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_cuirass",
+    "label": "glass_cuirass",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "B  ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_helm",
+    "label": "glass_helm",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_boots",
+    "label": "glass_boots",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_greaves",
+    "label": "glass_greaves",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_shield",
+    "label": "glass_shield",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_shield",
+      "count": 1
+    }
+  }
+]

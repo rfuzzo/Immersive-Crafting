@@ -1,0 +1,141 @@
+[
+  {
+    "id": "ic_mold_waraxe_burnt",
+    "label": "Burnt War Axe Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_waraxe_raw",
+        "count": 1
+      },
+      {
+        "id": "wood",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_waraxe_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_spear_burnt",
+    "label": "Burnt Spear Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_spear_raw",
+        "count": 1
+      },
+      {
+        "id": "Wood",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_spear_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_longsword_burnt",
+    "label": "Burnt Longsword Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_longsword_raw",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_longsword_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_warhammer_burnt",
+    "label": "Burnt Warhammer Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_warhammer_raw",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_warhammer_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_armor_burnt",
+    "label": "Burnt Armor Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_armor_raw",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_armor_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_crucible",
+    "label": "Crucible",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "Clay",
+        "count": 3
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "ic_crucible",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_clay_pot",
+    "label": "Clay Pot",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "Clay",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_clay_pot",
+      "count": 1
+    }
+  }
+]

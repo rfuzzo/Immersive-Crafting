@@ -156,11 +156,17 @@ Deferred / to verify:
 
 ## Tiered recipes import (Minecraft-style progression)
 
-`docs/immersive_crafting_recipes_v2.csv` → `tools/recipes_csv2json.py` →
-`recipes/crafting.json` (86 recipes: 57 shaped, 29 process). Rerun the script after
-editing the CSV. It lints the tool-vs-consumed rules (consumed weapon molds never in
-tool columns; reusable crucible/armor mold never in ingredient columns) and generates
-the `ic_*` record inventory → `docs/ic_records.md`.
+Originally: `docs/immersive_crafting_recipes_v2.csv` → `tools/recipes_csv2json.py`
+→ a single `recipes/crafting.json`. **As of 2026-07-06 the recipe JSON is
+hand-maintained and SPLIT per context** — `recipes/{bushcrafting,crafting_table,
+firepit,kiln,charcoal_pit,tanning_rack,furnace}.json` plus cross-context
+`recipes/weapons.json` and `recipes/armour.json` (equipment outputs pulled out
+of their context files; weapon-named *molds* stay with their context since
+they're misc items). The loader globs all `*.json` in `recipes/`, so filenames
+are purely organizational — each recipe still carries its own `context` field.
+The CSV/converter is now decoupled/legacy (it would regenerate a stale
+monolith; default `--out` moved to a scratch path). It still lints the
+tool-vs-consumed rules and generates `docs/ic_records.md` if re-adopted.
 
 Applied per design review (ratified 2026-07-02):
 - ✅ `outcome_count` column added (default 1; arrows/bolts ×20 via `output.count`).
