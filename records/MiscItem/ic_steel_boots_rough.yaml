@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_steel_boots_rough
+name: Rough Steel Boots
+script: ""
+mesh: n\Ingred_Scrap_Metal_01.nif
+icon: n\Tx_scrap_metal_01.tga
+data:
+  weight: 8.0
+  value: 5
+  flags: ""

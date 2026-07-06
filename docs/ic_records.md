@@ -67,6 +67,16 @@ ModTags FlexTag YAMLs.
 - `ic_station_kiln`
 - `ic_station_planter`
 - `ic_station_tanningrack`
+- `ic_steel_boots_rough`
+- `ic_steel_cuirass_rough`
+- `ic_steel_gauntlet_left_rough`
+- `ic_steel_gauntlet_right_rough`
+- `ic_steel_greaves_rough`
+- `ic_steel_helm_rough`
+- `ic_steel_pauldron_left_rough`
+- `ic_steel_pauldron_right_rough`
+- `ic_steel_shield_rough`
+- `ic_steel_towershield_rough`
 - `ic_stick`
 - `ic_string`
 - `ic_tent_mk1`
@@ -114,6 +124,7 @@ ModTags FlexTag YAMLs.
 - `dagger`
 - `gauntlet`
 - `greaves`
+- `hammer`
 - `helmet`
 - `iron_ingot`
 - `longsword`

@@ -715,3 +715,22 @@ Verify in-game (after the plugin with the Activator records is built):
   (not picked up); hold F on its card -> packed back into the inventory
 - busy kiln refuses packing; collect first, then pack works
 - dropping a STACK of stations converts one; the rest stays lying as items
+
+## Steel armor: cast → hammer two-step (PROTOTYPE, 2026-07-06)
+
+Testing idea 2 (more armor crafting steps) on the steel tier only, to feel
+whether the extra beat reads as ritual or chore before generalizing:
+- FURNACE cast: steel ingots + part mold (returned) + charcoal → a rough part
+  (new ic_steel_<slot>_rough records, 10, placeholder scrap-metal mesh).
+- CRAFTING TABLE hammer: rough part + `hammer` TOOL → the finished vanilla
+  steel piece. One-cell shaped recipe; tool never consumed.
+Keeps the per-part molds meaningful (mold shapes the cast; hammering finishes).
+Iron + bonemold stay single-step direct-cast; steel weapons untouched.
+
+OPEN — the `hammer` tag: it already exists but currently holds WEAPON hammers
+(banhammer, stendar hammer, etc.), not smith hammers. As-is you'd "smith" armor
+with a banhammer. Decide: retag `hammer` to armorer's/repair hammers (the
+Repair-type "Armorer's Hammer" records), or point these recipes at a new tag.
+
+Decision pending: if the two-step feels good, generalize to iron + bonemold
+(each adds a rough-part record set + hammer recipe); else revert to direct cast.

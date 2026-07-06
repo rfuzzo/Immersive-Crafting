@@ -94,8 +94,13 @@ def category_of(output_id):
 
 
 def material_of(output_id):
-    """Leading material token of an equipment output ('iron boots' -> 'iron')."""
-    return (output_id or '').lower().replace('_', ' ').split()[0] if output_id else ''
+    """Leading material token of an equipment output ('iron boots' -> 'iron';
+    'ic_steel_cuirass_rough' -> 'steel' — a custom intermediate keeps its
+    material's file)."""
+    o = (output_id or '').lower()
+    if o.startswith('ic_'):
+        o = o[3:]
+    return o.replace('_', ' ').split()[0] if o else ''
 
 
 def load_recipes():
