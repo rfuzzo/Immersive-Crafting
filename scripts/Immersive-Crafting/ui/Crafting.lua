@@ -72,6 +72,7 @@ local WINDOW_SIZE = v2(480, 470)
 local LINE_W = 430
 local TOOL_SLOTS = 3
 local TOOL_ICON = v2(40, 40)
+local STRIP_MIN_ROWS = 4 -- the materials/recipes strip opens at least this tall
 
 local this = {}
 
@@ -79,6 +80,7 @@ local this = {}
 local isOpen = false
 local ctx = nil ---@type HandlerContext?
 local layout = nil ---@type CContext.Layout?
+local windowSize = WINDOW_SIZE ---@type any initial size for THIS station's layout (set on open)
 local element = nil
 local placed = {} ---@type table<string, {recordId:string, icon:string?, count:integer}> slotId -> placed stack (grid slots always hold 1; process slots stack)
 local selectedSlot = nil ---@type string? input slot the next picked material goes into
@@ -900,7 +902,7 @@ function this.rebuild()
 
     -- the materials strip follows the window size (alchemy-style auto layout);
     -- a resize reflows on the next rebuild (i.e. the next click)
-    local winSize = WINDOW_SIZE
+    local winSize = windowSize
     if element and element.layout and element.layout.props and element.layout.props.size then
         winSize = element.layout.props.size
     end
@@ -1013,7 +1015,7 @@ function this.rebuild()
     local dlg = Window({
         title = 'Crafting Station: ' .. (ctx.context.label or 'Unknown'),
         body = ui.content({ content }),
-        props = { anchor = v2(0.5, 0.5), relativePosition = v2(0.4, 0.5), size = WINDOW_SIZE },
+        props = { anchor = v2(0.5, 0.5), relativePosition = v2(0.4, 0.5), size = windowSize },
         getElement = function() return element end,
     })
 
@@ -1161,6 +1163,16 @@ function this.open(handlerCtx)
     end
     ctx = handlerCtx
     layout = ctx.context.layout
+    -- open tall enough that the strip keeps STRIP_MIN_ROWS rows under this
+    -- layout's input rows (the 3x3 table squeezed it to one row otherwise);
+    -- mirrors rebuild()'s pickerDims row formula
+    local inputRows = 2
+    if layout then
+        inputRows = layout.kind == 'grid' and (layout.size[1] or 2)
+            or math.ceil(#(layout.inputs or {}) / 4)
+    end
+    windowSize = v2(WINDOW_SIZE.x,
+        math.max(WINDOW_SIZE.y, 245 + inputRows * 48 + STRIP_MIN_ROWS * 46))
     placed = {}
     selectedSlot = nil
     toolSlots = {}

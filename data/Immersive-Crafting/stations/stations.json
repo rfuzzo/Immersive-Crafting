@@ -5,7 +5,11 @@
   },
   {
     "item": "ic_station_kiln",
-    "activator": "ic_station_kiln_a"
+    "activator": "ic_station_kiln_a",
+    "processFx": {
+      "record": "light_pitfire00",
+      "offset": [0, 0, 5]
+    }
   },
   {
     "item": "ic_station_furnace",

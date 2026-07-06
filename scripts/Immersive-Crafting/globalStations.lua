@@ -15,7 +15,11 @@
     - onPack (ImmersiveCrafting_PackStation): the reverse — remove the placed
       activator and give the item back. Refused while a timed run occupies
       the station. The player triggers it by holding F on the station card
-      (handlers/processing.lua).
+      (via stationPack.lua).
+
+    A station entry may also declare `processFx` ({ record, offset }): an
+    object globalProcessing spawns at the station while a timed run burns
+    (the kiln's fire in the opening) and removes when it finishes.
 ]]
 
 local world = require('openmw.world')
@@ -30,14 +34,18 @@ local this = {}
 
 local byItem = nil ---@type table<string, string>? item record id -> activator record id
 local byActivator = nil ---@type table<string, string>? activator record id -> item record id
+local fxByActivator = nil ---@type table<string, { record: string, offset: number[]? }>? activator record id -> process FX
 
 local function maps()
     if byItem then return byItem, byActivator end
-    byItem, byActivator = {}, {}
+    byItem, byActivator, fxByActivator = {}, {}, {}
     for _, entry in ipairs(io.loadJsonFile(STATIONS_PATH) or {}) do
         if entry.item and entry.activator then
             byItem[entry.item:lower()] = entry.activator
             byActivator[entry.activator:lower()] = entry.item
+            if entry.processFx and entry.processFx.record then
+                fxByActivator[entry.activator:lower()] = entry.processFx
+            end
         end
     end
     log.info(('stations: %d drop-swap pairs loaded'):format((function()
@@ -46,6 +54,14 @@ local function maps()
         return n
     end)()))
     return byItem, byActivator
+end
+
+--- The station's `processFx` declaration (spawned while a timed run burns).
+---@param recordId string activator record id
+---@return { record: string, offset: number[]? }?
+function this.processFxFor(recordId)
+    maps()
+    return fxByActivator[recordId]
 end
 
 --- Engine handler: swap station items lying in the world for their activator.

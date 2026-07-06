@@ -23,9 +23,11 @@ local world = require('openmw.world')
 local types = require('openmw.types')
 local core = require('openmw.core')
 local async = require('openmw.async')
+local util = require('openmw.util')
 
 local log = require('scripts.Immersive-Crafting.log')
 local globalLiquids = require('scripts.Immersive-Crafting.globalLiquids')
+local globalStations = require('scripts.Immersive-Crafting.globalStations')
 
 local this = {}
 
@@ -69,12 +71,49 @@ local function syncPlayer()
     player:sendEvent('ImmersiveCrafting_ProcessSync', { processes = snapshot })
 end
 
+-- ── process FX (the kiln's fire while it burns) ─────────────────────────────
+
+--- Spawn the station's `processFx` object (stations.json), offset in the
+--- station's LOCAL space (rotates with it). Returns nil when the station
+--- declares none or the record is missing from the load order.
+---@param station any
+---@return any? spawned object
+local function igniteFx(station)
+    local fx = globalStations.processFxFor(station.recordId)
+    if not fx then return nil end
+    local off = fx.offset or {}
+    local offset = util.vector3(off[1] or 0, off[2] or 0, off[3] or 0)
+    local ok, created = pcall(function()
+        local obj = world.createObject(fx.record, 1)
+        obj:teleport(station.cell, station.position + station.rotation:apply(offset),
+            { rotation = station.rotation })
+        return obj
+    end)
+    if not ok then
+        log.warn(('process: cannot light fx "%s": %s'):format(tostring(fx.record), tostring(created)))
+        return nil
+    end
+    log.info(('process: lit %s at %s'):format(fx.record, tostring(station.recordId)))
+    return created
+end
+
+--- Remove a run's FX object (fire goes out when the work is done).
+---@param e table process entry
+local function extinguishFx(e)
+    if not (e and e.fx) then return end
+    pcall(function()
+        if e.fx:isValid() then e.fx:remove() end
+    end)
+    e.fx = nil
+end
+
 -- ── completion timer (persisted; game time) ─────────────────────────────────
 
 local onProcessDone = async:registerTimerCallback('IC_processDone', function(stationId)
     local e = processes()[stationId]
     if not e then return end
     e.done = true
+    extinguishFx(e) -- the fire has burnt down: visually signals "ready"
     log.info(('process: "%s" finished at station %s'):format(tostring(e.label), tostring(stationId)))
     notify(world.players[1], (e.label or 'A process') .. ' is ready')
     syncPlayer()
@@ -143,6 +182,7 @@ function this.onStart(data)
         returned = data.returned, -- items held by the station, given back on collect
         readyAt = core.getGameTime() + data.duration,
         done = false,
+        fx = igniteFx(data.station), -- e.g. the kiln's fire (removed when done)
     }
     async:newGameTimer(data.duration, onProcessDone, stationId)
 
@@ -176,6 +216,7 @@ local function collect(actor, stationId)
             log.error(('process: failed to return "%s": %s'):format(tostring(entry.id), tostring(rerr)))
         end
     end
+    extinguishFx(e) -- safety net; normally already out since onProcessDone
     processes()[stationId] = nil
     notify(actor, ('Collected %d x %s'):format(e.output.count or 1, e.label or e.output.id))
     syncPlayer()
