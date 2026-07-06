@@ -125,7 +125,8 @@
       },
       {
         "id": "ic_mold_armor_burnt",
-        "count": 1
+        "count": 1,
+        "returned": true
       },
       {
         "id": "Charcoal",

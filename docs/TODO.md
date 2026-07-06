@@ -164,9 +164,12 @@ firepit,kiln,charcoal_pit,tanning_rack,furnace}.json` plus cross-context
 of their context files; weapon-named *molds* stay with their context since
 they're misc items). The loader globs all `*.json` in `recipes/`, so filenames
 are purely organizational — each recipe still carries its own `context` field.
-The CSV/converter is now decoupled/legacy (it would regenerate a stale
-monolith; default `--out` moved to a scratch path). It still lints the
-tool-vs-consumed rules and generates `docs/ic_records.md` if re-adopted.
+The CSV generator (`immersive_crafting_recipes_v2.csv` + `recipes_csv2json.py`)
+was **retired 2026-07-06** — JSON is the sole source of truth (editing the CSV
+was more cumbersome than the split JSON). Its useful parts live on in
+`tools/recipes_lint.py`, which READS the JSON (never writes it) to check
+integrity + the tool-vs-consumed rules and regenerate `docs/ic_records.md`.
+Run `python3 tools/recipes_lint.py` after editing recipes (or `--check` in CI).
 
 Applied per design review (ratified 2026-07-02):
 - ✅ `outcome_count` column added (default 1; arrows/bolts ×20 via `output.count`).
