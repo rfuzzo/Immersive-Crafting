@@ -25,16 +25,40 @@ planter:
 
 # ── mold tags (slot `accepts` filters + recipes) ──
 mold_burnt:
+  - ic_mold_boots_burnt
+  - ic_mold_bracer_left_burnt
+  - ic_mold_bracer_right_burnt
+  - ic_mold_cuirass_burnt
   - ic_mold_dagger_burnt
-  - ic_mold_waraxe_burnt
-  - ic_mold_spear_burnt
+  - ic_mold_gauntlet_left_burnt
+  - ic_mold_gauntlet_right_burnt
+  - ic_mold_greaves_burnt
+  - ic_mold_helm_burnt
+  - ic_mold_ingot_burnt
   - ic_mold_longsword_burnt
+  - ic_mold_pauldron_left_burnt
+  - ic_mold_pauldron_right_burnt
+  - ic_mold_shield_burnt
+  - ic_mold_spear_burnt
+  - ic_mold_tower_shield_burnt
+  - ic_mold_waraxe_burnt
   - ic_mold_warhammer_burnt
-  - ic_mold_armor_burnt
 mold_raw:
+  - ic_mold_boots_raw
+  - ic_mold_bracer_left_raw
+  - ic_mold_bracer_right_raw
+  - ic_mold_cuirass_raw
   - ic_mold_dagger_raw
-  - ic_mold_waraxe_raw
-  - ic_mold_spear_raw
+  - ic_mold_gauntlet_left_raw
+  - ic_mold_gauntlet_right_raw
+  - ic_mold_greaves_raw
+  - ic_mold_helm_raw
+  - ic_mold_ingot_raw
   - ic_mold_longsword_raw
+  - ic_mold_pauldron_left_raw
+  - ic_mold_pauldron_right_raw
+  - ic_mold_shield_raw
+  - ic_mold_spear_raw
+  - ic_mold_tower_shield_raw
+  - ic_mold_waraxe_raw
   - ic_mold_warhammer_raw
-  - ic_mold_armor_raw

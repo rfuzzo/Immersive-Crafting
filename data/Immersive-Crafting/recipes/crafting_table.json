@@ -1,0 +1,354 @@
+[
+  {
+    "id": "ic_bedroll_mk1",
+    "label": "Bedroll Mk1",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "BBB",
+      "   "
+    ],
+    "key": {
+      "A": "ic_cloth",
+      "B": "Plant"
+    },
+    "output": {
+      "id": "ic_bedroll_mk1",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_bowl",
+    "label": "Bowl",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "ic_bowl",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_bucket",
+    "label": "Bucket",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "iron_ingot",
+      "B": "plank"
+    },
+    "output": {
+      "id": "ic_bucket",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_cloth",
+    "label": "Cloth",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "string"
+    },
+    "output": {
+      "id": "ic_cloth",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_grill",
+    "label": "Grill",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "BB ",
+      "   "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick"
+    },
+    "tools": [
+      "chitin club"
+    ],
+    "output": {
+      "id": "ic_grill",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_pan",
+    "label": "Pan",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "B  ",
+      "   "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "ic_pan",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_plank",
+    "label": "Plank",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "  "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "axe"
+    ],
+    "output": {
+      "id": "ic_plank",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_pot",
+    "label": "Pot",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01"
+    },
+    "output": {
+      "id": "ic_pot",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_spit",
+    "label": "Spit",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB",
+      "B "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "ic_spit",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_station_charcoalpit",
+    "label": "Charcoal Pit",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "BB"
+    ],
+    "key": {
+      "A": "Wood",
+      "B": "Stone"
+    },
+    "output": {
+      "id": "ic_station_charcoalpit",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_station_furnace",
+    "label": "Furnace",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "ABA",
+      "AAA"
+    ],
+    "key": {
+      "A": "Stone",
+      "B": "crucible"
+    },
+    "output": {
+      "id": "ic_station_furnace",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_station_planter",
+    "label": "Planter",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "BB"
+    ],
+    "key": {
+      "A": "plank",
+      "B": "Stone"
+    },
+    "output": {
+      "id": "ic_station_planter",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_station_tanningrack",
+    "label": "Tanning Rack",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "B B",
+      "AAA"
+    ],
+    "key": {
+      "A": "stick",
+      "B": "string"
+    },
+    "output": {
+      "id": "ic_station_tanningrack",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_tent_mk1",
+    "label": "Tent Mk1",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "BBB",
+      "CC "
+    ],
+    "key": {
+      "A": "ic_cloth",
+      "B": "ic_stick",
+      "C": "ic_string"
+    },
+    "output": {
+      "id": "ic_tent_mk1",
+      "count": 1
+    }
+  },
+  {
+    "id": "misc_com_wood_cup_01",
+    "label": "Wooden Cup",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "misc_com_wood_cup_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "misc_com_wood_fork",
+    "label": "Wooden Fork",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "misc_com_wood_fork",
+      "count": 2
+    }
+  },
+  {
+    "id": "misc_com_wood_knife",
+    "label": "Wooden Knife",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "misc_com_wood_knife",
+      "count": 2
+    }
+  },
+  {
+    "id": "misc_com_wood_spoon_01",
+    "label": "Wooden Spoon",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "misc_com_wood_spoon_01",
+      "count": 2
+    }
+  }
+]

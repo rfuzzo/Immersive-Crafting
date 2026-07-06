@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_mold_ingot_raw
+name: Raw Ingot Mold
+script: ""
+mesh: m\Misc_Redware_Flask.NIF
+icon: m\Misc_Redware_Flask.tga
+data:
+  weight: 3.0
+  value: 2
+  flags: ""

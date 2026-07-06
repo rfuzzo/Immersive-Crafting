@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_steel_pauldron_left_rough
+name: Rough Steel Left Pauldron
+script: ""
+mesh: n\Ingred_Scrap_Metal_01.nif
+icon: n\Tx_scrap_metal_01.tga
+data:
+  weight: 8.0
+  value: 5
+  flags: ""
