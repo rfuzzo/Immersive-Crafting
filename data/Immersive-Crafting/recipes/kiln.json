@@ -326,5 +326,47 @@
       "id": "ic_mold_tower_shield_burnt",
       "count": 1
     }
+  },
+  {
+    "id": "ic_mold_gauntlet_left_burnt",
+    "label": "Burnt Left Gauntlet Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_gauntlet_left_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_gauntlet_left_burnt",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_gauntlet_right_burnt",
+    "label": "Burnt Right Gauntlet Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_gauntlet_right_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_gauntlet_right_burnt",
+      "count": 1
+    }
   }
 ]

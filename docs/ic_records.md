@@ -30,6 +30,10 @@ ModTags FlexTag YAMLs.
 - `ic_mold_cuirass_raw`
 - `ic_mold_dagger_burnt`
 - `ic_mold_dagger_raw`
+- `ic_mold_gauntlet_left_burnt`
+- `ic_mold_gauntlet_left_raw`
+- `ic_mold_gauntlet_right_burnt`
+- `ic_mold_gauntlet_right_raw`
 - `ic_mold_greaves_burnt`
 - `ic_mold_greaves_raw`
 - `ic_mold_helm_burnt`
@@ -107,6 +111,7 @@ ModTags FlexTag YAMLs.
 - `crucible`
 - `cuirass`
 - `dagger`
+- `gauntlet`
 - `greaves`
 - `helmet`
 - `iron_ingot`

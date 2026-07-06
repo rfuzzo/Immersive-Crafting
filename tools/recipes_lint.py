@@ -54,15 +54,18 @@ CONSUMED_MOLDS = {
 # tower shield).
 _ARMOR_MOLD_PARTS = ('cuirass', 'boots', 'greaves', 'helm',
                      'pauldron_left', 'pauldron_right',
-                     'bracer_left', 'bracer_right', 'shield', 'tower_shield')
+                     'bracer_left', 'bracer_right',
+                     'gauntlet_left', 'gauntlet_right',
+                     'shield', 'tower_shield')
 RETURNED_ITEMS = {f'ic_mold_{p}_burnt' for p in _ARMOR_MOLD_PARTS}
 
 # output-name classification (word-boundary; ids may join words with _ or space)
 WEAPON_KW = ['dagger', 'war axe', 'waraxe', 'spear', 'longsword', 'warhammer',
              'claymore', 'halberd', 'club', 'shortsword', 'short bow', 'long bow',
              'bow', 'arrow', 'bolt', 'mace', 'staff', 'katana', 'tanto', 'wakizashi']
-ARMOUR_KW = ['cuirass', 'helm', 'boots', 'greaves', 'shield', 'towershield',
-             'pauldron', 'gauntlet', 'bracer', 'armor', 'armour', 'skirt']
+ARMOUR_KW = ['cuirass', 'helm', 'helmet', 'boots', 'greaves', 'shield',
+             'towershield', 'pauldron', 'gauntlet', 'bracer', 'armor', 'armour',
+             'skirt']
 
 
 def category_of(output_id):
