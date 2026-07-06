@@ -72,13 +72,18 @@
         },
         {
           "key": "fuel",
-          "label": "Fuel"
+          "label": "Fuel",
+          "accepts": [
+            "Charcoal",
+            "wood"
+          ]
         },
         {
           "key": "mold",
           "label": "Mold",
+          "aside": true,
           "acceptsPatterns": [
-            "^ic_mold_"
+            "^ic_mold_.*_burnt$"
           ]
         }
       ]
@@ -88,7 +93,8 @@
         "context": "firepit",
         "exclude": [
           "grilled_scrib_jerky",
-          "sd_hearty_stew"
+          "sd_hearty_stew",
+          "ic_station_kiln"
         ]
       }
     ],
@@ -122,13 +128,18 @@
         },
         {
           "key": "fuel",
-          "label": "Fuel"
+          "label": "Fuel",
+          "accepts": [
+            "Charcoal",
+            "wood"
+          ]
         },
         {
           "key": "mold",
           "label": "Mold",
+          "aside": true,
           "acceptsPatterns": [
-            "^ic_mold_"
+            "^ic_mold_.*_burnt$"
           ]
         }
       ]

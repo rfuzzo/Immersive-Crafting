@@ -3,7 +3,7 @@ flags: ""
 id: ic_station_tanningrack
 name: Tanning Rack
 script: ""
-mesh: n\Ingred_Netch_Leather_01.nif
+mesh: ian\ian_rack_empty.nif
 icon: n\Tx_netch_leather_01.tga
 data:
   weight: 10.0

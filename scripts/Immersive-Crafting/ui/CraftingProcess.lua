@@ -48,21 +48,25 @@ function this.Body(layout, view)
 
     local slots = {}
     for _, inp in ipairs(layout.inputs) do
-        local slotId = inp.key
-        local placed = view.slotView(slotId)
-        local state = (view.selectedSlot == slotId and not placed) and 'selected' or 'empty'
-        local inputSlot = Slot.Slot({
-            name = 'slot_' .. slotId,
-            resource = placed and placed.resource or nil,
-            count = placed and placed.count or nil,
-            size = ICON_SIZE,
-            state = state,
-            -- filled: the placed item's name; empty: the slot's role, so the
-            -- Input/Fuel/Mold row explains itself on hover
-            tooltip = placed and placed.label or inp.label,
-            onClick = function() view.onSlotClick(slotId) end,
-        })
-        slots[#slots + 1] = labelled(inp.label, inputSlot)
+        -- `aside` slots (the Mold slot) render next to the Result panel
+        -- (Crafting.lua), not in the input grid
+        if not inp.aside then
+            local slotId = inp.key
+            local placed = view.slotView(slotId)
+            local state = (view.selectedSlot == slotId and not placed) and 'selected' or 'empty'
+            local inputSlot = Slot.Slot({
+                name = 'slot_' .. slotId,
+                resource = placed and placed.resource or nil,
+                count = placed and placed.count or nil,
+                size = ICON_SIZE,
+                state = state,
+                -- filled: the placed item's name; empty: the slot's role, so
+                -- the Input/Fuel row explains itself on hover
+                tooltip = placed and placed.label or inp.label,
+                onClick = function() view.onSlotClick(slotId) end,
+            })
+            slots[#slots + 1] = labelled(inp.label, inputSlot)
+        end
     end
 
     return box({

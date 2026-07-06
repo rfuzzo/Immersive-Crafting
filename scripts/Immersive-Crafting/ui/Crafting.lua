@@ -775,6 +775,50 @@ local function toolsSection()
     }
 end
 
+--- Aside slots (slot defs flagged `aside` — the kiln/furnace Mold slot) render
+--- next to the Result panel instead of inside the input grid; behaviour
+--- (selection, picking, stacking) is identical to any other process slot.
+---@return table? section layout, nil when the layout declares no aside slots
+local function asideSection()
+    if not layout or layout.kind ~= 'process' then return nil end
+    local parts = {}
+    for _, inp in ipairs(layout.inputs or {}) do
+        if inp.aside then
+            local slotId = inp.key
+            local cell = view.slotView(slotId)
+            local state = (selectedSlot == slotId and not cell) and 'selected' or 'empty'
+            if #parts > 0 then
+                parts[#parts + 1] = { type = ui.TYPE.Widget, props = { size = v2(8, 0) } }
+            end
+            parts[#parts + 1] = {
+                type = ui.TYPE.Flex,
+                name = 'aside_' .. slotId,
+                props = { align = ui.ALIGNMENT.Center },
+                content = ui.content({
+                    { type = ui.TYPE.Text,   props = { text = inp.label or '' }, template = I.MWUI.templates.textNormal },
+                    { type = ui.TYPE.Widget, props = { size = v2(0, 3) } },
+                    Slot.Slot({
+                        name = 'slot_' .. slotId,
+                        resource = cell and cell.resource or nil,
+                        count = cell and cell.count or nil,
+                        size = TOOL_ICON,
+                        state = state,
+                        tooltip = cell and cell.label or inp.label,
+                        onClick = function() view.onSlotClick(slotId) end,
+                    }),
+                }),
+            }
+        end
+    end
+    if #parts == 0 then return nil end
+    return {
+        type = ui.TYPE.Flex,
+        name = 'aside_section',
+        props = { horizontal = true },
+        content = ui.content(parts),
+    }
+end
+
 --- Cycle the Result panel to another match (carving: same wood, many shapes).
 ---@param delta integer +1 / -1, wraps around
 local function cycleMatch(delta)
@@ -954,11 +998,17 @@ function this.rebuild()
                 type = ui.TYPE.Flex,
                 name = 'tools_result_row',
                 props = { horizontal = true },
-                content = ui.content({
-                    toolsSection(),
-                    { type = ui.TYPE.Widget, props = { size = v2(26, 0) } },
-                    resultSection(),
-                }),
+                content = ui.content((function()
+                    local aside = asideSection()
+                    local parts = { toolsSection() }
+                    if aside then
+                        parts[#parts + 1] = { type = ui.TYPE.Widget, props = { size = v2(26, 0) } }
+                        parts[#parts + 1] = aside
+                    end
+                    parts[#parts + 1] = { type = ui.TYPE.Widget, props = { size = v2(26, 0) } }
+                    parts[#parts + 1] = resultSection()
+                    return parts
+                end)()),
             },
 
             { type = ui.TYPE.Widget, props = { size = v2(0, 10) } },

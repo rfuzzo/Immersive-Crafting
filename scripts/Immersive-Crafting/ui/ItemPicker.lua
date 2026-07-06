@@ -64,11 +64,13 @@ end
 
 local searchBox = nil ---@type table? cached layout so rebuilds REUSE the widget
 
---- The header's search box. The layout table is cached and reused across
---- rebuilds — element updates match widgets by table identity, so a fresh
---- table each rebuild would recreate the TextEdit and drop keyboard focus
---- mid-typing. `props.text` is only set at creation (re-applying it would
---- reset the caret); the widget owns its content afterwards.
+--- The header's search box: a bordered MWUI box around a TextEdit. The
+--- template's `autoSize` must be overridden — an empty auto-sized TextEdit
+--- collapses to nothing (the invisible-search-bar bug). The layout table is
+--- cached and reused across rebuilds — element updates match widgets by table
+--- identity, so a fresh table each rebuild would recreate the TextEdit and
+--- drop keyboard focus mid-typing. `props.text` is only set at creation
+--- (re-applying it would reset the caret); the widget owns its content.
 ---@param view { refresh: fun() }
 local function searchBoxLayout(view)
     if searchBox then
@@ -77,20 +79,32 @@ local function searchBoxLayout(view)
     end
     searchBox = {
         name = 'strip_search',
-        type = ui.TYPE.TextEdit,
-        template = I.MWUI.templates.textEditLine,
+        template = I.MWUI.templates.box,
         userData = { view = view },
-        props = {
-            size = v2(110, 18),
-            text = searchQuery,
-        },
-        events = {
-            textChanged = async:callback(function(newText)
-                searchQuery = newText or ''
-                page = 1
-                local v = searchBox and searchBox.userData.view
-                if v then v.refresh() end
-            end),
+        content = ui.content {
+            {
+                template = I.MWUI.templates.padding,
+                content = ui.content {
+                    {
+                        name = 'strip_search_input',
+                        type = ui.TYPE.TextEdit,
+                        template = I.MWUI.templates.textEditLine,
+                        props = {
+                            size = v2(110, 16),
+                            autoSize = false,
+                            text = searchQuery,
+                        },
+                        events = {
+                            textChanged = async:callback(function(newText)
+                                searchQuery = newText or ''
+                                page = 1
+                                local v = searchBox and searchBox.userData.view
+                                if v then v.refresh() end
+                            end),
+                        },
+                    },
+                },
+            },
         },
     }
     return searchBox
