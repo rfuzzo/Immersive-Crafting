@@ -47,6 +47,16 @@ interfaces.Settings.registerGroup {
             default = true,
         },
         {
+            key = 'StationLoading',
+            renderer = 'checkbox',
+            name = 'Load stations by dropping items',
+            description = 'UI-less stations: items dropped onto the kiln/charcoal pit are '
+                .. 'loaded into it (hold fire to it to light it); a seed dropped onto a '
+                .. 'planter is sown into the soil (hold F to plant it). The crafting window '
+                .. 'and seed cycling still work as before.',
+            default = true,
+        },
+        {
             key = 'ForagingGivesWood',
             renderer = 'checkbox',
             name = 'Foraging gives wood',

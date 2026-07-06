@@ -186,7 +186,15 @@ return {
         onLoad = onLoad,
         onInit = onLoad,
         onSave = onSave,
-        onObjectActive = globalStations.onObjectActive,
+        onObjectActive = function(object)
+            -- station items swap into activators; seeds dropped near a planter
+            -- are sown into it; anything else dropped near a loadable station
+            -- joins its charge (UI-less kiln/charcoal pit)
+            if not globalStations.onObjectActive(object)
+                and not globalFarming.onObjectActive(object) then
+                globalProcessing.onObjectActive(object)
+            end
+        end,
     },
     eventHandlers = {
         ImmersiveCrafting_Commit = onCommit,
@@ -200,6 +208,15 @@ return {
         ImmersiveCrafting_StartProcess = globalProcessing.onStart,
         ImmersiveCrafting_CollectProcess = globalProcessing.onCollect,
         ImmersiveCrafting_ClassifyLiquids = globalLiquids.onClassify,
-        ImmersiveCrafting_PackStation = globalStations.onPack,
+        ImmersiveCrafting_PackStation = function(data)
+            -- a cold loaded station gives its charge back before folding up
+            globalProcessing.returnCharge(data)
+            globalStations.onPack(data)
+        end,
+        ImmersiveCrafting_IgniteStation = globalProcessing.onIgnite,
+        ImmersiveCrafting_SetOptions = function(data)
+            globalProcessing.onSetOptions(data)
+            globalFarming.onSetOptions(data)
+        end,
     }
 }

@@ -319,9 +319,10 @@ end
 
 --- May this item go into this slot? Filtered slots take what they declare;
 --- unfiltered slots take anything EXCEPT items a filtered slot of this layout
---- CLAIMS (the kiln/furnace Mold slot claims ^ic_mold_ — so molds only go
---- there, never into Input/Fuel). Grid slots always take anything. This is
---- placement UX only — recipe matching stays a forgiving multiset over all
+--- CLAIMS (the kiln/furnace Mold slot claims the mold_burnt tag — so molds
+--- only go there, never into Input/Fuel). Grid slots always take anything.
+--- This is
+--- Placement UX only — recipe matching stays a forgiving multiset over all
 --- slot contents.
 ---@param slotId string
 ---@param recordId string

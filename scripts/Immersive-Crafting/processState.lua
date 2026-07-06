@@ -9,11 +9,21 @@
 local this = {}
 
 local byStation = {} ---@type table<string, { recipeId: string, label: string, startedAt: number?, readyAt: number?, done: boolean }>
+local chargeByStation = {} ---@type table<string, { id: string, count: integer, name: string? }[]> dropped-in charges awaiting ignition
 
 --- Apply a full snapshot from the global script.
 ---@param snapshot table<string, table>?
-function this.apply(snapshot)
+---@param charges table<string, table>?
+function this.apply(snapshot, charges)
     byStation = snapshot or {}
+    chargeByStation = charges or {}
+end
+
+--- The charge loaded into a station (nil/empty = nothing dropped in yet).
+---@param stationId string
+---@return { id: string, count: integer, name: string? }[]?
+function this.chargeFor(stationId)
+    return chargeByStation[stationId]
 end
 
 --- Active run at a station (nil = idle).

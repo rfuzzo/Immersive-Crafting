@@ -7,8 +7,14 @@
         tap [F]: next seed (2/3)
 
     Seeds are the produce itself (vegetable = seed): any inventory item matching
-    a crop's `seed` id/tag is plantable. TAP the context key to cycle which seed
-    is selected; HOLD it to plant (consumes one, handled by the global script).
+    a crop's `seed` id/tag is plantable. Three ways to choose WHAT the hold-F
+    plants, most immersive first:
+    - SOWN seed: DROP a seed onto the planter — it goes into the soil
+      (globalFarming absorbs it); hold F to plant exactly that.
+    - MEMORY: a planter remembers its last crop; it sorts first in the seed
+      list, so hold-F replants it without any cycling.
+    - TAP-cycle: tap the context key to pick a different seed by hand.
+    HOLD plants (consumes the sown seed, or one from the inventory).
     Harvesting is activating the ripe plant itself (globalFarming intercepts).
 ]]
 
@@ -34,8 +40,11 @@ setmetatable(CFarmingHandler, { __index = CAbstractHandler })
 local selectedIndex = 1
 
 --- Distinct plantable stacks in the inventory: items matching any crop's seed.
+--- The planter's REMEMBERED crop sorts first, so the default hold-F replants
+--- it and tap-cycling is only needed to switch crops.
+---@param planterId string?
 ---@return { seedId: string, cropId: string, label: string }[]
-local function plantableSeeds()
+local function plantableSeeds(planterId)
     local list, seen = {}, {}
     for _, item in ipairs(types.Actor.inventory(omwSelf):getAll()) do
         local recordId = item.recordId
@@ -49,7 +58,12 @@ local function plantableSeeds()
             end
         end
     end
-    table.sort(list, function(a, b) return a.label < b.label end)
+    local remembered = planterId and farmState.memoryFor(planterId)
+    table.sort(list, function(a, b)
+        local ra, rb = a.cropId == remembered, b.cropId == remembered
+        if ra ~= rb then return ra end
+        return a.label < b.label
+    end)
     return list
 end
 
@@ -81,8 +95,25 @@ function CFarmingHandler:evaluate(ctx)
         }
     end
 
-    -- empty planter: offer planting
-    local seeds = plantableSeeds()
+    -- a seed dropped into the soil owns the card: hold-F plants exactly it
+    local sownSeed = farmState.sownFor(planter.id)
+    if sownSeed then
+        local crop = (GRegistries.crops or {})[sownSeed.cropId]
+        local name = crop and crop.label or sownSeed.cropId
+        ---@type ViewModel
+        return {
+            status = ('%s in the soil'):format(name),
+            action = {
+                id = 'farming',
+                label = 'Plant ' .. name,
+                enabled = true,
+                hold = PLANT_HOLD,
+            },
+        }
+    end
+
+    -- empty planter: offer planting (the remembered crop sorts first)
+    local seeds = plantableSeeds(planter.id)
     if #seeds == 0 then
         return {
             status = 'Empty',
@@ -110,23 +141,39 @@ function CFarmingHandler:evaluate(ctx)
     }
 end
 
---- Tap: cycle which seed the hold action will plant.
+--- Tap: cycle which seed the hold action will plant (not while a dropped
+--- seed sits in the soil — that one IS the choice).
 ---@param ctx HandlerContext
 function CFarmingHandler:OnTap(ctx)
     if not ctx.object or farmState.forPlanter(ctx.object.id) then return end
-    local seeds = plantableSeeds()
+    if farmState.sownFor(ctx.object.id) then return end
+    local seeds = plantableSeeds(ctx.object.id)
     if #seeds < 2 then return end
     selectedIndex = (selectedIndex % #seeds) + 1
 end
 
---- Hold: plant the selected seed (global consumes it and spawns the crop).
+--- Hold: plant — the sown (dropped-in) seed if there is one, else the
+--- selected inventory seed (global consumes it and spawns the crop).
 ---@param ctx HandlerContext
 function CFarmingHandler:OnActivate(ctx)
     local planter = ctx.object
     if not planter then return end
     if farmState.forPlanter(planter.id) then return end -- already growing
 
-    local seeds = plantableSeeds()
+    local sownSeed = farmState.sownFor(planter.id)
+    if sownSeed then
+        log.info(('farming: planting sown %s (%s)'):format(sownSeed.cropId, sownSeed.seedId))
+        core.sendGlobalEvent('ImmersiveCrafting_Plant', {
+            actor = omwSelf.object,
+            planter = planter,
+            cropId = sownSeed.cropId,
+            seedId = sownSeed.seedId,
+            fromSown = true,
+        })
+        return
+    end
+
+    local seeds = plantableSeeds(planter.id)
     if #seeds == 0 then return end
     if selectedIndex > #seeds then selectedIndex = 1 end
     local selected = seeds[selectedIndex]

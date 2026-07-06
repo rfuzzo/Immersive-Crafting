@@ -716,6 +716,104 @@ Verify in-game (after the plugin with the Activator records is built):
 - busy kiln refuses packing; collect first, then pack works
 - dropping a STACK of stations converts one; the rest stays lying as items
 
+## UI-less kiln & charcoal pit (ratified + built 2026-07-06)
+
+The immersive loop (user ratified): DROP items onto the station to load it,
+hold FIRE to it to light it, activate when done to collect. Kiln + charcoal
+pit only (stations.json `loadable: true`); the furnace keeps the window —
+a crucible furnace is a complicated thing. Fully additive: an EMPTY station
+still opens the crafting window as before.
+
+- **Load** (global): init.lua's onObjectActive chain — station items swap to
+  activators first; any other ITEM dropped within 150 units of an idle
+  loadable station joins its charge (saveData.charges[stationId], whole
+  stack, absorbed; "Loaded 3 x Ore into the Kiln"). Gated by the new
+  "Load stations by dropping items" setting (default ON), pushed to the
+  global script via ImmersiveCrafting_SetOptions (on load + on change).
+- **Status**: charges mirror to the player inside ProcessSync
+  (processState.chargeFor); the card shows "Loaded — Contains: 3x Ore,
+  2x Charcoal" and activating a cold loaded station reports the charge
+  instead of opening the window.
+- **Light it** (player): with fire in hand — a lit torch (Light in
+  CarriedLeft) or any item tagged `firestarter` (user-authored tag) — the
+  card offers hold-F "Light the fire" (1.5s). The handler resolves the
+  charge via resolveProcessRecipes (exact multiset), checks tools against
+  the INVENTORY (no tool slots UI-less), splits returned mold lines, and
+  sends ImmersiveCrafting_IgniteStation; global consumes the WHOLE charge,
+  registers the run (shared registerRun with the window path), lights the
+  processFx fire. No match -> "That will not make anything"; missing tools
+  -> "Needs: ..."; without fire the card says "Needs fire in hand (a torch)".
+- **Collect / pack**: unchanged collect-by-activation; packing a cold loaded
+  station returns its charge first (PackStation wrapper in init.lua).
+
+Ambiguity note: identical charges (bonemold helm vs boots = 1 paste) light
+the FIRST match by id — the window's cycler remains the precise tool.
+
+Verify in-game:
+- drop ore+charcoal at kiln -> loaded card; activate -> contents message;
+  torch in hand -> hold F -> fire lights, run starts; collect ingot
+- charcoal pit: 4 wood -> light -> charcoal
+- pack a loaded cold kiln -> charge + kiln item back; busy kiln refuses
+- setting OFF -> drops stay on the ground; window flow unaffected
+- fireball ignition (stretch, unverified API): detecting a fire-school cast
+  while gazing at the station — research OpenMW spell-cast hooks first
+
+Planter (open, user undecided): hold-F planting STAYS (make-believe wins
+over drop-to-plant). Improvement idea on the table: planters REMEMBER their
+last crop and default to replanting it, so tap-cycling is only needed when
+switching crops.
+
+## Planter: sow by dropping + planter memory (ratified + built 2026-07-06)
+
+The planting grammar, ratified after the hold-F discussion — hold-F STAYS as
+the planting verb; what changes is how the seed is CHOSEN (most immersive
+first):
+
+1. **Sown seed** — DROP a seed onto the planter: "You set Marshmerrow into
+   the soil" (one off the stack, absorbed into saveData.sown, same
+   onObjectActive chain as station loading, 100-unit radius, nearest empty
+   planter; gated by the same "Load stations by dropping items" setting).
+   The card flips to "Marshmerrow in the soil — [F] Plant (hold)"; the hold
+   plants exactly that seed (consumed from the soil, not the inventory).
+   Tap-cycling is disabled while a seed sits in the soil. Picking the
+   planter up returns the unplanted seed (Misc activation hook).
+2. **Planter memory** — every successful plant records the crop
+   (saveData.planterMemory); the remembered crop sorts FIRST in the seed
+   list, so plain hold-F replants it and cycling is only needed to switch.
+   Memory dies with the planter object (cleared on pickup).
+3. **Tap-cycle** — unchanged fallback for first-time/expedition planting.
+
+Mirrors: CropSync now carries { crops, sown, memory }; farmState gained
+sownFor/memoryFor. globalFarming.onPlant takes `fromSown` (verify sown entry,
+clear only after the plant actually spawns). init.lua's onObjectActive chain:
+station swap -> seed sowing -> station charge; SetOptions fans out to both
+globalProcessing and globalFarming.
+
+Verify in-game:
+- drop 1 saltrice on an empty planter -> sown message + card; hold F ->
+  planted, no inventory consumed twice; grow/harvest normal
+- drop near planter AND kiln (overlapping radii) -> planter wins for seeds
+- harvest annual -> card offers "Plant Saltrice" first (memory), no cycling
+- pick up planter with sown seed -> seed returned; memory forgotten
+- setting OFF -> dropped seeds stay on the ground; cycling unaffected
+
+## Slot accepts: patterns -> tags (2026-07-06)
+
+User ratified: `accepts` filters should be TAGS like everything else. The
+kiln/furnace Mold slots' `acceptsPatterns: ["^ic_mold_.*_burnt$"]` replaced by
+`accepts: ["mold_burnt"]`; `mold_burnt` + `mold_raw` FlexTags in
+ModTags/ImmersiveCrafting.yaml. `acceptsPatterns` stays as an engine capability
+but is now documented as ONLY for record families that cannot be tagged (other
+mods' dynamic/mass records — same rule as CContext.recordPatterns for SD fires);
+no data uses it anymore.
+Verify in-game: mold slot still claims burnt molds only (via the tag).
+
+Merge note (2026-07-06): after main added the full mold family (armor part
+molds, gauntlets, ingot mold; `ic_mold_armor` renamed to `ic_mold_cuirass`),
+`mold_burnt`/`mold_raw` were regenerated from records to cover all 18 molds
+each. Every new burnt mold must be added to `mold_burnt` to be placeable in the
+Mold slot — the pattern `^ic_mold_.*_burnt$` would auto-cover instead, if the
+explicit tag ever becomes a maintenance burden.
 ## Steel armor: cast → hammer two-step (PROTOTYPE, 2026-07-06)
 
 Testing idea 2 (more armor crafting steps) on the steel tier only, to feel

@@ -34,7 +34,7 @@ local CContext = {}
 ---@field key string slot id, matched against a process recipe's `inputs` key (e.g. "fuel", "input")
 ---@field label string|nil label shown above the slot
 ---@field accepts string[]|nil only items matching one of these ids/FlexTag tags may be placed here; filtered slots also CLAIM their items away from unfiltered slots (UX guidance only — recipe matching stays a counted multiset over ALL slots)
----@field acceptsPatterns string[]|nil like `accepts`, but Lua patterns against the lowercased record id (e.g. "^ic_mold_.*_burnt$") — for record families without tags
+---@field acceptsPatterns string[]|nil like `accepts`, but Lua patterns against the lowercased record id — ONLY for record families that cannot be tagged (other mods' dynamic/mass records, like CContext.recordPatterns for SD fires); our own records use `accepts` tags (e.g. "mold_burnt")
 ---@field aside boolean|nil render this slot NEXT TO the Result panel instead of inside the input grid (the kiln/furnace Mold slot)
 
 --- Deserialize from table

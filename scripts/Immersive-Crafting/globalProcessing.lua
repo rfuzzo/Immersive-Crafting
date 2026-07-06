@@ -41,8 +41,46 @@ local function processes()
     return saveData.processes
 end
 
+--- Persistent charge registry: items dropped INTO a loadable station (UI-less
+--- kiln/charcoal pit) waiting to be lit. stationId -> { {id, count} }.
+local function charges()
+    ---@diagnostic disable-next-line: lowercase-global
+    if not saveData then saveData = {} end
+    saveData.charges = saveData.charges or {}
+    return saveData.charges
+end
+
+-- player-pushed options (ImmersiveCrafting_SetOptions; defaults apply until pushed)
+local options = { stationLoading = true }
+
 local function notify(actor, text)
     if actor then actor:sendEvent('ImmersiveCrafting_Notify', { text = text }) end
+end
+
+-- item types that may be dropped into a loadable station (no Light — a
+-- dropped torch is a light source, not kiln feed; actors/statics never qualify)
+local ITEM_TYPES = {
+    types.Miscellaneous, types.Ingredient, types.Potion, types.Weapon,
+    types.Armor, types.Book, types.Clothing, types.Apparatus,
+    types.Repair, types.Lockpick, types.Probe,
+}
+
+local function isLoadableItem(object)
+    for _, t in ipairs(ITEM_TYPES) do
+        if object.type == t then return true end
+    end
+    return false
+end
+
+--- Display name for a record id (charge messages/snapshots).
+---@param recordId string
+---@return string
+local function recordName(recordId)
+    for _, t in ipairs(ITEM_TYPES) do
+        local ok, rec = pcall(function() return t.record(recordId) end)
+        if ok and rec and rec.name and rec.name ~= '' then return rec.name end
+    end
+    return recordId
 end
 
 --- "~N min" / "~N h" of remaining GAME time.
@@ -55,7 +93,8 @@ local function fmtDuration(seconds)
     return ('~%d min'):format(math.max(1, math.ceil(seconds / 60)))
 end
 
---- Push a plain snapshot of all runs to the player (for the station card).
+--- Push a plain snapshot of all runs AND station charges to the player
+--- (for the station card).
 local function syncPlayer()
     local player = world.players[1]
     if not player then return end
@@ -69,7 +108,16 @@ local function syncPlayer()
             done = e.done or false,
         }
     end
-    player:sendEvent('ImmersiveCrafting_ProcessSync', { processes = snapshot })
+    local chargeSnapshot = {}
+    for stationId, list in pairs(charges()) do
+        local copy = {}
+        for i, e in ipairs(list) do
+            copy[i] = { id = e.id, count = e.count, name = recordName(e.id) }
+        end
+        chargeSnapshot[stationId] = copy
+    end
+    player:sendEvent('ImmersiveCrafting_ProcessSync',
+        { processes = snapshot, charges = chargeSnapshot })
 end
 
 -- ── process FX (the kiln's fire while it burns) ─────────────────────────────
@@ -119,6 +167,27 @@ local onProcessDone = async:registerTimerCallback('IC_processDone', function(sta
     notify(world.players[1], (e.label or 'A process') .. ' is ready')
     syncPlayer()
 end)
+
+--- Register a run at a station and schedule its completion (shared by the
+--- crafting-window start and UI-less ignition).
+---@param station any
+---@param data { recipeId: string, label: string?, output: table, returned: table[]?, duration: number }
+local function registerRun(station, data)
+    processes()[station.id] = {
+        stationId = station.id,
+        recipeId = data.recipeId,
+        label = data.label or data.recipeId,
+        output = data.output,
+        returned = data.returned, -- items held by the station, given back on collect
+        startedAt = core.getGameTime(), -- for the station card's progress bar
+        readyAt = core.getGameTime() + data.duration,
+        done = false,
+        fx = igniteFx(station), -- e.g. the kiln's fire (removed when done)
+    }
+    async:newGameTimer(data.duration, onProcessDone, station.id)
+    log.info(('process: started "%s" at station %s (%ds)'):format(
+        tostring(data.label), tostring(station.id), data.duration))
+end
 
 -- ── start ────────────────────────────────────────────────────────────────────
 
@@ -175,23 +244,111 @@ function this.onStart(data)
         end
     end
 
-    processes()[stationId] = {
-        stationId = stationId,
-        recipeId = data.recipeId,
-        label = data.label or data.recipeId,
-        output = data.output,
-        returned = data.returned, -- items held by the station, given back on collect
-        startedAt = core.getGameTime(), -- for the station card's progress bar
-        readyAt = core.getGameTime() + data.duration,
-        done = false,
-        fx = igniteFx(data.station), -- e.g. the kiln's fire (removed when done)
-    }
-    async:newGameTimer(data.duration, onProcessDone, stationId)
-
-    log.info(('process: started "%s" at station %s (%ds)'):format(
-        tostring(data.label), tostring(stationId), data.duration))
+    registerRun(data.station, data)
     notify(data.actor, ('%s — ready in %s'):format(data.label or 'Process', fmtDuration(data.duration)))
     syncPlayer()
+end
+
+-- ── UI-less loading + ignition (kiln, charcoal pit) ─────────────────────────
+
+local LOAD_RADIUS = 150 -- units around a loadable station that claim a dropped item
+
+--- Engine handler (via init.lua, after the drop-swap check): an item dropped
+--- near an idle LOADABLE station joins its charge (the item is absorbed;
+--- packing the station returns it). Gated by the "load stations by dropping
+--- items" setting (player-pushed option).
+---@param object any object that just became active
+function this.onObjectActive(object)
+    if not options.stationLoading then return end
+    if not object.cell or not isLoadableItem(object) then return end
+
+    -- nearest idle loadable station in the cell
+    local best, bestDist
+    for _, act in ipairs(object.cell:getAll(types.Activator)) do
+        if globalStations.isLoadable(act.recordId) and not processes()[act.id] then
+            local d = (act.position - object.position):length()
+            if d <= LOAD_RADIUS and (not bestDist or d < bestDist) then
+                best, bestDist = act, d
+            end
+        end
+    end
+    if not best then return end
+
+    local list = charges()[best.id]
+    if not list then
+        list = {}
+        charges()[best.id] = list
+    end
+    local id, n = object.recordId, object.count or 1
+    local merged = false
+    for _, e in ipairs(list) do
+        if e.id == id then
+            e.count = (e.count or 1) + n
+            merged = true
+            break
+        end
+    end
+    if not merged then list[#list + 1] = { id = id, count = n } end
+    object:remove()
+
+    local stationName = recordName(best.recordId)
+    local okRec, rec = pcall(function() return types.Activator.record(best.recordId) end)
+    if okRec and rec and rec.name and rec.name ~= '' then stationName = rec.name end
+    notify(world.players[1], ('Loaded %d x %s into the %s'):format(n, recordName(id), stationName))
+    log.info(('process: loaded %d x %s into %s'):format(n, id, best.recordId))
+    syncPlayer()
+end
+
+--- Event: light a loaded station (the player resolved the charge against the
+--- station's recipes and holds a fire source). The WHOLE charge burns —
+--- process matching is exact, so a resolvable charge has no leftovers.
+---@param data { actor: any, station: any, recipeId: string, label: string, output: table, duration: number, returned: { id: string, count: integer }[]? }
+function this.onIgnite(data)
+    if not (data and data.actor and data.station and data.output and data.duration) then return end
+    local stationId = data.station.id
+    if processes()[stationId] then
+        notify(data.actor, 'This station is already working')
+        return
+    end
+    local charge = charges()[stationId]
+    if not charge or #charge == 0 then
+        notify(data.actor, 'Nothing is loaded')
+        return
+    end
+
+    charges()[stationId] = nil
+    registerRun(data.station, data)
+    notify(data.actor, ('%s — ready in %s'):format(data.label or 'Process', fmtDuration(data.duration)))
+    syncPlayer()
+end
+
+--- Give a cold station's charge back (called before packing it up; a busy
+--- station has no charge — igniting consumed it).
+---@param data { actor: any, station: any }
+function this.returnCharge(data)
+    if not (data and data.actor and data.station) then return end
+    local stationId = data.station.id
+    local list = charges()[stationId]
+    if not list then return end
+    for _, e in ipairs(list) do
+        local ok, err = pcall(function()
+            local created = world.createObject(e.id, e.count or 1)
+            created:moveInto(types.Actor.inventory(data.actor))
+        end)
+        if not ok then
+            log.error(('process: failed to return charge "%s": %s'):format(tostring(e.id), tostring(err)))
+        end
+    end
+    charges()[stationId] = nil
+    syncPlayer()
+end
+
+--- Event: player-pushed options (settings live player-side).
+---@param data { stationLoading: boolean? }
+function this.onSetOptions(data)
+    if data and data.stationLoading ~= nil then
+        options.stationLoading = data.stationLoading and true or false
+    end
 end
 
 -- ── collect / activation hook ────────────────────────────────────────────────
@@ -232,7 +389,21 @@ end
 function this.onStationActivated(object, actor)
     if not saveData then return false end
     local e = processes()[object.id]
-    if not e then return false end
+    if not e then
+        -- a cold LOADED station doesn't open the window: report the charge
+        -- (light it with a fire source in hand — hold F on its card)
+        local charge = saveData.charges and saveData.charges[object.id]
+        if charge and #charge > 0 then
+            if actor.type ~= types.Player then return true end
+            local parts = {}
+            for _, entry in ipairs(charge) do
+                parts[#parts + 1] = ('%d x %s'):format(entry.count or 1, recordName(entry.id))
+            end
+            notify(actor, ('Loaded: %s'):format(table.concat(parts, ', ')))
+            return true
+        end
+        return false
+    end
     if actor.type ~= types.Player then return true end
 
     if not e.done then

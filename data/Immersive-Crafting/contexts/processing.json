@@ -82,8 +82,8 @@
           "key": "mold",
           "label": "Mold",
           "aside": true,
-          "acceptsPatterns": [
-            "^ic_mold_.*_burnt$"
+          "accepts": [
+            "mold_burnt"
           ]
         }
       ]
@@ -138,8 +138,8 @@
           "key": "mold",
           "label": "Mold",
           "aside": true,
-          "acceptsPatterns": [
-            "^ic_mold_.*_burnt$"
+          "accepts": [
+            "mold_burnt"
           ]
         }
       ]

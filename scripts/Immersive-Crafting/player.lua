@@ -16,6 +16,8 @@ local sdLiquids = require('scripts.Immersive-Crafting.sdLiquids')
 local sdCooking = require('scripts.Immersive-Crafting.sdCooking')
 local farmState = require('scripts.Immersive-Crafting.farmState')
 local processState = require('scripts.Immersive-Crafting.processState')
+local storage = require('openmw.storage')
+local async = require('openmw.async')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
@@ -67,6 +69,16 @@ local function onInit()
     log.info('Immersive Crafting player script initialized')
 end
 
+-- Options that live in player settings but act on the GLOBAL side (the drop-in
+-- station loading) are pushed via an event, on load and on every settings change.
+local icSettings = storage.playerSection('SettingsImmersiveCrafting')
+local function pushOptions()
+    core.sendGlobalEvent('ImmersiveCrafting_SetOptions', {
+        stationLoading = icSettings:get('StationLoading') ~= false,
+    })
+end
+icSettings:subscribe(async:callback(function() pushOptions() end))
+
 ---Called after loading a save
 local function onLoad(data)
     dataManager.loadAllData()
@@ -74,6 +86,7 @@ local function onLoad(data)
     forageState.load(data and data.forage)
     sdCooking.init()
     core.sendGlobalEvent('ImmersiveCrafting_RequestCropSync', {})
+    pushOptions()
 
     log.info('Immersive Crafting player script loaded from save')
 end
@@ -200,10 +213,10 @@ return {
     eventHandlers = {
         ImmersiveCrafting_OpenStation = onOpenStation,
         ImmersiveCrafting_CropSync = function(data)
-            farmState.apply(data and data.crops)
+            farmState.apply(data and data.crops, data and data.sown, data and data.memory)
         end,
         ImmersiveCrafting_ProcessSync = function(data)
-            processState.apply(data and data.processes)
+            processState.apply(data and data.processes, data and data.charges)
         end,
         ImmersiveCrafting_Notify = function(data)
             if data and data.text then ui.showMessage(data.text) end
