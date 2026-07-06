@@ -1,0 +1,7 @@
+[
+  {
+    "id": "dressing",
+    "label": "Field dress",
+    "handler": "dressing"
+  }
+]

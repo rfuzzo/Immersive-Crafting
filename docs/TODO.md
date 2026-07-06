@@ -889,3 +889,42 @@ recipes, roadmap); "menus-off" patched AC ESP via tes3util when the user
 tires of the mwscript UI; bloods/fats/glands from Hunterwind untagged
 (cooking candidates); a_msc_crafting_tool/tanner-specific tools unused (IC
 uses the generic knife/hammer tags).
+
+## Field dressing + Salt fix (ratified + built 2026-07-06)
+
+**Salt cures hides, not grain** (user): the two AC cure recipes swapped
+`ingred_saltrice_01` -> the `Salt` tag (IC's original design).
+
+**Field dressing** replaces Hunterwind's 274 creature-record loot edits with
+IC's contextual grammar (ratified: leave the corpse; take-from-loot-else-mint;
+the HUNTER KNIFE specifically):
+- data/dressing/creatures.json: 272 creature -> carcass entries GENERATED from
+  Hunterwind's own creature inventories (their injection method IS the
+  mapping); loaded into GRegistries.dressing with the same soft-dependency
+  filter as recipes (no Hunterwind = empty registry = no cards).
+- Engine: contexts gain `targets: "corpse"` — DEAD actors (nearby.actors +
+  types.Actor.isDead) join the candidate scan for corpse contexts only;
+  living actors never card, corpse contexts never match items/activators.
+- handlers/dressing.lua: "Guar — dead / [F] Field dress (hold 1.5s)", requires
+  the Hunter Knife (hb_hunters_knife); once per corpse (dressState, player
+  save, forageState-style); the corpse STAYS for vanilla looting/disposal.
+- globalDressing.onFieldDress: take-from-loot-else-mint — with UNPATCHED
+  Hunterwind the carcass is pulled out of the corpse's inventory (no
+  doubles); with the patched plugin it's minted. Both configs identical.
+- tools/patch_hunterwind.py: strips the creature overrides from
+  hunterwind.omwaddon via tes3util (verified round-trip); patched plugin
+  loads instead of the original (assets still from the original download —
+  shipping plugin-only patches is fine per user; never HW's assets).
+- Downstream: Hunterwind's own carcass-item scripts (butchering into TD
+  meats, carcass removal) process what field dressing produces — unchanged.
+
+Verify in-game: kill a guar -> card appears only when dead; no knife ->
+"Requires: Hunter Knife"; dress -> carcass granted, second attempt refused;
+unpatched HW -> corpse loot loses the carcass (moved, not duplicated);
+patched -> carcass minted; NPC corpses never card; isDead API on 0.51.
+
+Open: quality tiers (_l vs _h carcasses by skill — HW's hunter level;
+IC could gate on a vanilla skill later); dressState pruning (dressed ids
+outlive corpses harmlessly; prune if saves ever bloat); gaze-switch branch
+(claude/gaze-context-switch) touches the same contextManager region — merge
+that one first or expect a small conflict here.

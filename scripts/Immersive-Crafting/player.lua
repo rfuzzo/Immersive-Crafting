@@ -12,6 +12,7 @@ local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local equipGate = require('scripts.Immersive-Crafting.equipGate')
 local forageState = require('scripts.Immersive-Crafting.forageState')
+local dressState = require('scripts.Immersive-Crafting.dressState')
 local sdLiquids = require('scripts.Immersive-Crafting.sdLiquids')
 local sdCooking = require('scripts.Immersive-Crafting.sdCooking')
 local farmState = require('scripts.Immersive-Crafting.farmState')
@@ -84,6 +85,7 @@ local function onLoad(data)
     dataManager.loadAllData()
     registerActivateContexts()
     forageState.load(data and data.forage)
+    dressState.load(data and data.dressed)
     sdCooking.init()
     core.sendGlobalEvent('ImmersiveCrafting_RequestCropSync', {})
     pushOptions()
@@ -93,7 +95,7 @@ end
 
 ---Called before saving
 local function onSave()
-    return { forage = forageState.serialize() }
+    return { forage = forageState.serialize(), dressed = dressState.serialize() }
 end
 
 ---Main update loop

@@ -92,3 +92,16 @@ python3 tools/recipes_lint.py --check    # lint only (non-zero exit on error; CI
 
 The former CSV generator (`immersive_crafting_recipes_v2.csv` + `recipes_csv2json.py`)
 was retired 2026-07-06 — editing JSON directly is the workflow; see git history.
+
+## Hunterwind field-dressing patch (`patch_hunterwind.py`)
+
+Strips the 274 creature-record overrides from `hunterwind.omwaddon` (IC's
+field-dressing mechanic replaces them; see `docs/TODO.md`). Requires the
+`tes3util` binary. The patched plugin is loaded INSTEAD of the original one;
+Hunterwind's assets (meshes/icons) are still required from the original
+download. Field dressing also works with the unpatched plugin (it takes the
+carcass from the corpse's loot instead of minting a duplicate).
+
+```sh
+python3 tools/patch_hunterwind.py /path/to/hunterwind.omwaddon --tes3util ./tes3util
+```

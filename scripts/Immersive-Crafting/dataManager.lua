@@ -57,6 +57,7 @@ GRegistries = {
     processRecipes = {},
     crops = {},
     processes = {},
+    dressing = {}, -- creature record id (lower) -> carcass record id (field dressing)
 }
 
 local DATA_ROOT = constants.DATA_ROOT
@@ -238,11 +239,29 @@ local function loadHandlers()
 end
 
 ---Load all data domains.
+--- Field-dressing table: dead creature -> carcass item (data/dressing/*.json).
+--- Entries whose carcass record is missing (Hunterwind not installed) are
+--- skipped — same soft-dependency rule as recipe outputs.
+local function loadDressing()
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "dressing/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            for _, entry in ipairs(data or {}) do
+                if entry.creature and entry.carcass and outputRecordExists(entry.carcass) then
+                    GRegistries.dressing[entry.creature:lower()] = entry.carcass
+                end
+            end
+        end
+    end
+    log.info(('Loaded %d field-dressing entries'):format(len(GRegistries.dressing)))
+end
+
 function this.loadAllData()
     loadActions()
     loadContexts()
     loadRecipes()
     loadCrops()
+    loadDressing()
     loadHandlers()
 
     log.info('All data loaded successfully.')

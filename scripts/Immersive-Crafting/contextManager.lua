@@ -5,6 +5,7 @@ local conditions = require('scripts.Immersive-Crafting.conditions')
 local processState = require('scripts.Immersive-Crafting.processState')
 
 local nearby = require('openmw.nearby')
+local types = require('openmw.types')
 local self = require('openmw.self')
 local util = require('openmw.util')
 local camera = require('openmw.camera')
@@ -79,6 +80,20 @@ local function gatherNearby(maxRange)
     -- stations/fires may be misc items (bowl, pot) or activators (furniture, fire pits)
     collect(nearby.items)
     collect(nearby.activators)
+    -- DEAD creatures are candidates too, but only for `targets:"corpse"` contexts
+    -- (field dressing); living actors never card
+    for _, actor in ipairs(nearby.actors) do
+        if actor ~= self.object then
+            local okDead, dead = pcall(function() return types.Actor.isDead(actor) end)
+            if okDead and dead then
+                local distance = (actor.position - playerPos):length()
+                if distance <= maxRange then
+                    list[#list + 1] = { object = actor, recordId = actor.recordId,
+                        distance = distance, corpse = true }
+                end
+            end
+        end
+    end
     return list
 end
 
@@ -153,11 +168,22 @@ local function findcurrentContexts(registries, maxRange)
             -- activating the object — see the global activation handler).
             local range = def.activationRange or 150
 
-            -- closest candidate that matches the context (id, tag, or pattern)
+            -- closest candidate that matches the context (id, tag, or pattern).
+            -- `targets:"corpse"` contexts match only DEAD-actor candidates, via
+            -- the field-dressing registry (or explicit recordIds); everything
+            -- else matches only non-corpse candidates.
+            local wantCorpse = def.targets == 'corpse'
             local best = nil
             for _, cand in ipairs(candidates) do
-                if cand.distance <= range and matchesDef(cand.recordId, def) then
-                    if not best or cand.distance < best.distance then
+                if (cand.corpse or false) == wantCorpse and cand.distance <= range then
+                    local matches
+                    if wantCorpse then
+                        matches = (GRegistries.dressing and GRegistries.dressing[cand.recordId:lower()] ~= nil)
+                            or matchesDef(cand.recordId, def)
+                    else
+                        matches = matchesDef(cand.recordId, def)
+                    end
+                    if matches and (not best or cand.distance < best.distance) then
                         best = cand
                     end
                 end
