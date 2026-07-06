@@ -1,0 +1,326 @@
+[
+  {
+    "id": "bonemold arrow",
+    "label": "bonemold arrow",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AB",
+      "  "
+    ],
+    "key": {
+      "A": "ic_stick",
+      "B": "ic_chitin_dust"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "bonemold arrow",
+      "count": 20
+    }
+  },
+  {
+    "id": "bonemold bolt",
+    "label": "bonemold bolt",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AB",
+      "  "
+    ],
+    "key": {
+      "A": "ic_stick",
+      "B": "ic_chitin_dust"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "bonemold bolt",
+      "count": 20
+    }
+  },
+  {
+    "id": "bonemold long bow",
+    "label": "bonemold long bow",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "B  ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_plank",
+      "B": "ic_string"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "bonemold long bow",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_boots",
+    "label": "bonemold_boots",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_boots_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_bracer_left",
+    "label": "bonemold_bracer_left",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_bracer_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_bracer_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_bracer_right",
+    "label": "bonemold_bracer_right",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_bracer_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_bracer_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_cuirass",
+    "label": "bonemold_cuirass",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_cuirass_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_greaves",
+    "label": "bonemold_greaves",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_greaves_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_helm",
+    "label": "bonemold_helm",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_helm_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_pauldron_l",
+    "label": "bonemold_pauldron_l",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_pauldron_l",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_pauldron_r",
+    "label": "bonemold_pauldron_r",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_pauldron_r",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_shield",
+    "label": "bonemold_shield",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_shield",
+      "count": 1
+    }
+  },
+  {
+    "id": "bonemold_towershield",
+    "label": "bonemold_towershield",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_bonemold_paste",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_tower_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "bonemold_towershield",
+      "count": 1
+    }
+  }
+]

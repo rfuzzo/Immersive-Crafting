@@ -1,126 +1,175 @@
 [
   {
-    "id": "ic_mold_dagger_raw",
-    "label": "Raw Dagger Mold",
+    "id": "ic_bedroll_mk1",
+    "label": "Bedroll Mk1",
     "context": "crafting_table",
     "action": "shaping",
     "pattern": [
       "AAA",
-      "AWA",
-      "AAA"
+      "BBB",
+      "   "
     ],
     "key": {
-      "A": "clay",
-      "W": "dagger"
+      "A": "ic_cloth",
+      "B": "Plant"
     },
-    "returned": [
-      {
-        "id": "dagger",
-        "count": 1
-      }
-    ],
     "output": {
-      "id": "ic_mold_dagger_raw",
+      "id": "ic_bedroll_mk1",
       "count": 1
     }
   },
   {
-    "id": "ic_mold_waraxe_raw",
-    "label": "Raw War Axe Mold",
+    "id": "ic_bowl",
+    "label": "Bowl",
     "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
+      "AA ",
+      "   ",
+      "   "
     ],
     "key": {
-      "A": "clay",
-      "W": "war axe"
+      "A": "Wood"
     },
-    "returned": [
-      {
-        "id": "war axe",
-        "count": 1
-      }
+    "tools": [
+      "Knife"
     ],
     "output": {
-      "id": "ic_mold_waraxe_raw",
+      "id": "ic_bowl",
       "count": 1
     }
   },
   {
-    "id": "ic_mold_spear_raw",
-    "label": "Raw Spear Mold",
+    "id": "ic_bucket",
+    "label": "Bucket",
     "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
+      "AAB",
+      "   ",
+      "   "
     ],
     "key": {
-      "A": "clay",
-      "W": "spear"
+      "A": "iron_ingot",
+      "B": "plank"
     },
-    "returned": [
-      {
-        "id": "spear",
-        "count": 1
-      }
-    ],
     "output": {
-      "id": "ic_mold_spear_raw",
+      "id": "ic_bucket",
       "count": 1
     }
   },
   {
-    "id": "ic_mold_longsword_raw",
-    "label": "Raw Longsword Mold",
+    "id": "ic_cloth",
+    "label": "Cloth",
     "context": "crafting_table",
     "action": "shaping",
     "pattern": [
       "AAA",
-      "AWA",
-      "AAA"
+      "   ",
+      "   "
     ],
     "key": {
-      "A": "clay",
-      "W": "longsword"
+      "A": "string"
     },
-    "returned": [
-      {
-        "id": "longsword",
-        "count": 1
-      }
-    ],
     "output": {
-      "id": "ic_mold_longsword_raw",
+      "id": "ic_cloth",
       "count": 1
     }
   },
   {
-    "id": "ic_mold_warhammer_raw",
-    "label": "Raw Warhammer Mold",
+    "id": "ic_grill",
+    "label": "Grill",
     "context": "crafting_table",
     "action": "shaping",
     "pattern": [
       "AAA",
-      "AWA",
-      "AAA"
+      "BB ",
+      "   "
     ],
     "key": {
-      "A": "clay",
-      "W": "warhammer"
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick"
     },
-    "returned": [
-      {
-        "id": "warhammer",
-        "count": 1
-      }
+    "tools": [
+      "chitin club"
     ],
     "output": {
-      "id": "ic_mold_warhammer_raw",
+      "id": "ic_grill",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_pan",
+    "label": "Pan",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "B  ",
+      "   "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "ic_pan",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_plank",
+    "label": "Plank",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "  "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "axe"
+    ],
+    "output": {
+      "id": "ic_plank",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_pot",
+    "label": "Pot",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01"
+    },
+    "output": {
+      "id": "ic_pot",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_spit",
+    "label": "Spit",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB",
+      "B "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "ic_spit",
       "count": 1
     }
   },
@@ -139,6 +188,25 @@
     },
     "output": {
       "id": "ic_station_charcoalpit",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_station_furnace",
+    "label": "Furnace",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "ABA",
+      "AAA"
+    ],
+    "key": {
+      "A": "Stone",
+      "B": "crucible"
+    },
+    "output": {
+      "id": "ic_station_furnace",
       "count": 1
     }
   },
@@ -180,62 +248,6 @@
     }
   },
   {
-    "id": "ic_station_furnace",
-    "label": "Furnace",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "ABA",
-      "AAA"
-    ],
-    "key": {
-      "A": "Stone",
-      "B": "crucible"
-    },
-    "output": {
-      "id": "ic_station_furnace",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_cloth",
-    "label": "Cloth",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "   ",
-      "   "
-    ],
-    "key": {
-      "A": "string"
-    },
-    "output": {
-      "id": "ic_cloth",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_bucket",
-    "label": "Bucket",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAB",
-      "   ",
-      "   "
-    ],
-    "key": {
-      "A": "iron_ingot",
-      "B": "plank"
-    },
-    "output": {
-      "id": "ic_bucket",
-      "count": 1
-    }
-  },
-  {
     "id": "ic_tent_mk1",
     "label": "Tent Mk1",
     "context": "crafting_table",
@@ -252,46 +264,6 @@
     },
     "output": {
       "id": "ic_tent_mk1",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_bedroll_mk1",
-    "label": "Bedroll Mk1",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "BBB",
-      "   "
-    ],
-    "key": {
-      "A": "ic_cloth",
-      "B": "Plant"
-    },
-    "output": {
-      "id": "ic_bedroll_mk1",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_bowl",
-    "label": "Bowl",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AA ",
-      "   ",
-      "   "
-    ],
-    "key": {
-      "A": "Wood"
-    },
-    "tools": [
-      "Knife"
-    ],
-    "output": {
-      "id": "ic_bowl",
       "count": 1
     }
   },
@@ -314,27 +286,6 @@
     "output": {
       "id": "misc_com_wood_cup_01",
       "count": 1
-    }
-  },
-  {
-    "id": "misc_com_wood_spoon_01",
-    "label": "Wooden Spoon",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "A  ",
-      "   ",
-      "   "
-    ],
-    "key": {
-      "A": "Wood"
-    },
-    "tools": [
-      "Knife"
-    ],
-    "output": {
-      "id": "misc_com_wood_spoon_01",
-      "count": 2
     }
   },
   {
@@ -380,417 +331,24 @@
     }
   },
   {
-    "id": "ic_pan",
-    "label": "Pan",
+    "id": "misc_com_wood_spoon_01",
+    "label": "Wooden Spoon",
     "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AAA",
-      "B  ",
-      "   "
-    ],
-    "key": {
-      "A": "T_Com_MetalPieceIron_01",
-      "B": "ic_stick"
-    },
-    "output": {
-      "id": "ic_pan",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_pot",
-    "label": "Pot",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
+      "A  ",
       "   ",
       "   "
-    ],
-    "key": {
-      "A": "T_Com_MetalPieceIron_01"
-    },
-    "output": {
-      "id": "ic_pot",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_grill",
-    "label": "Grill",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "BB ",
-      "   "
-    ],
-    "key": {
-      "A": "T_Com_MetalPieceIron_01",
-      "B": "ic_stick"
-    },
-    "tools": [
-      "chitin club"
-    ],
-    "output": {
-      "id": "ic_grill",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_cuirass_raw",
-    "label": "Raw Cuirass Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "cuirass"
-    },
-    "returned": [
-      {
-        "id": "cuirass",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_cuirass_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_boots_raw",
-    "label": "Raw Boots Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "boots"
-    },
-    "returned": [
-      {
-        "id": "boots",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_boots_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_greaves_raw",
-    "label": "Raw Greaves Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "greaves"
-    },
-    "returned": [
-      {
-        "id": "greaves",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_greaves_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_helm_raw",
-    "label": "Raw Helm Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "helmet"
-    },
-    "returned": [
-      {
-        "id": "helmet",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_helm_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_pauldron_left_raw",
-    "label": "Raw Left Pauldron Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "pauldron"
-    },
-    "returned": [
-      {
-        "id": "pauldron",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_pauldron_left_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_pauldron_right_raw",
-    "label": "Raw Right Pauldron Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "pauldron"
-    },
-    "returned": [
-      {
-        "id": "pauldron",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_pauldron_right_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_bracer_left_raw",
-    "label": "Raw Left Bracer Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "bracer"
-    },
-    "returned": [
-      {
-        "id": "bracer",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_bracer_left_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_bracer_right_raw",
-    "label": "Raw Right Bracer Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "bracer"
-    },
-    "returned": [
-      {
-        "id": "bracer",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_bracer_right_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_shield_raw",
-    "label": "Raw Shield Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "shield"
-    },
-    "returned": [
-      {
-        "id": "shield",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_shield_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_tower_shield_raw",
-    "label": "Raw Tower Shield Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "shield"
-    },
-    "returned": [
-      {
-        "id": "shield",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_tower_shield_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_gauntlet_left_raw",
-    "label": "Raw Left Gauntlet Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "gauntlet"
-    },
-    "returned": [
-      {
-        "id": "gauntlet",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_gauntlet_left_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_gauntlet_right_raw",
-    "label": "Raw Right Gauntlet Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AWA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay",
-      "W": "gauntlet"
-    },
-    "returned": [
-      {
-        "id": "gauntlet",
-        "count": 1
-      }
-    ],
-    "output": {
-      "id": "ic_mold_gauntlet_right_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_mold_ingot_raw",
-    "label": "Raw Ingot Mold",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "AAA"
-    ],
-    "key": {
-      "A": "clay"
-    },
-    "output": {
-      "id": "ic_mold_ingot_raw",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_plank",
-    "label": "Plank",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AA",
-      "  "
     ],
     "key": {
       "A": "Wood"
     },
     "tools": [
-      "axe"
+      "Knife"
     ],
     "output": {
-      "id": "ic_plank",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_spit",
-    "label": "Spit",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AB",
-      "B "
-    ],
-    "key": {
-      "A": "T_Com_MetalPieceIron_01",
-      "B": "ic_stick"
-    },
-    "output": {
-      "id": "ic_spit",
-      "count": 1
+      "id": "misc_com_wood_spoon_01",
+      "count": 2
     }
   }
 ]

@@ -1,26 +1,5 @@
 [
   {
-    "id": "ic_mold_dagger_burnt",
-    "label": "Burnt Dagger Mold",
-    "context": "firepit",
-    "action": "processing",
-    "inputs": [
-      {
-        "id": "ic_mold_dagger_raw",
-        "count": 1
-      },
-      {
-        "id": "wood",
-        "count": 1
-      }
-    ],
-    "duration": 1800,
-    "output": {
-      "id": "ic_mold_dagger_burnt",
-      "count": 1
-    }
-  },
-  {
     "id": "ic_station_kiln",
     "label": "Kiln",
     "context": "firepit",

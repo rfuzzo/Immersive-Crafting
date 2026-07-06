@@ -6,7 +6,6 @@ ModTags FlexTag YAMLs.
 
 ## `ic_*` records produced as outputs
 
-- `ic_armor_hide_mk1`
 - `ic_bedroll_mk1`
 - `ic_bonemold_paste`
 - `ic_bowl`
@@ -19,7 +18,6 @@ ModTags FlexTag YAMLs.
 - `ic_fibre`
 - `ic_glass_component`
 - `ic_grill`
-- `ic_iron_ingot`
 - `ic_mold_boots_burnt`
 - `ic_mold_boots_raw`
 - `ic_mold_bracer_left_burnt`
@@ -38,6 +36,8 @@ ModTags FlexTag YAMLs.
 - `ic_mold_greaves_raw`
 - `ic_mold_helm_burnt`
 - `ic_mold_helm_raw`
+- `ic_mold_ingot_burnt`
+- `ic_mold_ingot_raw`
 - `ic_mold_longsword_burnt`
 - `ic_mold_longsword_raw`
 - `ic_mold_pauldron_left_burnt`
@@ -67,7 +67,6 @@ ModTags FlexTag YAMLs.
 - `ic_station_kiln`
 - `ic_station_planter`
 - `ic_station_tanningrack`
-- `ic_steel_ingot`
 - `ic_stick`
 - `ic_string`
 - `ic_tent_mk1`
@@ -95,6 +94,8 @@ ModTags FlexTag YAMLs.
 - `Salt`
 - `Stone`
 - `String`
+- `T_Com_MetalPieceIron_01`
+- `T_Com_MetalPieceSteel_01`
 - `Vegetable`
 - `Wood`
 

@@ -197,13 +197,15 @@ is consumed on craft). When several recipes match, the one requiring the **most 
   "output": { "id": "ic_iron_ingot", "count": 1 } }
 ```
 
-Recipes are **hand-maintained JSON**, split per context (`recipes/{bushcrafting,
-crafting_table,firepit,kiln,charcoal_pit,tanning_rack,furnace}.json`) plus
-cross-context `recipes/weapons.json` and `recipes/armour.json` (equipment outputs;
-weapon-named molds stay with their context as misc items). The loader globs all
-`recipes/*.json`, so filenames are organizational — each recipe carries its own
-`context`. `tools/recipes_lint.py` reads these files (never writes them) to check
-integrity + the tool-vs-consumed rules and to regenerate `docs/ic_records.md`.
+Recipes are **hand-maintained JSON** in three kinds of file: **context** files
+(`recipes/{bushcrafting,crafting_table,firepit,kiln,charcoal_pit,tanning_rack,
+furnace}.json`) hold non-equipment production (materials, stations, tools,
+containers); **material** files (`recipes/{chitin,iron,steel,bonemold,glass,
+bronze,copper}.json`) hold that material's weapons + armor; and `recipes/molds.json`
+holds every mold. The loader globs all `recipes/*.json`, so filenames are
+organizational — each recipe carries its own `context`. `tools/recipes_lint.py`
+reads these files (never writes them) to check integrity + the tool-vs-consumed
+rules and to regenerate `docs/ic_records.md`.
 *(The former `immersive_crafting_recipes_v2.csv` + `recipes_csv2json.py` generator
 was retired 2026-07-06 — JSON is the source of truth; see git history.)*
 

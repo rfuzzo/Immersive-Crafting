@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 """Lint the hand-maintained recipe JSON and regenerate the record inventory.
 
-The recipe JSON (data/Immersive-Crafting/recipes/*.json) is the SOURCE OF TRUTH
-— split per context plus cross-context weapons.json / armour.json. This tool
-READS those files (it never writes them) and:
+The recipe JSON (data/Immersive-Crafting/recipes/*.json) is the SOURCE OF TRUTH,
+organized into three kinds of file (the loader globs them all, so filenames are
+purely for humans — every recipe still carries its own `context`):
+  - CONTEXT files (bushcrafting, crafting_table, kiln, furnace, …): non-equipment
+    PRODUCTION — materials, stations, tools, containers;
+  - MATERIAL files (chitin, iron, steel, bonemold, glass, bronze, copper): that
+    material's weapons + armor, any context;
+  - molds.json: every mold recipe (raw + burnt, weapon + armor + ingot).
+This tool READS those files (it never writes them) and:
 
-  1. checks structural integrity (duplicate ids; each recipe's `context` field
-     matching the file it lives in; weapons/armour files holding only
-     weapon/armour outputs);
+  1. checks structural integrity (duplicate ids; equipment in the right material
+     file; molds in molds.json; context files free of equipment/molds and their
+     `context` matching the filename);
   2. lints the tool-vs-consumed rules (consumed weapon molds never in a tool
-     column; the reusable armour mold placed as a `returned` input, never a
+     column; reusable armor/ingot molds placed as a `returned` input, never a
      plain consumed one);
   3. regenerates docs/ic_records.md — the inventory of `ic_*` records the
      recipes depend on, assumed FlexTags, and vanilla record references.
@@ -30,15 +36,18 @@ from collections import OrderedDict
 RECIPES_DIR = 'data/Immersive-Crafting/recipes'
 RECORDS_DOC = 'docs/ic_records.md'
 
-# recipe files that are grouped by station context (filename == context id)
+# recipe files grouped by station context (filename == context id): hold
+# non-equipment, non-mold PRODUCTION (materials, stations, tools, containers)
 CONTEXT_FILES = {
     'bushcrafting', 'crafting_table', 'firepit', 'kiln',
     'charcoal_pit', 'tanning_rack', 'furnace', 'oven',
 }
-# cross-context equipment files (grouped by output category, any context)
-CATEGORY_FILES = {'weapons', 'armour'}
-# recipe files that are neither (world-placement cooking, SD meals): not linted
-# for context/category placement
+# cross-context EQUIPMENT files grouped by material (filename == material):
+# hold that material's weapons + armor, any context
+MATERIAL_FILES = {'chitin', 'iron', 'steel', 'bonemold', 'glass', 'bronze', 'copper'}
+# all mold recipes (raw + burnt, weapon + armor + ingot) live here
+MOLDS_FILE = 'molds'
+# world-placement cooking + SD meals: not linted for placement
 OTHER_FILES = {'cooking', 'sd_meals'}
 
 # consumed on casting -> may appear as ingredients, never as tools
@@ -84,6 +93,11 @@ def category_of(output_id):
     return None
 
 
+def material_of(output_id):
+    """Leading material token of an equipment output ('iron boots' -> 'iron')."""
+    return (output_id or '').lower().replace('_', ' ').split()[0] if output_id else ''
+
+
 def load_recipes():
     """[(recipe, filestem)] across every recipes/*.json."""
     out = []
@@ -121,14 +135,23 @@ def lint(recipes):
 
         # placement: does this recipe belong in this file?
         out_id = (r.get('output') or {}).get('id')
+        is_mold = (out_id or '').startswith('ic_mold_')
         cat = category_of(out_id)
-        if stem in CATEGORY_FILES:
-            if cat != stem:
-                errors.append(f'{rid}: in {stem}.json but output "{out_id}" is not a {stem[:-1] if stem.endswith("s") else stem} '
-                              f'(category={cat or "misc"})')
+        if stem == MOLDS_FILE:
+            if not is_mold:
+                errors.append(f'{rid}: in molds.json but output "{out_id}" is not a mold')
+        elif stem in MATERIAL_FILES:
+            if is_mold:
+                errors.append(f'{rid}: mold "{out_id}" should live in molds.json, not {stem}.json')
+            elif cat is None:
+                errors.append(f'{rid}: output "{out_id}" is not equipment — does not belong in {stem}.json')
+            elif material_of(out_id) != stem:
+                errors.append(f'{rid}: {material_of(out_id)} equipment "{out_id}" filed in {stem}.json')
         elif stem in CONTEXT_FILES:
-            if cat is not None:
-                errors.append(f'{rid}: {cat} output "{out_id}" should live in {cat}.json, not {stem}.json')
+            if is_mold:
+                errors.append(f'{rid}: mold "{out_id}" should live in molds.json, not {stem}.json')
+            elif cat is not None:
+                errors.append(f'{rid}: {cat} "{out_id}" should live in {material_of(out_id)}.json, not {stem}.json')
             elif r.get('context') and r['context'] != stem:
                 errors.append(f'{rid}: context "{r["context"]}" but filed in {stem}.json')
         # OTHER_FILES: no placement rule

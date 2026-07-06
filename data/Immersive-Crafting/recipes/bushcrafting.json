@@ -1,97 +1,22 @@
 [
   {
-    "id": "ic_stick",
-    "label": "Stick",
-    "context": "bushcrafting",
-    "action": "shaping",
-    "pattern": [
-      "A ",
-      "  "
-    ],
-    "key": {
-      "A": "Wood"
-    },
-    "tools": [
-      "Knife"
-    ],
-    "output": {
-      "id": "ic_stick",
-      "count": 4
-    }
-  },
-  {
-    "id": "ic_fibre",
-    "label": "Fibre",
-    "context": "bushcrafting",
-    "action": "shaping",
-    "pattern": [
-      "A ",
-      "  "
-    ],
-    "key": {
-      "A": "Plant"
-    },
-    "tools": [
-      "Knife"
-    ],
-    "output": {
-      "id": "ic_fibre",
-      "count": 4
-    }
-  },
-  {
-    "id": "ic_string",
-    "label": "String",
+    "id": "ic_bonemold_paste",
+    "label": "Bonemold Paste",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
       "AA",
-      "  "
-    ],
-    "key": {
-      "A": "Fibre"
-    },
-    "output": {
-      "id": "ic_string",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_station_firepit",
-    "label": "Firepit (built)",
-    "context": "bushcrafting",
-    "action": "shaping",
-    "pattern": [
-      "AA",
-      "BB"
-    ],
-    "key": {
-      "A": "Stone",
-      "B": "Wood"
-    },
-    "output": {
-      "id": "ic_station_firepit",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_water_bladder",
-    "label": "Water Bladder",
-    "context": "bushcrafting",
-    "action": "shaping",
-    "pattern": [
-      "AB",
       "B "
     ],
     "key": {
-      "A": "Hide",
-      "B": "String"
+      "A": "Bonemeal",
+      "B": "Resin"
     },
     "tools": [
-      "Knife"
+      "Mortar and Pestle"
     ],
     "output": {
-      "id": "ic_water_bladder",
+      "id": "ic_bonemold_paste",
       "count": 1
     }
   },
@@ -116,23 +41,23 @@
     }
   },
   {
-    "id": "ic_station_craftingtable",
-    "label": "Crafting Table",
+    "id": "ic_fibre",
+    "label": "Fibre",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
-      "AA",
-      "AA"
+      "A ",
+      "  "
     ],
     "key": {
-      "A": "plank"
+      "A": "Plant"
     },
     "tools": [
-      "axe"
+      "Knife"
     ],
     "output": {
-      "id": "ic_station_craftingtable",
-      "count": 1
+      "id": "ic_fibre",
+      "count": 4
     }
   },
   {
@@ -153,23 +78,98 @@
     }
   },
   {
-    "id": "ic_bonemold_paste",
-    "label": "Bonemold Paste",
+    "id": "ic_station_craftingtable",
+    "label": "Crafting Table",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
       "AA",
+      "AA"
+    ],
+    "key": {
+      "A": "plank"
+    },
+    "tools": [
+      "axe"
+    ],
+    "output": {
+      "id": "ic_station_craftingtable",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_station_firepit",
+    "label": "Firepit (built)",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "BB"
+    ],
+    "key": {
+      "A": "Stone",
+      "B": "Wood"
+    },
+    "output": {
+      "id": "ic_station_firepit",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_stick",
+    "label": "Stick",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "ic_stick",
+      "count": 4
+    }
+  },
+  {
+    "id": "ic_string",
+    "label": "String",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "  "
+    ],
+    "key": {
+      "A": "Fibre"
+    },
+    "output": {
+      "id": "ic_string",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_water_bladder",
+    "label": "Water Bladder",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AB",
       "B "
     ],
     "key": {
-      "A": "Bonemeal",
-      "B": "Resin"
+      "A": "Hide",
+      "B": "String"
     },
     "tools": [
-      "Mortar and Pestle"
+      "Knife"
     ],
     "output": {
-      "id": "ic_bonemold_paste",
+      "id": "ic_water_bladder",
       "count": 1
     }
   }

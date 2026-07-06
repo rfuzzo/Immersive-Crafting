@@ -158,12 +158,14 @@ Deferred / to verify:
 
 Originally: `docs/immersive_crafting_recipes_v2.csv` → `tools/recipes_csv2json.py`
 → a single `recipes/crafting.json`. **As of 2026-07-06 the recipe JSON is
-hand-maintained and SPLIT per context** — `recipes/{bushcrafting,crafting_table,
-firepit,kiln,charcoal_pit,tanning_rack,furnace}.json` plus cross-context
-`recipes/weapons.json` and `recipes/armour.json` (equipment outputs pulled out
-of their context files; weapon-named *molds* stay with their context since
-they're misc items). The loader globs all `*.json` in `recipes/`, so filenames
-are purely organizational — each recipe still carries its own `context` field.
+hand-maintained and organized into three kinds of file**: **context** files
+(`recipes/{bushcrafting,crafting_table,firepit,kiln,charcoal_pit,tanning_rack,
+furnace}.json`) for non-equipment production; **material** files
+(`recipes/{chitin,iron,steel,bonemold,glass,bronze,copper}.json`) for a material's
+weapons + armor; and `recipes/molds.json` for every mold. The loader globs all
+`*.json` in `recipes/`, so filenames are purely organizational — each recipe
+still carries its own `context` field. (Ingots use the Tamriel Data records
+`T_Com_MetalPiece*`; custom ingots retired.)
 The CSV generator (`immersive_crafting_recipes_v2.csv` + `recipes_csv2json.py`)
 was **retired 2026-07-06** — JSON is the sole source of truth (editing the CSV
 was more cumbersome than the split JSON). Its useful parts live on in
