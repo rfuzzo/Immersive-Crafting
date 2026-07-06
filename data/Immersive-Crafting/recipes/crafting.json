@@ -1116,7 +1116,7 @@
         "count": 3
       },
       {
-        "id": "ic_charcoal",
+        "id": "Charcoal",
         "count": 2
       }
     ],
@@ -1137,7 +1137,7 @@
         "count": 2
       },
       {
-        "id": "ic_charcoal",
+        "id": "Charcoal",
         "count": 3
       }
     ],
@@ -1160,6 +1160,10 @@
       {
         "id": "ic_mold_dagger_burnt",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
       }
     ],
     "duration": 1800,
@@ -1181,6 +1185,10 @@
       {
         "id": "ic_mold_waraxe_burnt",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
       }
     ],
     "duration": 1800,
@@ -1202,6 +1210,10 @@
       {
         "id": "ic_mold_spear_burnt",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
       }
     ],
     "duration": 1800,
@@ -1219,6 +1231,14 @@
       {
         "id": "ic_iron_ingot",
         "count": 4
+      },
+      {
+        "id": "ic_mold_armor_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 3
       }
     ],
     "duration": 1800,
@@ -1239,6 +1259,10 @@
       },
       {
         "id": "ic_mold_dagger_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
         "count": 1
       }
     ],
@@ -1261,6 +1285,10 @@
       {
         "id": "ic_mold_longsword_burnt",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
       }
     ],
     "duration": 1800,
@@ -1282,6 +1310,10 @@
       {
         "id": "ic_mold_waraxe_burnt",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
       }
     ],
     "duration": 1800,
@@ -1303,6 +1335,10 @@
       {
         "id": "ic_mold_spear_burnt",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
       }
     ],
     "duration": 1800,
@@ -1324,6 +1360,10 @@
       {
         "id": "ic_mold_warhammer_burnt",
         "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 3
       }
     ],
     "duration": 1800,
@@ -1667,7 +1707,7 @@
         "count": 1
       },
       {
-        "id": "ic_charcoal",
+        "id": "Charcoal",
         "count": 2
       }
     ],
