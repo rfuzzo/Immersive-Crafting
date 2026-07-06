@@ -3,4 +3,4 @@ flags: ""
 id: ic_station_charcoalpit_a
 name: Charcoal Pit
 script: ""
-mesh: n\Ingred_ash_salts_01.NIF
+mesh: TR\O\tr_cont_rock_coalpile.nif

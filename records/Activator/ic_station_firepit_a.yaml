@@ -3,4 +3,4 @@ flags: ""
 id: ic_station_firepit_a
 name: Firepit
 script: ""
-mesh: x\ex_scrapwood05.NIF
+mesh: l\Furn_De_Firepit_F.NIF

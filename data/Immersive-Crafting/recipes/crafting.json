@@ -128,7 +128,7 @@
       "A": "Clay"
     },
     "tools": [
-      "chitin dagger"
+      "dagger"
     ],
     "output": {
       "id": "ic_mold_dagger_raw",
@@ -148,7 +148,7 @@
       "A": "Clay"
     },
     "tools": [
-      "chitin war axe"
+      "war axe"
     ],
     "output": {
       "id": "ic_mold_waraxe_raw",
@@ -168,7 +168,7 @@
       "A": "Clay"
     },
     "tools": [
-      "chitin spear"
+      "spear"
     ],
     "output": {
       "id": "ic_mold_spear_raw",
@@ -188,7 +188,7 @@
       "A": "Clay"
     },
     "tools": [
-      "iron longsword"
+      "longsword"
     ],
     "output": {
       "id": "ic_mold_longsword_raw",
@@ -208,7 +208,7 @@
       "A": "Clay"
     },
     "tools": [
-      "iron warhammer"
+      "warhammer"
     ],
     "output": {
       "id": "ic_mold_warhammer_raw",
@@ -239,7 +239,7 @@
   {
     "id": "ic_mold_waraxe_burnt",
     "label": "Burnt War Axe Mold",
-    "context": "firepit",
+    "context": "kiln",
     "action": "processing",
     "inputs": [
       {
@@ -260,7 +260,7 @@
   {
     "id": "ic_mold_spear_burnt",
     "label": "Burnt Spear Mold",
-    "context": "firepit",
+    "context": "kiln",
     "action": "processing",
     "inputs": [
       {
@@ -333,7 +333,7 @@
       "A": "Clay"
     },
     "tools": [
-      "chitin cuirass"
+      "cuirass"
     ],
     "output": {
       "id": "ic_mold_armor_raw",
@@ -416,7 +416,7 @@
       "A": "ic_plank"
     },
     "tools": [
-      "chitin war axe"
+      "axe"
     ],
     "output": {
       "id": "ic_station_craftingtable",

@@ -1,0 +1,6 @@
+type: Activator
+flags: ""
+id: ic_station_craftingtable_a
+name: Crafting Table
+script: ""
+mesh: f\furn_de_ex_table_02.nif
