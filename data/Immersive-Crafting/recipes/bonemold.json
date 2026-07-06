@@ -1,5 +1,52 @@
 [
   {
+    "id": "a_wp_bonemold_bow_02",
+    "label": "Fine Bonemold Long Bow",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "BC ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_plank",
+      "B": "ic_string",
+      "C": "ic_bonemold_paste"
+    },
+    "output": {
+      "id": "a_wp_bonemold_bow_02",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_bonemold_bow_03",
+    "label": "Superior Bonemold Long Bow",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "BCR",
+      "   "
+    ],
+    "key": {
+      "A": "ic_plank",
+      "B": "ic_string",
+      "C": "ic_bonemold_paste",
+      "R": "resin"
+    },
+    "output": {
+      "id": "a_wp_bonemold_bow_03",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
     "id": "bonemold arrow",
     "label": "bonemold arrow",
     "context": "bushcrafting",

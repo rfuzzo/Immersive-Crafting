@@ -52,6 +52,27 @@
     }
   },
   {
+    "id": "hb_hunters_knife_repair",
+    "label": "Reforged Hunter Knife",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "Hb_brokenhunterknife",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "HB_Hunters_Knife",
+      "count": 1
+    }
+  },
+  {
     "id": "ic_glass_component",
     "label": "Glass Component",
     "context": "furnace",

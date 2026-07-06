@@ -1,0 +1,58 @@
+# Hunterwind material tags for Immersive Crafting — generated from the
+# hunterwind.omwaddon dump (pelts/skins feed the tanning chain, meats feed
+# cooking, shells feed chitin crafting, the knife doubles as an IC Knife).
+# Conservative: bloods/fats/glands/carcasses/trophies are left untagged.
+hide:
+- Hb_boarfurpelt
+- Hb_horkerfurpelt
+- Hb_netchleatherimproved
+- Hb_normalbearskin
+- Hb_normalwolfskin
+- Hb_plaguebearskin
+- Hb_plaguewolfskin
+- Hb_ratfurpelt
+- Hb_snowbearskin
+- Hb_snowwolfskin
+- hb_blackbearskin
+- hb_cervidhide
+- hb_goatpelt
+- hb_goatpeltmountain
+- hb_grahlpelt
+- hb_horsehide
+- hb_ingred_alit_hide_improved
+- hb_ingred_guar_hide_improved
+- hb_ingred_kagouti_hide_improved
+- hb_trollpelt
+meat:
+- Hb_tanthameat
+- hb_alphynmeat
+- hb_aspismeat
+- hb_bearmeat
+- hb_fishbaitmeat
+- hb_frogmeat
+- hb_goatmeat
+- hb_insectmeat
+- hb_snakemeat
+- hb_stridentmeat
+- hb_wolfmeat
+- hb_yethbugmeat
+pelt:
+- Hb_boarfurpelt
+- Hb_horkerfurpelt
+- Hb_normalbearskin
+- Hb_normalwolfskin
+- Hb_plaguebearskin
+- Hb_plaguewolfskin
+- Hb_ratfurpelt
+- Hb_snowbearskin
+- Hb_snowwolfskin
+- hb_blackbearskin
+- hb_cervidhide
+- hb_goatpelt
+- hb_goatpeltmountain
+- hb_grahlpelt
+- hb_horsehide
+- hb_ingred_alit_hide_improved
+- hb_ingred_guar_hide_improved
+- hb_ingred_kagouti_hide_improved
+- hb_trollpelt

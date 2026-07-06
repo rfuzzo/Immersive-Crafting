@@ -84,7 +84,6 @@ ModTags FlexTag YAMLs.
 
 ## `ic_*` records referenced but never produced (check!)
 
-- `ic_chitin_plate`
 - `ic_netch_hide`
 
 ## Assumed FlexTags (capitalised ingredient/tool names)
@@ -93,6 +92,7 @@ ModTags FlexTag YAMLs.
 - `Charcoal`
 - `Clay`
 - `Fibre`
+- `Hb_brokenhunterknife`
 - `Hide`
 - `Knife`
 - `Meat`
@@ -111,12 +111,17 @@ ModTags FlexTag YAMLs.
 
 ## Vanilla record references (verify against the records dump)
 
+- `a_msc_hard_leather_01`
+- `a_msc_hide_01`
+- `a_msc_leather_01`
+- `a_msc_tannin`
 - `axe`
 - `boots`
 - `bracer`
 - `charcoal`
 - `chitin`
 - `chitin club`
+- `chitin_fragment`
 - `chitin_plate`
 - `clay`
 - `crucible`
@@ -126,10 +131,21 @@ ModTags FlexTag YAMLs.
 - `greaves`
 - `hammer`
 - `helmet`
+- `hide`
+- `ingred_corkbulb_root_01`
+- `ingred_hackle-lo_leaf_01`
+- `ingred_raw_ebony_01`
+- `ingred_raw_glass_01`
+- `ingred_saltrice_01`
+- `ingred_scrap_metal_01`
+- `ingred_trama_root_01`
 - `iron_ingot`
+- `knife`
 - `longsword`
 - `pauldron`
+- `pelt`
 - `plank`
+- `resin`
 - `shield`
 - `spear`
 - `steel warhammer`

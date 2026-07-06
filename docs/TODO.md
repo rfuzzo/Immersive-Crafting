@@ -832,3 +832,60 @@ Repair-type "Armorer's Hammer" records), or point these recipes at a new tag.
 
 Decision pending: if the two-step feels good, generalize to iron + bonemold
 (each adds a rough-part record set + hammer recipe); else revert to direct cast.
+
+## Mod integrations: Ashlander Crafting, Hunterwind, Yurt (ratified + built 2026-07-06)
+
+Investigation (tes3util Linux dumps) + ratified decisions: parallel chains
+(keep IC's), tag-and-keep-both chitin, quality tiers = costlier recipes
+(skill-gate later), AC's mwscript menus stay as a parallel path for now.
+
+**Engine — soft mod dependencies:** dataManager now SKIPS any recipe whose
+output record is not in the load order (probed across item record stores at
+load, logged). Recipes for AC/Hunterwind/Yurt/OAAB/TD outputs are safe without
+those mods — no consumed-inputs-for-nothing crafts.
+
+**Ashlander Crafting port (records/menus untouched; ESP loads as-is):**
+- Tannin: grind corkbulb/hackle-lo/trama root (Mortar & Pestle, bushcrafting).
+- Leather chain at the tanning rack (TIMED, parallel to ic_netch_leather):
+  hide/pelt + saltrice -> Cured Hide (1h); + tannin + knife -> Tanned Leather
+  (1h); + resin -> Hardened Leather (30min).
+- New material files hide.json (4 pieces) + leather.json (8) using AC records.
+- Chitin: recipes migrated from exact ic_chitin_plate to the new
+  `chitin_fragment` tag (ic_chitin_plate + a_msc_chitin_01 — NOT the bare
+  'chitin' tag, which classifies chitin ARMOR in the per-plugin files); added
+  vanilla pauldrons/gauntlets ("guantlet" — vanilla typo, ids from AC's
+  AddItem lines), throwing stars x10, chitin arrows x10; dark chitin armor
+  (8 AC records, +1 resin each); Fine/Superior (_02/_03) weapon tiers
+  (+1 fragment / +1 fragment +resin); bonemold bows 02/03.
+- Arrows: corkbulb/ebony (crafting table), glass (glass.json), all x10 + stick.
+- Repair prongs 01-04 from 1-4 scrap metal (hammer).
+- ic_chitin_plate reskinned to AC's chitin mesh/icon; tanning-rack ACTIVATOR
+  now uses AC's dedicated activator mesh (ian_rack_empty_02).
+
+**Hunterwind (stays standalone):** generated ModTags/Hunterwind_{Ingredient,
+MiscItem}.yaml — 37 pelts/skins -> hide+pelt (feeding the tanning chain!),
+12 meats -> meat, 5 shells -> chitin_fragment, Hunter Knife -> knife (works as
+an IC tool). Recipes: craft the Hunter Knife (iron ingot + stick + string,
+hammer) and REFORGE the broken one at the furnace (broken + charcoal, 30min)
+— replaces the 20-drake dialogue repair with actual smithing.
+
+**Yurt Crafting:** one recipe — the Yurt Crafting Kit (4 plank + 2 cloth +
+2 string, knife) as the FRAME bundle; the mod's own deploy script still
+consumes 10 guar hides + 10 kresh fiber + 5 corkbulb on placement (no double
+cost, coherent story: kit = frame + tools, deploy wraps it in your hides).
+The interior worktable (global-variable-driven placement) is deliberately NOT
+ported. Yurt = natural Tent Mk2.
+
+Verify in-game (needs the respective ESPs):
+- without AC/Hunterwind/Yurt loaded: their recipes absent, log shows skips
+- AC chain end-to-end: grind tannin -> cure guar hide -> tan -> harden ->
+  hardened cuirass; Hunterwind pelt cures at the rack (hide tag)
+- chitin recipes accept BOTH ic plates and AC fragments (+beetle shells)
+- hunter knife reforge; yurt kit crafts then deploys (mod charges materials)
+- balance pass: all counts are first-draft (user-owned)
+
+Open: AC quality tiers should later require Armorer skill (skill-gated
+recipes, roadmap); "menus-off" patched AC ESP via tes3util when the user
+tires of the mwscript UI; bloods/fats/glands from Hunterwind untagged
+(cooking candidates); a_msc_crafting_tool/tanner-specific tools unused (IC
+uses the generic knife/hammer tags).

@@ -1,5 +1,92 @@
 [
   {
+    "id": "ac_cured_hide",
+    "label": "Cured Hide",
+    "context": "tanning_rack",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "hide",
+        "count": 1
+      },
+      {
+        "id": "ingred_saltrice_01",
+        "count": 1
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "a_msc_hide_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "ac_cured_hide_pelt",
+    "label": "Cured Hide",
+    "context": "tanning_rack",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "pelt",
+        "count": 1
+      },
+      {
+        "id": "ingred_saltrice_01",
+        "count": 1
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "a_msc_hide_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "ac_hard_leather",
+    "label": "Hardened Leather",
+    "context": "tanning_rack",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "a_msc_leather_01",
+        "count": 1
+      },
+      {
+        "id": "resin",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "a_msc_hard_leather_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "ac_tanned_leather",
+    "label": "Tanned Leather",
+    "context": "tanning_rack",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "a_msc_hide_01",
+        "count": 1
+      },
+      {
+        "id": "a_msc_tannin",
+        "count": 1
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "a_msc_leather_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
     "id": "ic_netch_leather",
     "label": "Netch Leather",
     "context": "tanning_rack",

@@ -3,8 +3,8 @@ flags: ""
 id: ic_chitin_plate
 name: Chitin Plate
 script: ""
-mesh: n\Ingred_Scales_01.nif
-icon: n\Tx_scales_01.tga
+mesh: ian\ian_chitin_01.nif
+icon: ian\tx_ian_chitin_01.dds
 data:
   weight: 1.0
   value: 3

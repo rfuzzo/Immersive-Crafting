@@ -62,3 +62,9 @@ mold_raw:
   - ic_mold_tower_shield_raw
   - ic_mold_waraxe_raw
   - ic_mold_warhammer_raw
+# ── material-family additions (Ashlander Crafting interop) ──
+# NOT the bare 'chitin' tag: that one classifies chitin ARMOR/WEAPONS in the
+# per-plugin tag files; this is the raw crafting material family.
+chitin_fragment:
+  - ic_chitin_plate
+  - a_msc_chitin_01

@@ -1,5 +1,179 @@
 [
   {
+    "id": "a_prongs_crafted_01",
+    "label": "Repair Prongs (1)",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ingred_scrap_metal_01"
+    },
+    "output": {
+      "id": "a_prongs_crafted_01",
+      "count": 1
+    },
+    "tools": [
+      "hammer"
+    ]
+  },
+  {
+    "id": "a_prongs_crafted_02",
+    "label": "Repair Prongs (2)",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ingred_scrap_metal_01"
+    },
+    "output": {
+      "id": "a_prongs_crafted_02",
+      "count": 1
+    },
+    "tools": [
+      "hammer"
+    ]
+  },
+  {
+    "id": "a_prongs_crafted_03",
+    "label": "Repair Prongs (3)",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ingred_scrap_metal_01"
+    },
+    "output": {
+      "id": "a_prongs_crafted_03",
+      "count": 1
+    },
+    "tools": [
+      "hammer"
+    ]
+  },
+  {
+    "id": "a_prongs_crafted_04",
+    "label": "Repair Prongs (4)",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "A  ",
+      "   "
+    ],
+    "key": {
+      "A": "ingred_scrap_metal_01"
+    },
+    "output": {
+      "id": "a_prongs_crafted_04",
+      "count": 1
+    },
+    "tools": [
+      "hammer"
+    ]
+  },
+  {
+    "id": "a_yurt_misc",
+    "label": "Yurt Crafting Kit",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "ABB",
+      "CC "
+    ],
+    "key": {
+      "A": "ic_plank",
+      "B": "ic_cloth",
+      "C": "ic_string"
+    },
+    "output": {
+      "id": "a_yurt_misc",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "corkbulb arrow",
+    "label": "Corkbulb Arrows",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ingred_corkbulb_root_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "corkbulb arrow",
+      "count": 10
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "ebony arrow",
+    "label": "Ebony Arrows",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ingred_raw_ebony_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "ebony arrow",
+      "count": 10
+    },
+    "tools": [
+      "hammer"
+    ]
+  },
+  {
+    "id": "hb_hunters_knife",
+    "label": "Hunter Knife",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "ABC",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick",
+      "C": "ic_string"
+    },
+    "output": {
+      "id": "HB_Hunters_Knife",
+      "count": 1
+    },
+    "tools": [
+      "hammer"
+    ]
+  },
+  {
     "id": "ic_bedroll_mk1",
     "label": "Bedroll Mk1",
     "context": "crafting_table",

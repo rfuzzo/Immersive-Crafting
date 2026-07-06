@@ -44,7 +44,8 @@ CONTEXT_FILES = {
 }
 # cross-context EQUIPMENT files grouped by material (filename == material):
 # hold that material's weapons + armor, any context
-MATERIAL_FILES = {'chitin', 'iron', 'steel', 'bonemold', 'glass', 'bronze', 'copper'}
+MATERIAL_FILES = {'chitin', 'iron', 'steel', 'bonemold', 'glass', 'bronze', 'copper',
+                  'hide', 'leather'}
 # all mold recipes (raw + burnt, weapon + armor + ingot) live here
 MOLDS_FILE = 'molds'
 # world-placement cooking + SD meals: not linted for placement
@@ -72,12 +73,16 @@ RETURNED_ITEMS = ({f'ic_mold_{p}_burnt' for p in _ARMOR_MOLD_PARTS}
                   | {'ic_mold_ingot_burnt'})
 
 # output-name classification (word-boundary; ids may join words with _ or space)
-WEAPON_KW = ['dagger', 'war axe', 'waraxe', 'spear', 'longsword', 'warhammer',
-             'claymore', 'halberd', 'club', 'shortsword', 'short bow', 'long bow',
-             'bow', 'arrow', 'bolt', 'mace', 'staff', 'katana', 'tanto', 'wakizashi']
+WEAPON_KW = ['dagger', 'war axe', 'waraxe', 'axe', 'spear', 'longsword',
+             'shortsword', 'sword', 'warhammer', 'claymore', 'halberd', 'club',
+             'short bow', 'long bow', 'bow', 'arrow', 'bolt', 'star', 'mace',
+             'staff', 'katana', 'tanto', 'wakizashi']
+# 'paul'/'tower'/'chest'/'band'/'glove' cover Ashlander Crafting's abbreviated
+# ids (a_ar_chitin_paul_left, a_ar_chitin_tower, a_ar_leather_chest/band/glove);
+# 'guantlet' is the vanilla record typo (chitin guantlet - left)
 ARMOUR_KW = ['cuirass', 'helm', 'helmet', 'boots', 'greaves', 'shield',
-             'towershield', 'pauldron', 'gauntlet', 'bracer', 'armor', 'armour',
-             'skirt']
+             'towershield', 'tower', 'pauldron', 'paul', 'gauntlet', 'guantlet',
+             'bracer', 'armor', 'armour', 'skirt', 'chest', 'band', 'glove']
 
 
 def category_of(output_id):
@@ -95,11 +100,15 @@ def category_of(output_id):
 
 def material_of(output_id):
     """Leading material token of an equipment output ('iron boots' -> 'iron';
-    'ic_steel_cuirass_rough' -> 'steel' — a custom intermediate keeps its
-    material's file)."""
+    'ic_steel_cuirass_rough' -> 'steel'; Ashlander Crafting ids drop their
+    'a_ar_'/'a_wp_' prefixes ('a_ar_hide_chest_01' -> 'hide'). Unknown
+    materials (corkbulb/ebony arrows, Hunterwind 'hb_*') return a token not in
+    MATERIAL_FILES and may live in context files."""
     o = (output_id or '').lower()
-    if o.startswith('ic_'):
-        o = o[3:]
+    for prefix in ('ic_', 'a_ar_', 'a_wp_'):
+        if o.startswith(prefix):
+            o = o[len(prefix):]
+            break
     return o.replace('_', ' ').split()[0] if o else ''
 
 
@@ -155,9 +164,9 @@ def lint(recipes):
         elif stem in CONTEXT_FILES:
             if is_mold:
                 errors.append(f'{rid}: mold "{out_id}" should live in molds.json, not {stem}.json')
-            elif cat is not None:
+            elif cat is not None and material_of(out_id) in MATERIAL_FILES:
                 errors.append(f'{rid}: {cat} "{out_id}" should live in {material_of(out_id)}.json, not {stem}.json')
-            elif r.get('context') and r['context'] != stem:
+            elif cat is None and r.get('context') and r['context'] != stem:
                 errors.append(f'{rid}: context "{r["context"]}" but filed in {stem}.json')
         # OTHER_FILES: no placement rule
 

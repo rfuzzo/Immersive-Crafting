@@ -1,5 +1,65 @@
 [
   {
+    "id": "ac_tannin_corkbulb",
+    "label": "Vegetable Tannin",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "ingred_corkbulb_root_01"
+    },
+    "output": {
+      "id": "a_msc_tannin",
+      "count": 1
+    },
+    "tools": [
+      "Mortar and Pestle"
+    ]
+  },
+  {
+    "id": "ac_tannin_hackle_lo",
+    "label": "Vegetable Tannin",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "ingred_hackle-lo_leaf_01"
+    },
+    "output": {
+      "id": "a_msc_tannin",
+      "count": 1
+    },
+    "tools": [
+      "Mortar and Pestle"
+    ]
+  },
+  {
+    "id": "ac_tannin_trama",
+    "label": "Vegetable Tannin",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "ingred_trama_root_01"
+    },
+    "output": {
+      "id": "a_msc_tannin",
+      "count": 1
+    },
+    "tools": [
+      "Mortar and Pestle"
+    ]
+  },
+  {
     "id": "ic_bonemold_paste",
     "label": "Bonemold Paste",
     "context": "bushcrafting",
