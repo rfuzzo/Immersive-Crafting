@@ -22,6 +22,9 @@ mortar:
   - apparatus_sm_mortar_01
 fibre:
   - ingred_kresh_fiber_01
+raw_glass:
+  - ingred_raw_glass_01
+  - ingred_raw_glass_tinos
 firestarter:
   - AB_Misc_FlintAndSteel
   - AB_Misc_Flint

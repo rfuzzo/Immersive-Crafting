@@ -83,15 +83,17 @@ ModTags FlexTag YAMLs.
 - `Hide`
 - `Knife`
 - `Meat`
-- `Ore`
 - `Plant`
-- `Raw Glass`
 - `Resin`
 - `Salt`
 - `Stone`
 - `String`
 - `T_Com_MetalPieceIron_01`
 - `T_Com_MetalPieceSteel_01`
+- `T_IngMine_OreCopper_01`
+- `T_IngMine_OreGold_01`
+- `T_IngMine_OreIron_01`
+- `T_IngMine_OreSilver_01`
 - `Vegetable`
 - `Wood`
 
@@ -132,6 +134,7 @@ ModTags FlexTag YAMLs.
 - `pauldron`
 - `pelt`
 - `plank`
+- `raw_glass`
 - `resin`
 - `shield`
 - `spear`

@@ -193,6 +193,28 @@
     }
   },
   {
+    "id": "miner's pick",
+    "label": "Miner's Pick",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "B  ",
+      "B  "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "miner's pick",
+      "count": 1
+    }
+  },
+  {
     "id": "misc_com_wood_bowl_02",
     "label": "Wooden Bowl",
     "context": "crafting_table",

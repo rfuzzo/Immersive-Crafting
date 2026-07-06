@@ -6,7 +6,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "Ore",
+        "id": "T_IngMine_OreIron_01",
         "count": 3
       },
       {
@@ -52,6 +52,84 @@
     }
   },
   {
+    "id": "t_com_metalpiecesilver_01",
+    "label": "Silver Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_IngMine_OreSilver_01",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "T_Com_MetalPieceSilver_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_metalpiecegold_01",
+    "label": "Gold Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_IngMine_OreGold_01",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "T_Com_MetalPieceGold_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_metalpiecebronze_01",
+    "label": "Bronze Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_IngMine_OreCopper_01",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "T_Com_MetalPieceBronze_01",
+      "count": 1
+    }
+  },
+  {
     "id": "hb_hunters_knife_repair",
     "label": "Reforged Hunter Knife",
     "context": "furnace",
@@ -79,7 +157,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "Raw Glass",
+        "id": "raw_glass",
         "count": 2
       },
       {

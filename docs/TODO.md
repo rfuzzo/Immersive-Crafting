@@ -977,3 +977,40 @@ Judgment calls for the user:
 - ic_cloth: no generic cloth record found (TD folded cloths are outfits) — kept.
 - the pan recipe still consumes iron pieces but now outputs a COPPER pan —
   rebalance when copper enters (TD has no copper ingot; bronze exists).
+
+## SimplyMining interop (evaluated + built 2026-07-06)
+
+Evaluation: SimplyMining is OpenMW-native Lua (player/global/menu scripts, no
+MWSE) — runs alongside IC with zero engine work. It spawns ore-node containers
+(TR/PC/Sky meshes + its own coal vein) and swing-mining grants the REAL
+records: TD ores (T_IngMine_OreIron/Copper/Silver/Gold/Orichalcum_01,
+T_IngMine_Coal_01) and vanilla ingred_raw_ebony/raw_glass/diamond/
+adamantium_ore_01. The sm_* RepairItem clones are only a vendor-restock trick
+(converted back to the real ingredient on purchase) — nothing to tag there.
+Its nodes are Containers, so IC's context scan (items/activators/corpses)
+never cards them; no collision with gather-stone gaze foraging. Pick
+requirement is hardcoded (miner's pick, BM Nordic Pick, id:find("pick")) —
+no tag hook needed on their side.
+
+Already-working interop (no change needed): mined T_IngMine_Coal_01 is in
+IC's `charcoal` tag -> direct furnace/kiln fuel; raw ebony feeds the ebony
+arrow recipe; the dataset `ore` tag covers all TD ores.
+
+IC changes (the metalwork gap-closing):
+- furnace iron ingot input `Ore` (tag) -> exact T_IngMine_OreIron_01: the
+  broad tag was fine when ore was vendor-only, but with mining it would smelt
+  3 of ANY ore (gold!) into an iron ingot.
+- LATENT BUG #3 this session: `Raw Glass` tag didn't exist either -> new
+  `raw_glass` tag (ingred_raw_glass_01 + _tinos), glass component recipe
+  fixed.
+- new furnace lines (same shape as iron: 3 ore + 2 charcoal + returned ingot
+  mold, 3600s): Silver -> T_Com_MetalPieceSilver_01, Gold ->
+  T_Com_MetalPieceGold_01, Bronze <- 3 COPPER ore ->
+  T_Com_MetalPieceBronze_01 (TD has no copper ingot; simplified alloy —
+  revisit when the alloy mechanic / bronze armor lands. JUDGMENT CALL:
+  historically bronze = copper + tin).
+- new crafting-table recipe: Miner's Pick (2 iron ingots + 2 sticks, hammer)
+  — closes the loop pick -> mine -> smelt -> forge pick.
+
+Not covered (no target records): orichalcum/adamantium/diamond ingots — TD
+ingots stop at Bronze/Gold/Iron/Silver/Steel; park for the alloy design.
