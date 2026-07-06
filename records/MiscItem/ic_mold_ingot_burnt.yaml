@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_mold_ingot_burnt
+name: Burnt Ingot Mold
+script: ""
+mesh: m\Misc_LW_Flask.NIF
+icon: m\Misc_LW_Flask.tga
+data:
+  weight: 3.0
+  value: 6
+  flags: ""

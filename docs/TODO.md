@@ -156,11 +156,22 @@ Deferred / to verify:
 
 ## Tiered recipes import (Minecraft-style progression)
 
-`docs/immersive_crafting_recipes_v2.csv` → `tools/recipes_csv2json.py` →
-`recipes/crafting.json` (86 recipes: 57 shaped, 29 process). Rerun the script after
-editing the CSV. It lints the tool-vs-consumed rules (consumed weapon molds never in
-tool columns; reusable crucible/armor mold never in ingredient columns) and generates
-the `ic_*` record inventory → `docs/ic_records.md`.
+Originally: `docs/immersive_crafting_recipes_v2.csv` → `tools/recipes_csv2json.py`
+→ a single `recipes/crafting.json`. **As of 2026-07-06 the recipe JSON is
+hand-maintained and organized into three kinds of file**: **context** files
+(`recipes/{bushcrafting,crafting_table,firepit,kiln,charcoal_pit,tanning_rack,
+furnace}.json`) for non-equipment production; **material** files
+(`recipes/{chitin,iron,steel,bonemold,glass,bronze,copper}.json`) for a material's
+weapons + armor; and `recipes/molds.json` for every mold. The loader globs all
+`*.json` in `recipes/`, so filenames are purely organizational — each recipe
+still carries its own `context` field. (Ingots use the Tamriel Data records
+`T_Com_MetalPiece*`; custom ingots retired.)
+The CSV generator (`immersive_crafting_recipes_v2.csv` + `recipes_csv2json.py`)
+was **retired 2026-07-06** — JSON is the sole source of truth (editing the CSV
+was more cumbersome than the split JSON). Its useful parts live on in
+`tools/recipes_lint.py`, which READS the JSON (never writes it) to check
+integrity + the tool-vs-consumed rules and regenerate `docs/ic_records.md`.
+Run `python3 tools/recipes_lint.py` after editing recipes (or `--check` in CI).
 
 Applied per design review (ratified 2026-07-02):
 - ✅ `outcome_count` column added (default 1; arrows/bolts ×20 via `output.count`).
@@ -704,3 +715,22 @@ Verify in-game (after the plugin with the Activator records is built):
   (not picked up); hold F on its card -> packed back into the inventory
 - busy kiln refuses packing; collect first, then pack works
 - dropping a STACK of stations converts one; the rest stays lying as items
+
+## Steel armor: cast → hammer two-step (PROTOTYPE, 2026-07-06)
+
+Testing idea 2 (more armor crafting steps) on the steel tier only, to feel
+whether the extra beat reads as ritual or chore before generalizing:
+- FURNACE cast: steel ingots + part mold (returned) + charcoal → a rough part
+  (new ic_steel_<slot>_rough records, 10, placeholder scrap-metal mesh).
+- CRAFTING TABLE hammer: rough part + `hammer` TOOL → the finished vanilla
+  steel piece. One-cell shaped recipe; tool never consumed.
+Keeps the per-part molds meaningful (mold shapes the cast; hammering finishes).
+Iron + bonemold stay single-step direct-cast; steel weapons untouched.
+
+OPEN — the `hammer` tag: it already exists but currently holds WEAPON hammers
+(banhammer, stendar hammer, etc.), not smith hammers. As-is you'd "smith" armor
+with a banhammer. Decide: retag `hammer` to armorer's/repair hammers (the
+Repair-type "Armorer's Hammer" records), or point these recipes at a new tag.
+
+Decision pending: if the two-step feels good, generalize to iron + bonemold
+(each adds a rough-part record set + hammer recipe); else revert to direct cast.

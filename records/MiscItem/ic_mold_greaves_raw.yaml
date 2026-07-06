@@ -1,7 +1,7 @@
 type: MiscItem
 flags: ""
-id: ic_mold_armor_raw
-name: Raw Armor Mold
+id: ic_mold_greaves_raw
+name: Raw Greaves Mold
 script: ""
 mesh: m\Misc_Redware_Flask.NIF
 icon: m\Misc_Redware_Flask.tga

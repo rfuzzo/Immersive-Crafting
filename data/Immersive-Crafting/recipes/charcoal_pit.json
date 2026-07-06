@@ -1,0 +1,19 @@
+[
+  {
+    "id": "ic_charcoal",
+    "label": "Charcoal",
+    "context": "charcoal_pit",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "Wood",
+        "count": 4
+      }
+    ],
+    "duration": 7200,
+    "output": {
+      "id": "ic_charcoal",
+      "count": 2
+    }
+  }
+]

@@ -1,0 +1,337 @@
+[
+  {
+    "id": "iron boots",
+    "label": "iron boots",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_boots_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron dagger",
+    "label": "iron dagger",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_dagger_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron dagger",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron spear",
+    "label": "iron spear",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_spear_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron spear",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron war axe",
+    "label": "iron war axe",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_waraxe_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron war axe",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_cuirass",
+    "label": "iron_cuirass",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 4
+      },
+      {
+        "id": "ic_mold_cuirass_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 3
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_gauntlet_left",
+    "label": "iron_gauntlet_left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_gauntlet_left_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_gauntlet_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_gauntlet_right",
+    "label": "iron_gauntlet_right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_gauntlet_right_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_gauntlet_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_greaves",
+    "label": "iron_greaves",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 3
+      },
+      {
+        "id": "ic_mold_greaves_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_helmet",
+    "label": "iron_helmet",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_helm_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_helmet",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_pauldron_left",
+    "label": "iron_pauldron_left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_pauldron_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_pauldron_right",
+    "label": "iron_pauldron_right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_pauldron_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_shield",
+    "label": "iron_shield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_shield_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_shield",
+      "count": 1
+    }
+  },
+  {
+    "id": "iron_towershield",
+    "label": "iron_towershield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceIron_01",
+        "count": 3
+      },
+      {
+        "id": "ic_mold_tower_shield_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "iron_towershield",
+      "count": 1
+    }
+  }
+]

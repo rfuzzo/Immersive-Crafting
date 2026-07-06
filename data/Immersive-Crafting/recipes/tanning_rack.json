@@ -1,0 +1,26 @@
+[
+  {
+    "id": "ic_netch_leather",
+    "label": "Netch Leather",
+    "context": "tanning_rack",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_netch_hide",
+        "count": 1
+      },
+      {
+        "id": "Salt",
+        "count": 1
+      }
+    ],
+    "duration": 3600,
+    "tools": [
+      "Knife"
+    ],
+    "output": {
+      "id": "ic_netch_leather",
+      "count": 1
+    }
+  }
+]

@@ -1,0 +1,222 @@
+[
+  {
+    "id": "glass claymore",
+    "label": "glass claymore",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "B  ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass claymore",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass dagger",
+    "label": "glass dagger",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass dagger",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass halberd",
+    "label": "glass halberd",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "B  ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_plank"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass halberd",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass longsword",
+    "label": "glass longsword",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass longsword",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass war axe",
+    "label": "glass war axe",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_plank"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass war axe",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_boots",
+    "label": "glass_boots",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_cuirass",
+    "label": "glass_cuirass",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "B  ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_greaves",
+    "label": "glass_greaves",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_helm",
+    "label": "glass_helm",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "glass_shield",
+    "label": "glass_shield",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ic_glass_component",
+      "B": "ic_netch_leather"
+    },
+    "tools": [
+      "steel warhammer"
+    ],
+    "output": {
+      "id": "glass_shield",
+      "count": 1
+    }
+  }
+]

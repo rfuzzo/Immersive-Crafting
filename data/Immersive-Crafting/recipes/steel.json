@@ -1,0 +1,577 @@
+[
+  {
+    "id": "ic_steel_boots_rough",
+    "label": "Cast Rough Steel Boots",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_boots_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_boots_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_cuirass_rough",
+    "label": "Cast Rough Steel Cuirass",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 4
+      },
+      {
+        "id": "ic_mold_cuirass_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 3
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_cuirass_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_gauntlet_left_rough",
+    "label": "Cast Rough Steel Left Gauntlet",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_gauntlet_left_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_gauntlet_left_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_gauntlet_right_rough",
+    "label": "Cast Rough Steel Right Gauntlet",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_gauntlet_right_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_gauntlet_right_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_greaves_rough",
+    "label": "Cast Rough Steel Greaves",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 3
+      },
+      {
+        "id": "ic_mold_greaves_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_greaves_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_helm_rough",
+    "label": "Cast Rough Steel Helm",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_helm_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_helm_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_pauldron_left_rough",
+    "label": "Cast Rough Steel Left Pauldron",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_pauldron_left_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_pauldron_right_rough",
+    "label": "Cast Rough Steel Right Pauldron",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_pauldron_right_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_shield_rough",
+    "label": "Cast Rough Steel Shield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_shield_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_shield_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_steel_towershield_rough",
+    "label": "Cast Rough Steel Tower Shield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 3
+      },
+      {
+        "id": "ic_mold_tower_shield_burnt",
+        "count": 1,
+        "returned": true
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_steel_towershield_rough",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel dagger",
+    "label": "steel dagger",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_dagger_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "steel dagger",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel longsword",
+    "label": "steel longsword",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_longsword_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "steel longsword",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel spear",
+    "label": "steel spear",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_spear_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "steel spear",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel war axe",
+    "label": "steel war axe",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_waraxe_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "steel war axe",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel warhammer",
+    "label": "steel warhammer",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceSteel_01",
+        "count": 3
+      },
+      {
+        "id": "ic_mold_warhammer_burnt",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 3
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "steel warhammer",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_boots",
+    "label": "steel_boots",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_boots_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_cuirass",
+    "label": "steel_cuirass",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_cuirass_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_gauntlet_left",
+    "label": "steel_gauntlet_left",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_gauntlet_left_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_gauntlet_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_gauntlet_right",
+    "label": "steel_gauntlet_right",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_gauntlet_right_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_gauntlet_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_greaves",
+    "label": "steel_greaves",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_greaves_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_helm",
+    "label": "steel_helm",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_helm_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_pauldron_left",
+    "label": "steel_pauldron_left",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_pauldron_left_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_pauldron_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_pauldron_right",
+    "label": "steel_pauldron_right",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_pauldron_right_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_pauldron_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_shield",
+    "label": "steel_shield",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_shield_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_shield",
+      "count": 1
+    }
+  },
+  {
+    "id": "steel_towershield",
+    "label": "steel_towershield",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A"
+    ],
+    "key": {
+      "A": "ic_steel_towershield_rough"
+    },
+    "tools": [
+      "hammer"
+    ],
+    "output": {
+      "id": "steel_towershield",
+      "count": 1
+    }
+  }
+]

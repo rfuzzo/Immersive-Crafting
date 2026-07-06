@@ -71,3 +71,24 @@ alphabetically; ordering is cosmetic since FlexTag stores tags as a set.
 - Requires Python 3 (`py` launcher on Windows). Standard library only.
 - Earlier awk/PowerShell versions of this generator (and the one-off bootstrap
   scripts) are in git history if ever needed.
+
+## Recipe lint (`recipes_lint.py`)
+
+The recipe JSON (`../data/Immersive-Crafting/recipes/*.json`) is **hand-maintained**
+and the source of truth — split per context plus cross-context `weapons.json` /
+`armour.json`. `recipes_lint.py` READS those files (never writes them) and:
+
+- checks integrity: duplicate ids; each recipe's `context` matching the file it
+  lives in; the weapons/armour files holding only weapon/armour outputs;
+- lints the tool-vs-consumed rules (consumed weapon molds never in a tool slot;
+  the reusable armour mold placed as a `returned` input, never a plain one);
+- regenerates `../docs/ic_records.md` — the `ic_*` record inventory, assumed
+  FlexTags, and vanilla record references.
+
+```sh
+python3 tools/recipes_lint.py            # lint + regenerate the record doc
+python3 tools/recipes_lint.py --check    # lint only (non-zero exit on error; CI-friendly)
+```
+
+The former CSV generator (`immersive_crafting_recipes_v2.csv` + `recipes_csv2json.py`)
+was retired 2026-07-06 — editing JSON directly is the workflow; see git history.
