@@ -136,44 +136,6 @@
     }
   },
   {
-    "id": "ic_plank",
-    "label": "Plank",
-    "context": "bushcrafting",
-    "action": "shaping",
-    "pattern": [
-      "AA",
-      "  "
-    ],
-    "key": {
-      "A": "Wood"
-    },
-    "tools": [
-      "axe"
-    ],
-    "output": {
-      "id": "ic_plank",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_spit",
-    "label": "Spit",
-    "context": "bushcrafting",
-    "action": "shaping",
-    "pattern": [
-      "AB",
-      "B "
-    ],
-    "key": {
-      "A": "ic_iron_ingot",
-      "B": "ic_stick"
-    },
-    "output": {
-      "id": "ic_spit",
-      "count": 1
-    }
-  },
-  {
     "id": "ic_mortar_pestle",
     "label": "Mortar and Pestle",
     "context": "bushcrafting",

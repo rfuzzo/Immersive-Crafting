@@ -57,7 +57,10 @@ _ARMOR_MOLD_PARTS = ('cuirass', 'boots', 'greaves', 'helm',
                      'bracer_left', 'bracer_right',
                      'gauntlet_left', 'gauntlet_right',
                      'shield', 'tower_shield')
-RETURNED_ITEMS = {f'ic_mold_{p}_burnt' for p in _ARMOR_MOLD_PARTS}
+# reusable molds: the armor part molds plus the ingot mold (the furnace casts
+# ingots in it and hands it back). Weapon molds are single-use (CONSUMED_MOLDS).
+RETURNED_ITEMS = ({f'ic_mold_{p}_burnt' for p in _ARMOR_MOLD_PARTS}
+                  | {'ic_mold_ingot_burnt'})
 
 # output-name classification (word-boundary; ids may join words with _ or space)
 WEAPON_KW = ['dagger', 'war axe', 'waraxe', 'spear', 'longsword', 'warhammer',

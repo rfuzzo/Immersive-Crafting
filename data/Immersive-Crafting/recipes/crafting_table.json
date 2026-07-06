@@ -390,7 +390,7 @@
       "   "
     ],
     "key": {
-      "A": "ic_iron_ingot",
+      "A": "T_Com_MetalPieceIron_01",
       "B": "ic_stick"
     },
     "output": {
@@ -409,7 +409,7 @@
       "   "
     ],
     "key": {
-      "A": "ic_iron_ingot"
+      "A": "T_Com_MetalPieceIron_01"
     },
     "output": {
       "id": "ic_pot",
@@ -427,7 +427,7 @@
       "   "
     ],
     "key": {
-      "A": "ic_iron_ingot",
+      "A": "T_Com_MetalPieceIron_01",
       "B": "ic_stick"
     },
     "tools": [
@@ -735,6 +735,61 @@
     ],
     "output": {
       "id": "ic_mold_gauntlet_right_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_mold_ingot_raw",
+    "label": "Raw Ingot Mold",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "AAA"
+    ],
+    "key": {
+      "A": "clay"
+    },
+    "output": {
+      "id": "ic_mold_ingot_raw",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_plank",
+    "label": "Plank",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "  "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "axe"
+    ],
+    "output": {
+      "id": "ic_plank",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_spit",
+    "label": "Spit",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB",
+      "B "
+    ],
+    "key": {
+      "A": "T_Com_MetalPieceIron_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "ic_spit",
       "count": 1
     }
   }

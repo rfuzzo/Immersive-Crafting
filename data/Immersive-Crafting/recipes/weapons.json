@@ -119,7 +119,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_iron_ingot",
+        "id": "T_Com_MetalPieceIron_01",
         "count": 1
       },
       {
@@ -144,7 +144,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_iron_ingot",
+        "id": "T_Com_MetalPieceIron_01",
         "count": 2
       },
       {
@@ -169,7 +169,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_iron_ingot",
+        "id": "T_Com_MetalPieceIron_01",
         "count": 2
       },
       {
@@ -194,7 +194,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_steel_ingot",
+        "id": "T_Com_MetalPieceSteel_01",
         "count": 1
       },
       {
@@ -219,7 +219,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_steel_ingot",
+        "id": "T_Com_MetalPieceSteel_01",
         "count": 2
       },
       {
@@ -244,7 +244,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_steel_ingot",
+        "id": "T_Com_MetalPieceSteel_01",
         "count": 2
       },
       {
@@ -269,7 +269,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_steel_ingot",
+        "id": "T_Com_MetalPieceSteel_01",
         "count": 2
       },
       {
@@ -294,7 +294,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_steel_ingot",
+        "id": "T_Com_MetalPieceSteel_01",
         "count": 3
       },
       {

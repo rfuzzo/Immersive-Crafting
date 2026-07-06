@@ -368,5 +368,26 @@
       "id": "ic_mold_gauntlet_right_burnt",
       "count": 1
     }
+  },
+  {
+    "id": "ic_mold_ingot_burnt",
+    "label": "Burnt Ingot Mold",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_mold_ingot_raw",
+        "count": 1
+      },
+      {
+        "id": "charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_mold_ingot_burnt",
+      "count": 1
+    }
   }
 ]

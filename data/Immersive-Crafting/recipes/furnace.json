@@ -1,6 +1,6 @@
 [
   {
-    "id": "ic_iron_ingot",
+    "id": "T_Com_MetalPieceIron_01",
     "label": "Iron Ingot",
     "context": "furnace",
     "action": "processing",
@@ -12,32 +12,42 @@
       {
         "id": "Charcoal",
         "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
       }
     ],
     "duration": 3600,
     "output": {
-      "id": "ic_iron_ingot",
+      "id": "T_Com_MetalPieceIron_01",
       "count": 1
     }
   },
   {
-    "id": "ic_steel_ingot",
+    "id": "T_Com_MetalPieceSteel_01",
     "label": "Steel Ingot",
     "context": "furnace",
     "action": "processing",
     "inputs": [
       {
-        "id": "ic_iron_ingot",
+        "id": "T_Com_MetalPieceIron_01",
         "count": 2
       },
       {
         "id": "Charcoal",
         "count": 3
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
       }
     ],
     "duration": 5400,
     "output": {
-      "id": "ic_steel_ingot",
+      "id": "T_Com_MetalPieceSteel_01",
       "count": 1
     }
   },
