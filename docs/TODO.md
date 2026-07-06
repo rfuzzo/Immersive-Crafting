@@ -704,3 +704,50 @@ Verify in-game (after the plugin with the Activator records is built):
   (not picked up); hold F on its card -> packed back into the inventory
 - busy kiln refuses packing; collect first, then pack works
 - dropping a STACK of stations converts one; the rest stays lying as items
+
+## UI-less kiln & charcoal pit (ratified + built 2026-07-06)
+
+The immersive loop (user ratified): DROP items onto the station to load it,
+hold FIRE to it to light it, activate when done to collect. Kiln + charcoal
+pit only (stations.json `loadable: true`); the furnace keeps the window —
+a crucible furnace is a complicated thing. Fully additive: an EMPTY station
+still opens the crafting window as before.
+
+- **Load** (global): init.lua's onObjectActive chain — station items swap to
+  activators first; any other ITEM dropped within 150 units of an idle
+  loadable station joins its charge (saveData.charges[stationId], whole
+  stack, absorbed; "Loaded 3 x Ore into the Kiln"). Gated by the new
+  "Load stations by dropping items" setting (default ON), pushed to the
+  global script via ImmersiveCrafting_SetOptions (on load + on change).
+- **Status**: charges mirror to the player inside ProcessSync
+  (processState.chargeFor); the card shows "Loaded — Contains: 3x Ore,
+  2x Charcoal" and activating a cold loaded station reports the charge
+  instead of opening the window.
+- **Light it** (player): with fire in hand — a lit torch (Light in
+  CarriedLeft) or any item tagged `firestarter` (user-authored tag) — the
+  card offers hold-F "Light the fire" (1.5s). The handler resolves the
+  charge via resolveProcessRecipes (exact multiset), checks tools against
+  the INVENTORY (no tool slots UI-less), splits returned mold lines, and
+  sends ImmersiveCrafting_IgniteStation; global consumes the WHOLE charge,
+  registers the run (shared registerRun with the window path), lights the
+  processFx fire. No match -> "That will not make anything"; missing tools
+  -> "Needs: ..."; without fire the card says "Needs fire in hand (a torch)".
+- **Collect / pack**: unchanged collect-by-activation; packing a cold loaded
+  station returns its charge first (PackStation wrapper in init.lua).
+
+Ambiguity note: identical charges (bonemold helm vs boots = 1 paste) light
+the FIRST match by id — the window's cycler remains the precise tool.
+
+Verify in-game:
+- drop ore+charcoal at kiln -> loaded card; activate -> contents message;
+  torch in hand -> hold F -> fire lights, run starts; collect ingot
+- charcoal pit: 4 wood -> light -> charcoal
+- pack a loaded cold kiln -> charge + kiln item back; busy kiln refuses
+- setting OFF -> drops stay on the ground; window flow unaffected
+- fireball ignition (stretch, unverified API): detecting a fire-school cast
+  while gazing at the station — research OpenMW spell-cast hooks first
+
+Planter (open, user undecided): hold-F planting STAYS (make-believe wins
+over drop-to-plant). Improvement idea on the table: planters REMEMBER their
+last crop and default to replanting it, so tap-cycling is only needed when
+switching crops.

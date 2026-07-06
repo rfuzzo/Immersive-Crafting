@@ -35,16 +35,20 @@ local this = {}
 local byItem = nil ---@type table<string, string>? item record id -> activator record id
 local byActivator = nil ---@type table<string, string>? activator record id -> item record id
 local fxByActivator = nil ---@type table<string, { record: string, offset: number[]? }>? activator record id -> process FX
+local loadable = nil ---@type table<string, boolean>? activator record id -> accepts a dropped-in charge (UI-less kiln/charcoal pit)
 
 local function maps()
     if byItem then return byItem, byActivator end
-    byItem, byActivator, fxByActivator = {}, {}, {}
+    byItem, byActivator, fxByActivator, loadable = {}, {}, {}, {}
     for _, entry in ipairs(io.loadJsonFile(STATIONS_PATH) or {}) do
         if entry.item and entry.activator then
             byItem[entry.item:lower()] = entry.activator
             byActivator[entry.activator:lower()] = entry.item
             if entry.processFx and entry.processFx.record then
                 fxByActivator[entry.activator:lower()] = entry.processFx
+            end
+            if entry.loadable then
+                loadable[entry.activator:lower()] = true
             end
         end
     end
@@ -64,13 +68,24 @@ function this.processFxFor(recordId)
     return fxByActivator[recordId]
 end
 
+--- Does this placed station accept a dropped-in charge (UI-less loading)?
+---@param recordId string activator record id
+---@return boolean
+function this.isLoadable(recordId)
+    maps()
+    return loadable[recordId] or false
+end
+
 --- Engine handler: swap station items lying in the world for their activator.
+--- Returns true when the object IS a station item (handled here — even if the
+--- swap failed, it must not be treated as station-charge input).
 ---@param object any object that just became active
+---@return boolean handled
 function this.onObjectActive(object)
-    if object.type ~= types.Miscellaneous then return end
+    if object.type ~= types.Miscellaneous then return false end
     local items = maps()
     local activatorId = items[object.recordId]
-    if not activatorId then return end
+    if not activatorId then return false end
 
     local cell, pos, rot = object.cell, object.position, object.rotation
     local ok, err = pcall(function()
@@ -81,10 +96,11 @@ function this.onObjectActive(object)
         -- most likely: the activator record isn't in the load order yet
         log.warn(('stations: cannot place "%s" (%s) — item left as-is'):format(
             activatorId, tostring(err)))
-        return
+        return true
     end
     object:remove(1)
     log.info(('stations: placed %s'):format(activatorId))
+    return true
 end
 
 --- Event: pack a placed station back into its item form.
