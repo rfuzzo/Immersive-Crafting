@@ -363,14 +363,16 @@ local function toolMaterials()
 end
 
 --- Materials still pickable: inventory counts minus what is already placed in
---- the slots (placing an item visibly removes one from the strip). While an
---- EMPTY slot with an `accepts` filter is selected, the strip only shows what
---- that slot takes (e.g. molds for the Mold slot); while a TOOL slot is
---- selected, it shows the station-relevant tools instead.
+--- the slots (placing an item visibly removes one from the strip). The strip
+--- follows the SELECTED slot's filter — filled or not (process slots keep
+--- their selection for stacking; the filter must not silently drop the moment
+--- something is placed): the Mold slot shows molds, Fuel shows fuels, an
+--- Input slot shows unclaimed materials. While a TOOL slot is selected it
+--- shows the station-relevant tools instead.
 local function availableMaterials()
     if selectedToolSlot then return toolMaterials() end
     local placedBy = placedCounts()
-    local filterSlot = (selectedSlot and not placed[selectedSlot]) and selectedSlot or nil
+    local filterSlot = selectedSlot
     local list = {}
     for _, entry in ipairs(materials) do
         local remaining = entry.count - (placedBy[entry.recordId] or 0)
@@ -530,7 +532,50 @@ local function stationRecipes()
     return list
 end
 
+--- Ingredient summary for the recipe guide tooltip, e.g.
+--- "8x Clay, Iron Dagger (returned)" / "2x Wood, tools: Knife".
+---@param r CShapedRecipe|CProcessRecipe
+---@return string
+local function recipeIngredientSummary(r)
+    local counts, order = {}, {}
+    local function add(matcher, n)
+        if not counts[matcher] then
+            counts[matcher] = 0
+            order[#order + 1] = matcher
+        end
+        counts[matcher] = counts[matcher] + n
+    end
+    if r.pattern then
+        for _, rowStr in ipairs(r.pattern) do
+            for col = 1, #rowStr do
+                local sym = rowStr:sub(col, col)
+                if sym ~= ' ' and sym ~= '.' and r.key[sym] then add(r.key[sym], 1) end
+            end
+        end
+    end
+    local returned = {} ---@type table<string, boolean> matchers given back on craft
+    for _, line in ipairs(r.inputs or {}) do
+        add(line.id, line.count or 1)
+        if line.returned then returned[line.id] = true end
+    end
+    for _, line in ipairs(r.returned or {}) do returned[line.id] = true end
+
+    local parts = {}
+    for _, m in ipairs(order) do
+        -- resolves record ids to display names; tags fall through unchanged
+        local label = recordDisplayName(m)
+        local part = counts[m] > 1 and ('%dx %s'):format(counts[m], label) or label
+        if returned[m] then part = part .. ' (returned)' end
+        parts[#parts + 1] = part
+    end
+    if r.tools and #r.tools > 0 then
+        parts[#parts + 1] = 'tools: ' .. table.concat(r.tools, ', ')
+    end
+    return table.concat(parts, ', ')
+end
+
 --- Strip entries for the recipe guide: one per recipe, output icon + count.
+--- The tooltip carries the recipe name plus its ingredient summary.
 local function recipeEntries()
     local entries = {}
     for _, r in ipairs(stationRecipes()) do
@@ -540,11 +585,13 @@ local function recipeEntries()
         else
             icon, n = recordIconPath(r.output.id), r.output.count or 1
         end
+        local name = r.label or r.id
         entries[#entries + 1] = {
             recordId = r.id,
             icon = icon,
             count = n,
-            label = r.label or r.id,
+            label = name,
+            tooltip = ('%s\n%s'):format(name, recipeIngredientSummary(r)),
         }
     end
     return entries

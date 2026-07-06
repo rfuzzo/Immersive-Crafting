@@ -8,8 +8,9 @@
     owner passes the pre-filtered entry list; this module only owns
     presentation, paging and hover tooltips.
 
-    Entries: { recordId, icon?, count, label? } — `label` feeds the hover
-    tooltip (item/recipe name; falls back to the record id).
+    Entries: { recordId, icon?, count, label?, tooltip? } — the hover tooltip
+    shows `tooltip` (multi-line, e.g. recipe ingredients), falling back to
+    `label` (item/recipe name), then the record id. Search filters on `label`.
 
     The header is configurable: `header = { title = 'Recipes', button =
     { label = 'Materials', onClick = fn } }` renders a right-side toggle
@@ -141,7 +142,7 @@ end
 
 --- Build the embedded strip. The owner computes `dims` from the live window
 --- size (alchemy-style auto layout); without dims a 6x2 fallback is used.
----@param items { recordId: string, icon: string?, count: integer, label: string? }[] entries (pre-filtered)
+---@param items { recordId: string, icon: string?, count: integer, label: string?, tooltip: string? }[] entries (pre-filtered)
 ---@param view { onPick: fun(recordId: string, iconPath: string?), refresh: fun() }
 ---@param dims { columns: integer, rows: integer }?
 ---@param header { title: string?, button: { label: string, onClick: fun() }? }?
@@ -204,7 +205,7 @@ function this.Body(items, view, dims, header)
             count = entry.count > 1 and entry.count or nil,
             size = ICON_SIZE,
             noborder = true,
-            tooltip = entry.label or entry.recordId,
+            tooltip = entry.tooltip or entry.label or entry.recordId,
             onClick = function()
                 view.onPick(entry.recordId, entry.icon)
             end,
