@@ -16,7 +16,7 @@
     ],
     "output": {
       "id": "ic_stick",
-      "count": 1
+      "count": 4
     }
   },
   {
@@ -36,7 +36,7 @@
     ],
     "output": {
       "id": "ic_fibre",
-      "count": 1
+      "count": 4
     }
   },
   {
@@ -105,14 +105,14 @@
       "  "
     ],
     "key": {
-      "A": "ic_chitin_plate"
+      "A": "chitin"
     },
     "tools": [
       "Mortar and Pestle"
     ],
     "output": {
       "id": "ic_chitin_dust",
-      "count": 1
+      "count": 4
     }
   },
   {
@@ -126,7 +126,7 @@
       "AAA"
     ],
     "key": {
-      "A": "Clay",
+      "A": "clay",
       "W": "dagger"
     },
     "returned": [
@@ -151,7 +151,7 @@
       "AAA"
     ],
     "key": {
-      "A": "Clay",
+      "A": "clay",
       "W": "war axe"
     },
     "returned": [
@@ -176,7 +176,7 @@
       "AAA"
     ],
     "key": {
-      "A": "Clay",
+      "A": "clay",
       "W": "spear"
     },
     "returned": [
@@ -201,7 +201,7 @@
       "AAA"
     ],
     "key": {
-      "A": "Clay",
+      "A": "clay",
       "W": "longsword"
     },
     "returned": [
@@ -226,7 +226,7 @@
       "AAA"
     ],
     "key": {
-      "A": "Clay",
+      "A": "clay",
       "W": "warhammer"
     },
     "returned": [
@@ -251,7 +251,7 @@
         "count": 1
       },
       {
-        "id": "Wood",
+        "id": "wood",
         "count": 1
       }
     ],
@@ -272,7 +272,7 @@
         "count": 1
       },
       {
-        "id": "Wood",
+        "id": "wood",
         "count": 1
       }
     ],
@@ -418,7 +418,7 @@
   {
     "id": "ic_station_charcoalpit",
     "label": "Charcoal Pit",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
       "AA",
@@ -443,7 +443,7 @@
       "AA"
     ],
     "key": {
-      "A": "ic_plank"
+      "A": "plank"
     },
     "tools": [
       "axe"
@@ -456,14 +456,14 @@
   {
     "id": "ic_station_planter",
     "label": "Planter",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
       "AA",
       "BB"
     ],
     "key": {
-      "A": "ic_plank",
+      "A": "plank",
       "B": "Stone"
     },
     "output": {
@@ -474,15 +474,16 @@
   {
     "id": "ic_station_tanningrack",
     "label": "Tanning Rack",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AA",
-      "BB"
+      "AAA",
+      "B B",
+      "AAA"
     ],
     "key": {
-      "A": "ic_stick",
-      "B": "ic_string"
+      "A": "stick",
+      "B": "string"
     },
     "output": {
       "id": "ic_station_tanningrack",
@@ -496,12 +497,12 @@
     "action": "shaping",
     "pattern": [
       "AAA",
-      "AB ",
-      "   "
+      "ABA",
+      "AAA"
     ],
     "key": {
       "A": "Stone",
-      "B": "ic_crucible"
+      "B": "crucible"
     },
     "output": {
       "id": "ic_station_furnace",
@@ -539,7 +540,7 @@
       "   "
     ],
     "key": {
-      "A": "ic_string"
+      "A": "string"
     },
     "output": {
       "id": "ic_cloth",
@@ -584,7 +585,7 @@
     "duration": 7200,
     "output": {
       "id": "ic_charcoal",
-      "count": 1
+      "count": 2
     }
   },
   {
@@ -632,8 +633,8 @@
       "   "
     ],
     "key": {
-      "A": "ic_iron_ingot",
-      "B": "ic_plank"
+      "A": "iron_ingot",
+      "B": "plank"
     },
     "output": {
       "id": "ic_bucket",
@@ -650,8 +651,8 @@
       "  "
     ],
     "key": {
-      "A": "ic_chitin_plate",
-      "B": "ic_stick"
+      "A": "chitin_plate",
+      "B": "stick"
     },
     "output": {
       "id": "chitin dagger",
@@ -686,9 +687,9 @@
       "C "
     ],
     "key": {
-      "A": "ic_chitin_plate",
-      "B": "ic_plank",
-      "C": "ic_stick"
+      "A": "chitin_plate",
+      "B": "plank",
+      "C": "stick"
     },
     "output": {
       "id": "chitin spear",
