@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_charcoal
+name: Charcoal
+script: ""
+mesh: n\Ingred_Void_Salts_01.nif
+icon: n\Tx_void_salts_01.tga
+data:
+  weight: 1.0
+  value: 4
+  flags: ""

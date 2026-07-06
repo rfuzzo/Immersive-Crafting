@@ -118,17 +118,22 @@
   {
     "id": "ic_mold_dagger_raw",
     "label": "Raw Dagger Mold",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AA",
-      "  "
+      "AAA",
+      "AWA",
+      "AAA"
     ],
     "key": {
-      "A": "Clay"
+      "A": "Clay",
+      "W": "dagger"
     },
-    "tools": [
-      "dagger"
+    "returned": [
+      {
+        "id": "dagger",
+        "count": 1
+      }
     ],
     "output": {
       "id": "ic_mold_dagger_raw",
@@ -138,17 +143,22 @@
   {
     "id": "ic_mold_waraxe_raw",
     "label": "Raw War Axe Mold",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AA",
-      "  "
+      "AAA",
+      "AWA",
+      "AAA"
     ],
     "key": {
-      "A": "Clay"
+      "A": "Clay",
+      "W": "war axe"
     },
-    "tools": [
-      "war axe"
+    "returned": [
+      {
+        "id": "war axe",
+        "count": 1
+      }
     ],
     "output": {
       "id": "ic_mold_waraxe_raw",
@@ -158,17 +168,22 @@
   {
     "id": "ic_mold_spear_raw",
     "label": "Raw Spear Mold",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AA",
-      "A "
+      "AAA",
+      "AWA",
+      "AAA"
     ],
     "key": {
-      "A": "Clay"
+      "A": "Clay",
+      "W": "spear"
     },
-    "tools": [
-      "spear"
+    "returned": [
+      {
+        "id": "spear",
+        "count": 1
+      }
     ],
     "output": {
       "id": "ic_mold_spear_raw",
@@ -178,17 +193,22 @@
   {
     "id": "ic_mold_longsword_raw",
     "label": "Raw Longsword Mold",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AA",
-      "A "
+      "AAA",
+      "AWA",
+      "AAA"
     ],
     "key": {
-      "A": "Clay"
+      "A": "Clay",
+      "W": "longsword"
     },
-    "tools": [
-      "longsword"
+    "returned": [
+      {
+        "id": "longsword",
+        "count": 1
+      }
     ],
     "output": {
       "id": "ic_mold_longsword_raw",
@@ -198,17 +218,22 @@
   {
     "id": "ic_mold_warhammer_raw",
     "label": "Raw Warhammer Mold",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AA",
-      "AA"
+      "AAA",
+      "AWA",
+      "AAA"
     ],
     "key": {
-      "A": "Clay"
+      "A": "Clay",
+      "W": "warhammer"
     },
-    "tools": [
-      "warhammer"
+    "returned": [
+      {
+        "id": "warhammer",
+        "count": 1
+      }
     ],
     "output": {
       "id": "ic_mold_warhammer_raw",
@@ -323,17 +348,22 @@
   {
     "id": "ic_mold_armor_raw",
     "label": "Raw Armor Mold",
-    "context": "bushcrafting",
+    "context": "crafting_table",
     "action": "shaping",
     "pattern": [
-      "AA",
-      "AA"
+      "AAA",
+      "AWA",
+      "AAA"
     ],
     "key": {
-      "A": "Clay"
+      "A": "Clay",
+      "W": "cuirass"
     },
-    "tools": [
-      "cuirass"
+    "returned": [
+      {
+        "id": "cuirass",
+        "count": 1
+      }
     ],
     "output": {
       "id": "ic_mold_armor_raw",

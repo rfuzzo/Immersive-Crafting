@@ -16,7 +16,7 @@ local ICON_SIZE = util.vector2(44, 44)
 local this = {}
 
 ---@class CraftingSlotView
----@field slotView fun(slotId: string): { resource: any?, count: integer? }? placed item for a slot, or nil
+---@field slotView fun(slotId: string): { resource: any?, count: integer?, label: string? }? placed item for a slot, or nil
 ---@field onSlotClick fun(slotId: string) called when a slot is clicked
 ---@field onPick fun(recordId: string, iconPath: string?) place a picked material into the selected slot
 ---@field selectedSlot string? the slot the next picked material goes into
@@ -47,6 +47,7 @@ function this.Body(layout, view)
                 count = placed and placed.count or nil,
                 size = ICON_SIZE,
                 state = state,
+                tooltip = placed and placed.label or nil,
                 onClick = function() view.onSlotClick(slotId) end,
             })
         end

@@ -13,6 +13,7 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field layout CContext.Layout|nil UI layout for the crafting window (grid or process). Falls back to `gridSize`, then a 2x2 grid.
 ---@field activationRange number|nil Distance in units to detect station (default 150)
 ---@field actions CAction[]|Id[] List of actions available at this station
+---@field inherits (Id|{ context: Id, exclude: Id[]|nil })[]|nil Also offer these contexts' recipes here (lib.contextHasRecipe); `exclude` leaves out specific recipe ids (e.g. kiln inherits the firepit's molds but not its food)
 local CContext = {}
 
 ---@class CContext.Forage

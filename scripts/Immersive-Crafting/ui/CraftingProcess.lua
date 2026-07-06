@@ -57,6 +57,9 @@ function this.Body(layout, view)
             count = placed and placed.count or nil,
             size = ICON_SIZE,
             state = state,
+            -- filled: the placed item's name; empty: the slot's role, so the
+            -- Input/Fuel/Mold row explains itself on hover
+            tooltip = placed and placed.label or inp.label,
             onClick = function() view.onSlotClick(slotId) end,
         })
         slots[#slots + 1] = labelled(inp.label, inputSlot)

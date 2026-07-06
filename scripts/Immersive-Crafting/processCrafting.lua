@@ -54,7 +54,7 @@ function this.resolveProcessRecipes(placedIds, action, context)
     for _, recipe in pairs(GRegistries.processRecipes or {}) do
         -- Sun's Dusk meal recipes only exist when SD is loaded (soft dependency)
         local available = not recipe.sdMeal or I.SunsDusk ~= nil
-        if available and recipe.action == action.id and recipe.context == context.id then
+        if available and recipe.action == action.id and lib.contextHasRecipe(context, recipe) then
             if multisetMatch(placedIds, recipe.inputs) then
                 matches[#matches + 1] = recipe
             end

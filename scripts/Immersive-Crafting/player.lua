@@ -1,6 +1,7 @@
 ---Player Script for Immersive Crafting
 
 local core = require('openmw.core')
+local input = require('openmw.input')
 local types = require('openmw.types')
 local omwSelf = require('openmw.self')
 local ui = require('openmw.ui')
@@ -12,6 +13,7 @@ local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local equipGate = require('scripts.Immersive-Crafting.equipGate')
 local forageState = require('scripts.Immersive-Crafting.forageState')
 local sdLiquids = require('scripts.Immersive-Crafting.sdLiquids')
+local sdCooking = require('scripts.Immersive-Crafting.sdCooking')
 local farmState = require('scripts.Immersive-Crafting.farmState')
 local processState = require('scripts.Immersive-Crafting.processState')
 local lib = require('scripts.Immersive-Crafting.lib')
@@ -60,13 +62,17 @@ end
 
 
 ---Called when the script is first loaded
-local function onInit() log.info('Immersive Crafting player script initialized') end
+local function onInit()
+    sdCooking.init()
+    log.info('Immersive Crafting player script initialized')
+end
 
 ---Called after loading a save
 local function onLoad(data)
     dataManager.loadAllData()
     registerActivateContexts()
     forageState.load(data and data.forage)
+    sdCooking.init()
     core.sendGlobalEvent('ImmersiveCrafting_RequestCropSync', {})
 
     log.info('Immersive Crafting player script loaded from save')
@@ -78,6 +84,7 @@ local function onSave()
 end
 
 ---Main update loop
+local rightMouseWasPressed = false
 local function onUpdate(dt)
     contextManager.onUpdate(dt)
 
@@ -89,6 +96,14 @@ local function onUpdate(dt)
             Crafting.close()
         end
     end
+
+    -- Right-click closes the crafting window (same as its Close button).
+    -- Polled with an edge tracker, matching the contextual action key below.
+    local rightMouse = input.isMouseButtonPressed(3)
+    if rightMouse and not rightMouseWasPressed and Crafting.isOpen() then
+        Crafting.close()
+    end
+    rightMouseWasPressed = rightMouse
 
     overlay.onUpdate(dt)
     equipGate.onUpdate(dt)

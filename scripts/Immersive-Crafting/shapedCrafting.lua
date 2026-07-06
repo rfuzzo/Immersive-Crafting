@@ -114,7 +114,7 @@ function this.resolveShapedRecipes(grid, action, context)
     for _, recipe in pairs(GRegistries.shapedRecipes or {}) do
         -- Sun's Dusk meal recipes only exist when SD is loaded (soft dependency)
         local available = not recipe.sdMeal or I.SunsDusk ~= nil
-        if available and recipe.action == action.id and recipe.context == context.id then
+        if available and recipe.action == action.id and lib.contextHasRecipe(context, recipe) then
             local pat = trim(patternToGrid(recipe.pattern, recipe.key))
             if pat and sameDims(items, pat) and cellsMatch(items, pat) then
                 matches[#matches + 1] = recipe

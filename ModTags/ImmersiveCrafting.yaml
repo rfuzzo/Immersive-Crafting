@@ -6,6 +6,11 @@ wood:
   - sd_wood_merchant
 stone:
   - ic_stone
+charcoal:
+  - ic_charcoal
+  # Tamriel Data mined charcoal/coal — soft interop
+  - T_IngMine_Charcoal_01
+  - T_IngMine_Coal_01
 # clay is tagged in ImmersiveCrafting_Ingredients.yaml (real OAAB/TR clay records)
 # ── foraging tool tags ──
 # tree/rock target tags are generated into ImmersiveCrafting_Statics.yaml by

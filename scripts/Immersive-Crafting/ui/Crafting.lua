@@ -141,6 +141,19 @@ local function recordIconPath(recordId)
     return nil
 end
 
+--- Best-effort display name for a record id (slot tooltips); falls back to the id.
+---@param recordId string
+---@return string
+local function recordDisplayName(recordId)
+    for _, t in ipairs(ICON_TYPES) do
+        local ok, rec = pcall(function() return t.record(recordId) end)
+        if ok and rec and rec.name and rec.name ~= '' then
+            return rec.name
+        end
+    end
+    return recordId
+end
+
 ---@param item any inventory item
 ---@return string?
 local function itemIconPath(item)
@@ -226,12 +239,12 @@ end
 local function collectMaterials()
     local matchers = {}
     for _, r in pairs(GRegistries.shapedRecipes or {}) do
-        if r.context == ctx.context.id and r.action == ctx.action.id then
+        if lib.contextHasRecipe(ctx.context, r) and r.action == ctx.action.id then
             for _, v in pairs(r.key or {}) do matchers[#matchers + 1] = v end
         end
     end
     for _, r in pairs(GRegistries.processRecipes or {}) do
-        if r.context == ctx.context.id and r.action == ctx.action.id then
+        if lib.contextHasRecipe(ctx.context, r) and r.action == ctx.action.id then
             for _, line in ipairs(r.inputs or {}) do matchers[#matchers + 1] = line.id end
         end
     end
@@ -358,12 +371,12 @@ local function collectStationTools()
         end
     end
     for _, r in pairs(GRegistries.shapedRecipes or {}) do
-        if r.context == ctx.context.id and r.action == ctx.action.id then
+        if lib.contextHasRecipe(ctx.context, r) and r.action == ctx.action.id then
             for _, t in ipairs(r.tools or {}) do add(t) end
         end
     end
     for _, r in pairs(GRegistries.processRecipes or {}) do
-        if r.context == ctx.context.id and r.action == ctx.action.id then
+        if lib.contextHasRecipe(ctx.context, r) and r.action == ctx.action.id then
             for _, t in ipairs(r.tools or {}) do add(t) end
         end
     end
@@ -483,7 +496,7 @@ end
 local function stationRecipes()
     local list = {}
     local function add(r)
-        if r.context == ctx.context.id and r.action == ctx.action.id
+        if lib.contextHasRecipe(ctx.context, r) and r.action == ctx.action.id
             and (not r.sdMeal or I.SunsDusk ~= nil) then
             list[#list + 1] = r
         end
@@ -635,6 +648,7 @@ local view = {
         return {
             resource = textureForPath(cell.icon),
             count = (cell.count or 1) > 1 and cell.count or nil,
+            label = recordDisplayName(cell.recordId),
         }
     end,
     onSlotClick = function(slotId)
@@ -725,6 +739,7 @@ local function toolsSection()
             resource = cell and textureForPath(cell.icon) or nil,
             size = TOOL_ICON,
             state = state,
+            tooltip = cell and recordDisplayName(cell.recordId) or nil,
             onClick = function() onToolSlotClick(i) end,
         })
     end

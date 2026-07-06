@@ -4,25 +4,8 @@ local omwSelf = require('openmw.self')
 local CAbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local processState = require('scripts.Immersive-Crafting.processState')
-local io = require('scripts.Immersive-Crafting.io')
+local stationPack = require('scripts.Immersive-Crafting.stationPack')
 local log = require('scripts.Immersive-Crafting.log')
-
--- Placed IC stations (drop-swapped activators) can be PACKED UP by holding F
--- (globalStations does the swap; busy stations refuse).
-local PACK_HOLD = 1.5
-local packable = nil ---@type table<string, boolean>? activator record id -> packable
-
-local function isPackable(object)
-    if not object then return false end
-    if not packable then
-        packable = {}
-        local list = io.loadJsonFile('data/Immersive-Crafting/stations/stations.json') or {}
-        for _, entry in ipairs(list) do
-            if entry.activator then packable[entry.activator:lower()] = true end
-        end
-    end
-    return packable[object.recordId] or false
-end
 
 --- "~N min" / "~N h" of remaining GAME time.
 local function fmtRemaining(readyAt)
@@ -90,16 +73,12 @@ function CProcessingHandler:evaluate(ctx)
                 details = { ("%d input slots"):format(#inputs) }
             end
         end
-        -- placed IC stations offer hold-F pack-up under the info card
-        local action = nil
-        if isPackable(ctx.object) then
-            action = { id = 'pack', label = 'Pack up', enabled = true, hold = PACK_HOLD }
-        end
         ---@type ViewModel
         return {
             status = "Activate to use",
             details = details,
-            action = action,
+            -- placed IC stations offer hold-F pack-up under the info card
+            action = stationPack.action(ctx.object),
         }
     end
 
@@ -133,11 +112,8 @@ function CProcessingHandler:OnActivate(ctx)
     -- activate-triggered stations never open the window from here (activating
     -- the object does that) — completing the hold on their card PACKS them up
     if ctx.context.trigger == 'activate' then
-        if isPackable(ctx.object) then
-            core.sendGlobalEvent('ImmersiveCrafting_PackStation', {
-                actor = omwSelf.object,
-                station = ctx.object,
-            })
+        if stationPack.isPackable(ctx.object) then
+            stationPack.pack(ctx.object)
         end
         return
     end

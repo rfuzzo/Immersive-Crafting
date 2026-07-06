@@ -38,6 +38,15 @@ interfaces.Settings.registerGroup {
             },
         },
         {
+            key = 'SDCookingAtStations',
+            renderer = 'checkbox',
+            name = "Sun's Dusk cooking at fire stations",
+            description = "Sun's Dusk also offers its campfire cooking menu at placed "
+                .. "Immersive-Crafting fire stations (e.g. the firepit). "
+                .. "Only applies when Sun's Dusk is installed.",
+            default = true,
+        },
+        {
             key = 'ForagingGivesWood',
             renderer = 'checkbox',
             name = 'Foraging gives wood',

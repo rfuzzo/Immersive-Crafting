@@ -83,6 +83,15 @@
         }
       ]
     },
+    "inherits": [
+      {
+        "context": "firepit",
+        "exclude": [
+          "grilled_scrib_jerky",
+          "sd_hearty_stew"
+        ]
+      }
+    ],
     "actions": [
       "processing"
     ]

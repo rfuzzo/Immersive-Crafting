@@ -89,6 +89,32 @@ function this.matchesTag(recordId, query)
     return false
 end
 
+--- Does this station (context) offer this recipe? A recipe belongs to the
+--- context naming it; a context's `inherits` list additionally pulls in
+--- another context's recipes — entries are a context id string, or
+--- `{ context = <id>, exclude = { <recipe ids> } }` to leave some out
+--- (e.g. the kiln inherits the firepit's molds but not its food).
+---@param context CContext
+---@param recipe { context: Id, id: Id }
+---@return boolean
+function this.contextHasRecipe(context, recipe)
+    if recipe.context == context.id then return true end
+    for _, inh in ipairs(context.inherits or {}) do
+        local fromId = type(inh) == 'table' and inh.context or inh
+        if recipe.context == fromId then
+            local excluded = false
+            for _, ex in ipairs(type(inh) == 'table' and inh.exclude or {}) do
+                if ex == recipe.id then
+                    excluded = true
+                    break
+                end
+            end
+            if not excluded then return true end
+        end
+    end
+    return false
+end
+
 --- Format a missing-ingredient list into a human-readable string (e.g. "Meat, Water x2").
 ---@param missing CRecipe.RecipeIngredient[]
 ---@return string
@@ -115,7 +141,7 @@ function this.resolveRecipe(scan, action, context)
     -- first get all recipes for this action and context
     local allRecipes = {} ---@type CRecipe[]
     for _, recipe in pairs(GRegistries.recipes) do
-        if recipe.action == action.id and recipe.context == context.id then
+        if recipe.action == action.id and this.contextHasRecipe(context, recipe) then
             table.insert(allRecipes, recipe)
         end
     end

@@ -22,8 +22,10 @@
     "id": "crafting_table",
     "label": "Crafting Table",
     "recordIds": [
-      "table"
+      "ic_station_craftingtable_a"
     ],
+    "activationRange": 150,
+    "trigger": "activate",
     "layout": {
       "kind": "grid",
       "size": [
@@ -31,6 +33,9 @@
         3
       ]
     },
+    "inherits": [
+      "bushcrafting"
+    ],
     "actions": [
       "shaping"
     ]

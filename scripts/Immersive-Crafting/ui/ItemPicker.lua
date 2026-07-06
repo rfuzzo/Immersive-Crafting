@@ -26,20 +26,18 @@ local c = require('scripts.Immersive-Crafting.ui.components')
 local column, row, grid, text, spacer = c.column, c.row, c.grid, c.text, c.spacer
 
 local Slot = require('scripts.Immersive-Crafting.ui.Slot')
+local Tooltip = require('scripts.Immersive-Crafting.ui.Tooltip')
 
 local v2 = util.vector2
 local ICON_SIZE = v2(40, 40)
 -- fallback layout when the owner passes no dims
 local DEFAULT_COLUMNS = 6
 local DEFAULT_ROWS = 2
-local TOOLTIP_OFFSET = v2(18, 22)
 
 local this = {}
 
 local page = 1
 local iconTextureCache = {} ---@type table<string, any>
-local tooltipElement = nil
-local tooltipLabel = nil ---@type string? label the current tooltip shows
 
 ---@param path string?
 ---@return any
@@ -55,42 +53,10 @@ local function textureForPath(path)
     return nil
 end
 
--- ── hover tooltip ────────────────────────────────────────────────────────────
+-- ── hover tooltip (shared ui/Tooltip element) ───────────────────────────────
 
 function this.hideTooltip()
-    if tooltipElement then
-        tooltipElement:destroy()
-        tooltipElement = nil
-    end
-    tooltipLabel = nil
-end
-
---- Show/move the tooltip next to the mouse (Notification layer: above Windows).
---- Same label -> just follow the mouse; new label -> recreate.
----@param label string
----@param mousePos any
-local function showTooltip(label, mousePos)
-    if tooltipElement and tooltipLabel == label then
-        tooltipElement.layout.props.position = mousePos + TOOLTIP_OFFSET
-        tooltipElement:update()
-        return
-    end
-    this.hideTooltip()
-    tooltipLabel = label
-    tooltipElement = ui.create({
-        layer = 'Notification',
-        name = 'itempicker_tooltip',
-        template = I.MWUI.templates.boxTransparent,
-        props = { position = mousePos + TOOLTIP_OFFSET },
-        content = ui.content {
-            {
-                template = I.MWUI.templates.padding,
-                content = ui.content {
-                    text({ text = label, template = I.MWUI.templates.textNormal }),
-                },
-            },
-        },
-    })
+    Tooltip.hide()
 end
 
 --- Reset paging and hide the tooltip (call when the window opens / mode flips).
@@ -165,25 +131,17 @@ function this.Body(items, view, dims, header)
     local first = (page - 1) * pageSize
     for i = first + 1, math.min(first + pageSize, #items) do
         local entry = items[i]
-        local tipLabel = entry.label or entry.recordId
-        local slot = Slot.Slot({
+        slots[#slots + 1] = Slot.Slot({
             name = 'pick_' .. entry.recordId,
             resource = textureForPath(entry.icon),
             count = entry.count > 1 and entry.count or nil,
             size = ICON_SIZE,
             noborder = true,
+            tooltip = entry.label or entry.recordId,
             onClick = function()
-                this.hideTooltip()
                 view.onPick(entry.recordId, entry.icon)
             end,
         })
-        -- hover tooltip: show on focus, follow the mouse, hide on leave
-        slot.events = slot.events or {}
-        slot.events.focusLoss = async:callback(function() this.hideTooltip() end)
-        slot.events.mouseMove = async:callback(function(mouseEvent)
-            showTooltip(tipLabel, mouseEvent.position)
-        end)
-        slots[#slots + 1] = slot
     end
 
     local body

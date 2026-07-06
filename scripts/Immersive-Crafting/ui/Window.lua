@@ -43,6 +43,9 @@ local function colorFromGMST(gmst)
     return util.color.rgb(table.unpack(numberTable))
 end
 
+local MIN_SIZE = v2(280, 240) -- resize floor: the frame stays usable
+local HEADER_GRAB = 26        -- px from the top that drag (move) the window
+
 --- Build the draggable/resizable window layout.
 ---@param opts { title?: string, body: openmw.ui.Content, props?: table, getElement: fun():any }
 ---@return table layout
@@ -53,6 +56,19 @@ local function Window(opts)
         props = { size = v2(0, 20) },
         external = { grow = 1, stretch = 1 },
     }
+
+    --- Resize one axis pair with the MIN_SIZE floor. `dw`/`dh` grow/shrink the
+    --- size; `moveX`/`moveY` make the position follow (left/top edges) — by the
+    --- APPLIED delta only, so hitting the floor never slides the window.
+    local function applyResize(props, dw, dh, moveX, moveY)
+        local newW = math.max(MIN_SIZE.x, props.size.x + dw)
+        local newH = math.max(MIN_SIZE.y, props.size.y + dh)
+        local appliedW, appliedH = newW - props.size.x, newH - props.size.y
+        props.position = v2(
+            props.position.x - (moveX and appliedW or 0),
+            props.position.y - (moveY and appliedH or 0))
+        props.size = v2(newW, newH)
+    end
 
     local events = {
         mousePress = async:callback(function(mouseEvent)
@@ -109,6 +125,12 @@ local function Window(opts)
             else
                 element.layout.userData.edgeWhenMouseDown = nil
             end
+
+            -- moving is a HEADER grab only — a press in the body (slots,
+            -- strip, buttons) must never drag the window around
+            element.layout.userData.draggingWindow =
+                element.layout.userData.edgeWhenMouseDown == nil
+                and my <= elemY + HEADER_GRAB
         end),
         mouseMove = async:callback(function(mouseEvent)
             local element = getElement()
@@ -123,31 +145,28 @@ local function Window(opts)
             if edge ~= nil then
                 local props = element.layout.props
                 if edge == "left" then
-                    props.size = v2(props.size.x - delta.x, props.size.y)
-                    props.position = props.position + v2(delta.x, 0)
+                    applyResize(props, -delta.x, 0, true, false)
                 elseif edge == "right" then
-                    props.size = v2(props.size.x + delta.x, props.size.y)
+                    applyResize(props, delta.x, 0, false, false)
                 elseif edge == "top" then
-                    props.size = v2(props.size.x, props.size.y - delta.y)
-                    props.position = props.position + v2(0, delta.y)
+                    applyResize(props, 0, -delta.y, false, true)
                 elseif edge == "bottom" then
-                    props.size = v2(props.size.x, props.size.y + delta.y)
+                    applyResize(props, 0, delta.y, false, false)
                 elseif edge == "top-left" then
-                    props.size = v2(props.size.x - delta.x, props.size.y - delta.y)
-                    props.position = props.position + delta
+                    applyResize(props, -delta.x, -delta.y, true, true)
                 elseif edge == "top-right" then
-                    props.size = v2(props.size.x + delta.x, props.size.y - delta.y)
-                    props.position = props.position + v2(0, delta.y)
+                    applyResize(props, delta.x, -delta.y, false, true)
                 elseif edge == "bottom-left" then
-                    props.size = v2(props.size.x - delta.x, props.size.y + delta.y)
-                    props.position = props.position + v2(delta.x, 0)
+                    applyResize(props, -delta.x, delta.y, true, false)
                 elseif edge == "bottom-right" then
-                    props.size = v2(props.size.x + delta.x, props.size.y + delta.y)
+                    applyResize(props, delta.x, delta.y, false, false)
                 end
-            else
-                -- No resize edge: move/drag the whole window
+            elseif element.layout.userData.draggingWindow then
+                -- header grab: move the whole window
                 local currentPos = element.layout.props.position or v2(0, 0)
                 element.layout.props.position = currentPos + delta
+            else
+                return -- body press: neither move nor resize
             end
 
             element:update()
@@ -159,6 +178,7 @@ local function Window(opts)
             -- a stale delta (phantom window jump)
             element.layout.userData.lastMouseDownPosition = nil
             element.layout.userData.edgeWhenMouseDown = nil
+            element.layout.userData.draggingWindow = nil
         end),
     }
 
@@ -173,6 +193,7 @@ local function Window(opts)
         userData = {
             lastMouseDownPosition = nil,
             edgeWhenMouseDown = nil,
+            draggingWindow = nil,
         },
         events = events,
         template = I.MWUI.templates.bordersThick,
