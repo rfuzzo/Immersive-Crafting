@@ -57,17 +57,12 @@ local function Window(opts)
         external = { grow = 1, stretch = 1 },
     }
 
-    --- Resize one axis pair with the MIN_SIZE floor. `dw`/`dh` grow/shrink the
-    --- size; `moveX`/`moveY` make the position follow (left/top edges) — by the
-    --- APPLIED delta only, so hitting the floor never slides the window.
-    local function applyResize(props, dw, dh, moveX, moveY)
-        local newW = math.max(MIN_SIZE.x, props.size.x + dw)
-        local newH = math.max(MIN_SIZE.y, props.size.y + dh)
-        local appliedW, appliedH = newW - props.size.x, newH - props.size.y
-        props.position = v2(
-            props.position.x - (moveX and appliedW or 0),
-            props.position.y - (moveY and appliedH or 0))
-        props.size = v2(newW, newH)
+    --- Grow/shrink by a delta with the MIN_SIZE floor (bottom-right resize:
+    --- the position never moves).
+    local function applyResize(props, dw, dh)
+        props.size = v2(
+            math.max(MIN_SIZE.x, props.size.x + dw),
+            math.max(MIN_SIZE.y, props.size.y + dh))
     end
 
     local events = {
@@ -101,30 +96,13 @@ local function Window(opts)
             local mx, my       = mouseEvent.position.x, mouseEvent.position.y
             local edgeMargin   = 15 -- pixels from the edge that count as an edge grab
 
-            local onLeft       = mx >= elemX and mx <= elemX + edgeMargin
             local onRight      = mx >= elemX + elemW - edgeMargin and mx <= elemX + elemW
-            local onTop        = my >= elemY and my <= elemY + edgeMargin
             local onBottom     = my >= elemY + elemH - edgeMargin and my <= elemY + elemH
 
-            if onTop and onLeft then
-                element.layout.userData.edgeWhenMouseDown = "top-left"
-            elseif onTop and onRight then
-                element.layout.userData.edgeWhenMouseDown = "top-right"
-            elseif onBottom and onLeft then
-                element.layout.userData.edgeWhenMouseDown = "bottom-left"
-            elseif onBottom and onRight then
-                element.layout.userData.edgeWhenMouseDown = "bottom-right"
-            elseif onLeft then
-                element.layout.userData.edgeWhenMouseDown = "left"
-            elseif onRight then
-                element.layout.userData.edgeWhenMouseDown = "right"
-            elseif onTop then
-                element.layout.userData.edgeWhenMouseDown = "top"
-            elseif onBottom then
-                element.layout.userData.edgeWhenMouseDown = "bottom"
-            else
-                element.layout.userData.edgeWhenMouseDown = nil
-            end
+            -- resizing is the BOTTOM-RIGHT corner only — the other borders are
+            -- inert, so near-edge clicks can't accidentally squash the window
+            element.layout.userData.edgeWhenMouseDown =
+                (onRight and onBottom) and "bottom-right" or nil
 
             -- moving is a HEADER grab only — a press in the body (slots,
             -- strip, buttons) must never drag the window around
@@ -142,25 +120,8 @@ local function Window(opts)
             element.layout.userData.lastMouseDownPosition = mouseEvent.position
 
             local edge = element.layout.userData.edgeWhenMouseDown
-            if edge ~= nil then
-                local props = element.layout.props
-                if edge == "left" then
-                    applyResize(props, -delta.x, 0, true, false)
-                elseif edge == "right" then
-                    applyResize(props, delta.x, 0, false, false)
-                elseif edge == "top" then
-                    applyResize(props, 0, -delta.y, false, true)
-                elseif edge == "bottom" then
-                    applyResize(props, 0, delta.y, false, false)
-                elseif edge == "top-left" then
-                    applyResize(props, -delta.x, -delta.y, true, true)
-                elseif edge == "top-right" then
-                    applyResize(props, delta.x, -delta.y, false, true)
-                elseif edge == "bottom-left" then
-                    applyResize(props, -delta.x, delta.y, true, false)
-                elseif edge == "bottom-right" then
-                    applyResize(props, delta.x, delta.y, false, false)
-                end
+            if edge == "bottom-right" then
+                applyResize(element.layout.props, delta.x, delta.y)
             elseif element.layout.userData.draggingWindow then
                 -- header grab: move the whole window
                 local currentPos = element.layout.props.position or v2(0, 0)

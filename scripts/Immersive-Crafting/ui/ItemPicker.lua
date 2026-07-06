@@ -37,6 +37,7 @@ local DEFAULT_ROWS = 2
 local this = {}
 
 local page = 1
+local searchQuery = '' ---@type string live filter over the entries (label/record id substring)
 local iconTextureCache = {} ---@type table<string, any>
 
 ---@param path string?
@@ -59,9 +60,48 @@ function this.hideTooltip()
     Tooltip.hide()
 end
 
---- Reset paging and hide the tooltip (call when the window opens / mode flips).
+-- ── search box ───────────────────────────────────────────────────────────────
+
+local searchBox = nil ---@type table? cached layout so rebuilds REUSE the widget
+
+--- The header's search box. The layout table is cached and reused across
+--- rebuilds — element updates match widgets by table identity, so a fresh
+--- table each rebuild would recreate the TextEdit and drop keyboard focus
+--- mid-typing. `props.text` is only set at creation (re-applying it would
+--- reset the caret); the widget owns its content afterwards.
+---@param view { refresh: fun() }
+local function searchBoxLayout(view)
+    if searchBox then
+        searchBox.userData.view = view
+        return searchBox
+    end
+    searchBox = {
+        name = 'strip_search',
+        type = ui.TYPE.TextEdit,
+        template = I.MWUI.templates.textEditLine,
+        userData = { view = view },
+        props = {
+            size = v2(110, 18),
+            text = searchQuery,
+        },
+        events = {
+            textChanged = async:callback(function(newText)
+                searchQuery = newText or ''
+                page = 1
+                local v = searchBox and searchBox.userData.view
+                if v then v.refresh() end
+            end),
+        },
+    }
+    return searchBox
+end
+
+--- Reset paging, search and hide the tooltip (call when the window opens /
+--- mode flips).
 function this.reset()
     page = 1
+    searchQuery = ''
+    searchBox = nil -- next Body() builds a fresh, empty box
     this.hideTooltip()
 end
 
@@ -96,15 +136,30 @@ function this.Body(items, view, dims, header)
     -- the strip is rebuilt in place — any tooltip now points at a dead widget
     this.hideTooltip()
 
+    -- search filter: case-insensitive substring over label and record id
+    if searchQuery ~= '' then
+        local q = searchQuery:lower()
+        local filtered = {}
+        for _, e in ipairs(items) do
+            if (e.label or ''):lower():find(q, 1, true)
+                or e.recordId:lower():find(q, 1, true) then
+                filtered[#filtered + 1] = e
+            end
+        end
+        items = filtered
+    end
+
     local columns = math.max(1, (dims and dims.columns) or DEFAULT_COLUMNS)
     local pageSize = columns * math.max(1, (dims and dims.rows) or DEFAULT_ROWS)
     local pages = math.max(1, math.ceil(#items / pageSize))
     if page > pages then page = pages end
     if page < 1 then page = 1 end
 
-    -- header: title + pager (pager only when it matters) + optional toggle
+    -- header: title + search + pager (pager only when it matters) + optional toggle
     local headerChildren = {
         text({ text = (header and header.title) or 'Materials', template = I.MWUI.templates.textNormal }),
+        spacer({ props = { size = v2(10, 0) } }),
+        searchBoxLayout(view),
     }
     if pages > 1 then
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(14, 0) } })

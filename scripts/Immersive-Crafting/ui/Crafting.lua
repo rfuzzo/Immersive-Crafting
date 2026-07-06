@@ -297,18 +297,15 @@ local function slotDef(slotId)
     return nil
 end
 
---- May this item go into this slot? Slots without accepts/acceptsPatterns take
---- anything (grid slots always do). This is placement UX only — recipe matching
---- stays a forgiving multiset over all slot contents.
----@param slotId string
+--- Does this slot's accepts/acceptsPatterns filter match the item?
+--- nil = the slot declares NO filter (takes anything unclaimed).
+---@param def CContext.SlotDef
 ---@param recordId string
----@return boolean
-local function slotAccepts(slotId, recordId)
-    local def = slotDef(slotId)
-    if not def then return true end
+---@return boolean?
+local function slotFilterMatches(def, recordId)
     local accepts, patterns = def.accepts, def.acceptsPatterns
     if not ((accepts and #accepts > 0) or (patterns and #patterns > 0)) then
-        return true
+        return nil
     end
     for _, q in ipairs(accepts or {}) do
         if lib.matchesTag(recordId, q) then return true end
@@ -318,6 +315,28 @@ local function slotAccepts(slotId, recordId)
         if lowered:find(p) then return true end
     end
     return false
+end
+
+--- May this item go into this slot? Filtered slots take what they declare;
+--- unfiltered slots take anything EXCEPT items a filtered slot of this layout
+--- CLAIMS (the kiln/furnace Mold slot claims ^ic_mold_ — so molds only go
+--- there, never into Input/Fuel). Grid slots always take anything. This is
+--- placement UX only — recipe matching stays a forgiving multiset over all
+--- slot contents.
+---@param slotId string
+---@param recordId string
+---@return boolean
+local function slotAccepts(slotId, recordId)
+    local def = slotDef(slotId)
+    if not def then return true end
+    local matches = slotFilterMatches(def, recordId)
+    if matches ~= nil then return matches end
+    for _, inp in ipairs((layout and layout.inputs) or {}) do
+        if inp ~= def and slotFilterMatches(inp, recordId) then
+            return false -- claimed by a filtered slot (e.g. a mold)
+        end
+    end
+    return true
 end
 
 --- Inventory items usable as a tool at this station (strip contents while a
