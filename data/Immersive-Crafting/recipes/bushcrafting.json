@@ -16,7 +16,7 @@
       "count": 1
     },
     "tools": [
-      "Mortar and Pestle"
+      "mortar"
     ]
   },
   {
@@ -36,7 +36,7 @@
       "count": 1
     },
     "tools": [
-      "Mortar and Pestle"
+      "mortar"
     ]
   },
   {
@@ -56,7 +56,7 @@
       "count": 1
     },
     "tools": [
-      "Mortar and Pestle"
+      "mortar"
     ]
   },
   {
@@ -73,7 +73,7 @@
       "B": "Resin"
     },
     "tools": [
-      "Mortar and Pestle"
+      "mortar"
     ],
     "output": {
       "id": "ic_bonemold_paste",
@@ -93,7 +93,7 @@
       "A": "chitin"
     },
     "tools": [
-      "Mortar and Pestle"
+      "mortar"
     ],
     "output": {
       "id": "ic_chitin_dust",
@@ -101,8 +101,8 @@
     }
   },
   {
-    "id": "ic_fibre",
-    "label": "Fibre",
+    "id": "ingred_kresh_fiber_01",
+    "label": "Kresh Fibre",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
@@ -116,12 +116,12 @@
       "Knife"
     ],
     "output": {
-      "id": "ic_fibre",
+      "id": "ingred_kresh_fiber_01",
       "count": 4
     }
   },
   {
-    "id": "ic_mortar_pestle",
+    "id": "apparatus_a_mortar_01",
     "label": "Mortar and Pestle",
     "context": "bushcrafting",
     "action": "shaping",
@@ -133,7 +133,7 @@
       "A": "Stone"
     },
     "output": {
-      "id": "ic_mortar_pestle",
+      "id": "apparatus_a_mortar_01",
       "count": 1
     }
   },
@@ -213,8 +213,8 @@
     }
   },
   {
-    "id": "ic_water_bladder",
-    "label": "Water Bladder",
+    "id": "ab_misc_waterskin",
+    "label": "Waterskin",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
@@ -229,7 +229,7 @@
       "Knife"
     ],
     "output": {
-      "id": "ic_water_bladder",
+      "id": "AB_Misc_Waterskin",
       "count": 1
     }
   }

@@ -1,6 +1,6 @@
 [
   {
-    "id": "ic_clay_pot",
+    "id": "ab_misc_pottersclaypot01",
     "label": "Clay Pot",
     "context": "kiln",
     "action": "processing",
@@ -12,12 +12,12 @@
     ],
     "duration": 1800,
     "output": {
-      "id": "ic_clay_pot",
+      "id": "AB_Misc_PottersClayPot01",
       "count": 1
     }
   },
   {
-    "id": "ic_crucible",
+    "id": "t_rga_crucible_01",
     "label": "Crucible",
     "context": "kiln",
     "action": "processing",
@@ -29,7 +29,7 @@
     ],
     "duration": 3600,
     "output": {
-      "id": "ic_crucible",
+      "id": "T_Rga_Crucible_01",
       "count": 1
     }
   }

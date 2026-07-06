@@ -8,14 +8,8 @@ ModTags FlexTag YAMLs.
 
 - `ic_bedroll_mk1`
 - `ic_bonemold_paste`
-- `ic_bowl`
-- `ic_bucket`
-- `ic_charcoal`
 - `ic_chitin_dust`
-- `ic_clay_pot`
 - `ic_cloth`
-- `ic_crucible`
-- `ic_fibre`
 - `ic_glass_component`
 - `ic_grill`
 - `ic_mold_boots_burnt`
@@ -54,9 +48,7 @@ ModTags FlexTag YAMLs.
 - `ic_mold_waraxe_raw`
 - `ic_mold_warhammer_burnt`
 - `ic_mold_warhammer_raw`
-- `ic_mortar_pestle`
 - `ic_netch_leather`
-- `ic_pan`
 - `ic_plank`
 - `ic_pot`
 - `ic_spit`
@@ -80,11 +72,6 @@ ModTags FlexTag YAMLs.
 - `ic_stick`
 - `ic_string`
 - `ic_tent_mk1`
-- `ic_water_bladder`
-
-## `ic_*` records referenced but never produced (check!)
-
-- `ic_netch_hide`
 
 ## Assumed FlexTags (capitalised ingredient/tool names)
 
@@ -96,7 +83,6 @@ ModTags FlexTag YAMLs.
 - `Hide`
 - `Knife`
 - `Meat`
-- `Mortar and Pestle`
 - `Ore`
 - `Plant`
 - `Raw Glass`
@@ -134,14 +120,15 @@ ModTags FlexTag YAMLs.
 - `hide`
 - `ingred_corkbulb_root_01`
 - `ingred_hackle-lo_leaf_01`
+- `ingred_netch_leather_01`
 - `ingred_raw_ebony_01`
 - `ingred_raw_glass_01`
-- `ingred_saltrice_01`
 - `ingred_scrap_metal_01`
 - `ingred_trama_root_01`
 - `iron_ingot`
 - `knife`
 - `longsword`
+- `mortar`
 - `pauldron`
 - `pelt`
 - `plank`

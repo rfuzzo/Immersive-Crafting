@@ -928,3 +928,52 @@ IC could gate on a vanilla skill later); dressState pruning (dressed ids
 outlive corpses harmlessly; prune if saves ever bloat); gaze-switch branch
 (claude/gaze-context-switch) touches the same contextManager region — merge
 that one first or expect a small conflict here.
+
+## ic_* record audit: replace with vanilla/OAAB/TD records (built 2026-07-06)
+
+User directive: drop every `ic_*` record that an existing record (vanilla,
+OAAB_Data, Tamriel_Data, or a mod dependency) can stand in for. 10 records
+retired (recipe ids renamed to the new output ids; `records/MiscItem/*.yaml`
+deleted; the esp shrinks accordingly on the next `_pack.ps1`):
+
+| retired            | replacement                | source    |
+|--------------------|----------------------------|-----------|
+| ic_bowl            | misc_com_wood_bowl_02      | vanilla   |
+| ic_bucket          | misc_com_bucket_01         | vanilla   |
+| ic_mortar_pestle   | apparatus_a_mortar_01      | vanilla   |
+| ic_fibre           | ingred_kresh_fiber_01      | vanilla   |
+| ic_netch_hide      | ingred_netch_leather_01    | vanilla (input-side only) |
+| ic_pan             | AB_Misc_ComCopperPan01     | OAAB      |
+| ic_water_bladder   | AB_Misc_Waterskin          | OAAB      |
+| ic_clay_pot        | AB_Misc_PottersClayPot01   | OAAB      |
+| ic_charcoal        | T_IngMine_Charcoal_01      | Tamriel Data |
+| ic_crucible        | T_Rga_Crucible_01          | Tamriel Data |
+
+Two latent bugs fixed on the way:
+- the "Mortar and Pestle" tool matcher matched NOTHING (no such tag, and the
+  record id was ic_mortar_pestle) -> new `mortar` tag on the five vanilla
+  apparatus mortars; all five bushcrafting recipes now use it.
+- ic_netch_hide was unobtainable (tanning input with no source recipe/forage)
+  -> the netch cure now takes vanilla `ingred_netch_leather_01` (raw drop)
+  and still yields `ic_netch_leather` (the cured crafting material).
+
+New tags in ModTags/ImmersiveCrafting.yaml: `crucible` (T_Rga_Crucible_01 —
+the furnace-build "crucible" key finally resolves), `mortar`, `fibre`
+(feeds the ic_string "Fibre" key), `firestarter` (AB_Misc_FlintAndSteel +
+AB_Misc_Flint — the UI-less ignite path had the tag check but no tagged
+records). `charcoal` tag no longer lists ic_charcoal.
+
+Soft-dep note: OAAB/TD outputs ride the existing outputRecordExists() filter —
+without the master the recipe is skipped, nothing breaks.
+
+KEPT (no equivalent found): ic_wood, ic_stone, ic_stick, ic_plank, ic_string,
+ic_cloth, ic_pot, ic_grill, ic_spit, ic_tent_mk1, ic_bedroll_mk1,
+ic_netch_leather, ic_chitin_plate, ic_chitin_dust, ic_bonemold_paste,
+ic_glass_component, all molds, all stations, all steel roughs.
+
+Judgment calls for the user:
+- ic_string: T_Com_Rope_01 exists but rope != string — kept ours.
+- ic_pot: TD/OAAB only have kettles/cauldrons — kept ours.
+- ic_cloth: no generic cloth record found (TD folded cloths are outfits) — kept.
+- the pan recipe still consumes iron pieces but now outputs a COPPER pan —
+  rebalance when copper enters (TD has no copper ingot; bronze exists).
