@@ -1014,3 +1014,34 @@ IC changes (the metalwork gap-closing):
 
 Not covered (no target records): orichalcum/adamantium/diamond ingots — TD
 ingots stop at Bronze/Gold/Iron/Silver/Steel; park for the alloy design.
+
+## Copper ingot + melt-down recycling (built 2026-07-06)
+
+**ic_ingot_copper** (new MiscItem record): 3 copper ore + 2 charcoal +
+returned ingot mold at the furnace (replaces the interim copper->bronze
+line). Interim mesh/icon: Tamriel_Data's BRONZE ingot, per user — the path in
+records/MiscItem/ic_ingot_copper.yaml is written by TD convention
+(t\t_com_metalpiecebronze_01.nif) and MUST be verified against the real
+T_Com_MetalPieceBronze_01 record before packing (tes3-records site is
+unreachable from this environment). No `copper` tag exists yet in the tag
+data — add one (+ this record) when copper equipment lands.
+
+**Melt-down recipes** (user: "smelting items with the tag into their
+ingots") — furnace, 2 material-tagged items + 1 charcoal + returned ingot
+mold, 1800s -> 1 ingot: melt_iron / melt_steel / melt_silver / melt_gold /
+melt_bronze -> the TD MetalPiece ingots. Rides the dataset material tags on
+weapons AND armor AND misc items. Known quirks (accepted):
+- the ingots themselves carry their material tag: melting 2 ingots + charcoal
+  back into 1 ingot is possible player error (exact-multiset matching, the
+  result shows before starting — self-inflicted only);
+- `gold` covers TD coin collectibles / gold dishes / the golden egg — melting
+  those is a feature;
+- `bronze`/`silver`/`gold` misc clutter (candlesticks etc.) melts too —
+  intended recycling;
+- ores do NOT carry material tags (only ore/mineral/ingredient) — no shadowing
+  of the ore-smelting lines;
+- no melt lines for glass/ebony/chitin/dwemer (no ingot records) — glass
+  could melt into ic_glass_component later if wanted.
+
+Balance note: 2 iron items -> 1 ingot = 50% return vs the 1-2 ingots most
+iron pieces cost to cast. User owns the ratio.

@@ -104,8 +104,8 @@
     }
   },
   {
-    "id": "t_com_metalpiecebronze_01",
-    "label": "Bronze Ingot",
+    "id": "ic_ingot_copper",
+    "label": "Copper Ingot",
     "context": "furnace",
     "action": "processing",
     "inputs": [
@@ -124,6 +124,136 @@
       }
     ],
     "duration": 3600,
+    "output": {
+      "id": "ic_ingot_copper",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_iron",
+    "label": "Melt Down Iron",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "iron",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceIron_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_steel",
+    "label": "Melt Down Steel",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "steel",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceSteel_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_silver",
+    "label": "Melt Down Silver",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "silver",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceSilver_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_gold",
+    "label": "Melt Down Gold",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "gold",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceGold_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_bronze",
+    "label": "Melt Down Bronze",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "bronze",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
     "output": {
       "id": "T_Com_MetalPieceBronze_01",
       "count": 1

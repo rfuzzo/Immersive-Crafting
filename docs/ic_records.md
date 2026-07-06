@@ -12,6 +12,7 @@ ModTags FlexTag YAMLs.
 - `ic_cloth`
 - `ic_glass_component`
 - `ic_grill`
+- `ic_ingot_copper`
 - `ic_mold_boots_burnt`
 - `ic_mold_boots_raw`
 - `ic_mold_bracer_left_burnt`
@@ -106,6 +107,7 @@ ModTags FlexTag YAMLs.
 - `axe`
 - `boots`
 - `bracer`
+- `bronze`
 - `charcoal`
 - `chitin`
 - `chitin club`
@@ -116,6 +118,7 @@ ModTags FlexTag YAMLs.
 - `cuirass`
 - `dagger`
 - `gauntlet`
+- `gold`
 - `greaves`
 - `hammer`
 - `helmet`
@@ -127,6 +130,7 @@ ModTags FlexTag YAMLs.
 - `ingred_raw_glass_01`
 - `ingred_scrap_metal_01`
 - `ingred_trama_root_01`
+- `iron`
 - `iron_ingot`
 - `knife`
 - `longsword`
@@ -137,7 +141,9 @@ ModTags FlexTag YAMLs.
 - `raw_glass`
 - `resin`
 - `shield`
+- `silver`
 - `spear`
+- `steel`
 - `steel warhammer`
 - `stick`
 - `string`
