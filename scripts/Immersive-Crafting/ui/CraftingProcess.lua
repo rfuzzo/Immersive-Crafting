@@ -53,7 +53,9 @@ function this.Body(layout, view)
         if not inp.aside then
             local slotId = inp.key
             local placed = view.slotView(slotId)
-            local state = (view.selectedSlot == slotId and not placed) and 'selected' or 'empty'
+            -- selected even when FILLED: process slots keep their selection so
+            -- picking the same material stacks — the highlight must show that
+            local state = (view.selectedSlot == slotId) and 'selected' or 'empty'
             local inputSlot = Slot.Slot({
                 name = 'slot_' .. slotId,
                 resource = placed and placed.resource or nil,

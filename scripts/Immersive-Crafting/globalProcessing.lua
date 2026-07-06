@@ -64,6 +64,7 @@ local function syncPlayer()
         snapshot[stationId] = {
             recipeId = e.recipeId,
             label = e.label,
+            startedAt = e.startedAt,
             readyAt = e.readyAt,
             done = e.done or false,
         }
@@ -180,6 +181,7 @@ function this.onStart(data)
         label = data.label or data.recipeId,
         output = data.output,
         returned = data.returned, -- items held by the station, given back on collect
+        startedAt = core.getGameTime(), -- for the station card's progress bar
         readyAt = core.getGameTime() + data.duration,
         done = false,
         fx = igniteFx(data.station), -- e.g. the kiln's fire (removed when done)

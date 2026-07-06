@@ -2,6 +2,7 @@ local log = require('scripts.Immersive-Crafting.log')
 local overlay = require('scripts.Immersive-Crafting.ui.ContextualOverlay')
 local lib = require('scripts.Immersive-Crafting.lib')
 local conditions = require('scripts.Immersive-Crafting.conditions')
+local processState = require('scripts.Immersive-Crafting.processState')
 
 local nearby = require('openmw.nearby')
 local self = require('openmw.self')
@@ -261,7 +262,12 @@ local function updatecurrentContexts()
     end
 
     this.currentContext = closestContext
-    if not isSameResult(previousContext, closestContext) then updateOverlay() end
+    -- stations with a running/finished process show a LIVE card (progress bar,
+    -- remaining time) — refresh it every poll, not only on target change.
+    -- Safe: busy/done cards carry no hold action, so no hold progress resets.
+    local live = closestContext.object
+        and processState.forStation(closestContext.object.id) ~= nil
+    if live or not isSameResult(previousContext, closestContext) then updateOverlay() end
 end
 
 ---Main update function called every frame

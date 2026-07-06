@@ -40,6 +40,20 @@ function this.Slot(opts)
             props = iconProps,
         },
     }
+    -- a SELECTED slot that already holds an item (process slots keep their
+    -- selection for stacking) shows a translucent highlight over the icon —
+    -- the tinted-placeholder path above only covers EMPTY selected slots
+    if opts.state == 'selected' and opts.resource then
+        content[#content + 1] = {
+            type = ui.TYPE.Image,
+            props = {
+                resource = whiteTexture,
+                color = COLORS.selected,
+                alpha = 0.35,
+                relativeSize = util.vector2(1, 1),
+            },
+        }
+    end
     if opts.count ~= nil then
         content[#content + 1] = {
             template = I.MWUI.templates.textNormal,

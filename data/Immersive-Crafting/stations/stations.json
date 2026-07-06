@@ -7,8 +7,12 @@
     "item": "ic_station_kiln",
     "activator": "ic_station_kiln_a",
     "processFx": {
-      "record": "light_pitfire00",
-      "offset": [0, 0, 5]
+      "record": "Light_Fire",
+      "offset": [
+        0,
+        0,
+        10
+      ]
     }
   },
   {

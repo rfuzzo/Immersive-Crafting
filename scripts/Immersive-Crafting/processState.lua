@@ -8,7 +8,7 @@
 
 local this = {}
 
-local byStation = {} ---@type table<string, { recipeId: string, label: string, readyAt: number?, done: boolean }>
+local byStation = {} ---@type table<string, { recipeId: string, label: string, startedAt: number?, readyAt: number?, done: boolean }>
 
 --- Apply a full snapshot from the global script.
 ---@param snapshot table<string, table>?

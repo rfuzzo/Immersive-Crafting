@@ -64,46 +64,46 @@ end
 
 local searchBox = nil ---@type table? cached layout so rebuilds REUSE the widget
 
---- The header's search box: a bordered MWUI box around a TextEdit. The
+--- The strip's search box: a bordered MWUI box around a TextEdit. The
 --- template's `autoSize` must be overridden — an empty auto-sized TextEdit
 --- collapses to nothing (the invisible-search-bar bug). The layout table is
---- cached and reused across rebuilds — element updates match widgets by table
---- identity, so a fresh table each rebuild would recreate the TextEdit and
---- drop keyboard focus mid-typing. `props.text` is only set at creation
---- (re-applying it would reset the caret); the widget owns its content.
+--- cached so element updates keep the SAME widget (and its keyboard focus)
+--- across the rebuild every keystroke triggers; `props.text` is re-synced to
+--- the query each build — updates re-apply props, so a stale creation-time
+--- text would wipe what was just typed (the one-letter-at-a-time bug).
 ---@param view { refresh: fun() }
 local function searchBoxLayout(view)
     if searchBox then
         searchBox.userData.view = view
+        searchBox.userData.input.props.text = searchQuery
         return searchBox
     end
+    local input = {
+        name = 'strip_search_input',
+        type = ui.TYPE.TextEdit,
+        template = I.MWUI.templates.textEditLine,
+        props = {
+            size = v2(140, 18),
+            autoSize = false,
+            text = searchQuery,
+        },
+        events = {
+            textChanged = async:callback(function(newText)
+                searchQuery = newText or ''
+                page = 1
+                local v = searchBox and searchBox.userData.view
+                if v then v.refresh() end
+            end),
+        },
+    }
     searchBox = {
         name = 'strip_search',
         template = I.MWUI.templates.box,
-        userData = { view = view },
+        userData = { view = view, input = input },
         content = ui.content {
             {
                 template = I.MWUI.templates.padding,
-                content = ui.content {
-                    {
-                        name = 'strip_search_input',
-                        type = ui.TYPE.TextEdit,
-                        template = I.MWUI.templates.textEditLine,
-                        props = {
-                            size = v2(110, 16),
-                            autoSize = false,
-                            text = searchQuery,
-                        },
-                        events = {
-                            textChanged = async:callback(function(newText)
-                                searchQuery = newText or ''
-                                page = 1
-                                local v = searchBox and searchBox.userData.view
-                                if v then v.refresh() end
-                            end),
-                        },
-                    },
-                },
+                content = ui.content { input },
             },
         },
     }
@@ -169,11 +169,9 @@ function this.Body(items, view, dims, header)
     if page > pages then page = pages end
     if page < 1 then page = 1 end
 
-    -- header: title + search + pager (pager only when it matters) + optional toggle
+    -- header: title + pager (pager only when it matters) + optional toggle
     local headerChildren = {
         text({ text = (header and header.title) or 'Materials', template = I.MWUI.templates.textNormal }),
-        spacer({ props = { size = v2(10, 0) } }),
-        searchBoxLayout(view),
     }
     if pages > 1 then
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(14, 0) } })
@@ -225,6 +223,17 @@ function this.Body(items, view, dims, header)
             row({ name = 'materials_header', children = headerChildren }),
             spacer({ props = { size = v2(0, 4) } }),
             body,
+            spacer({ props = { size = v2(0, 4) } }),
+            -- search at the strip's bottom, filtering both modes live
+            row({
+                name = 'strip_search_row',
+                props = { align = ui.ALIGNMENT.Center },
+                children = {
+                    text({ text = 'Search', template = I.MWUI.templates.textNormal }),
+                    spacer({ props = { size = v2(8, 0) } }),
+                    searchBoxLayout(view),
+                },
+            }),
         },
     })
 end

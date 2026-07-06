@@ -786,7 +786,8 @@ local function asideSection()
         if inp.aside then
             local slotId = inp.key
             local cell = view.slotView(slotId)
-            local state = (selectedSlot == slotId and not cell) and 'selected' or 'empty'
+            -- selected even when FILLED, matching the process grid slots
+            local state = (selectedSlot == slotId) and 'selected' or 'empty'
             if #parts > 0 then
                 parts[#parts + 1] = { type = ui.TYPE.Widget, props = { size = v2(8, 0) } }
             end

@@ -1,5 +1,6 @@
 local core = require('openmw.core')
 local omwSelf = require('openmw.self')
+local util = require('openmw.util')
 
 local CAbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
@@ -37,9 +38,16 @@ function CProcessingHandler:evaluate(ctx)
                 details = { 'Activate to collect' },
             }
         end
+        -- progress bar (the overlay renders ViewModel.progress) + remaining time
+        local progress = nil
+        if run.startedAt and run.readyAt and run.readyAt > run.startedAt then
+            progress = util.clamp(
+                (core.getGameTime() - run.startedAt) / (run.readyAt - run.startedAt), 0, 1)
+        end
         ---@type ViewModel
         return {
             status = (run.label or 'Working') .. ' — in progress',
+            progress = progress,
             details = { 'Ready in ' .. fmtRemaining(run.readyAt) },
         }
     end
