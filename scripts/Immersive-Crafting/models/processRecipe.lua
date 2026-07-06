@@ -25,6 +25,7 @@ local CProcessRecipe = {}
 ---@field id string record id or FlexTag tag
 ---@field count integer how many are required
 ---@field returned boolean|nil must be placed for the match but is NOT consumed (reusable molds)
+---@field soul string|nil "filled": only soul gems with a trapped soul satisfy this line — an INSTANCE gate, checked at consume time (filled and empty gems share a record id, so id/tag matching cannot tell them apart)
 
 --- Deserialize from table
 ---@param tbl any

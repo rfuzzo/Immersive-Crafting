@@ -13,6 +13,8 @@ ModTags FlexTag YAMLs.
 - `ic_glass_component`
 - `ic_grill`
 - `ic_ingot_copper`
+- `ic_ingot_daedric`
+- `ic_ingot_ebony`
 - `ic_mold_boots_burnt`
 - `ic_mold_boots_raw`
 - `ic_mold_bracer_left_burnt`
@@ -71,7 +73,6 @@ ModTags FlexTag YAMLs.
 - `ic_steel_shield_rough`
 - `ic_steel_towershield_rough`
 - `ic_stick`
-- `ic_string`
 - `ic_tent_mk1`
 
 ## Assumed FlexTags (capitalised ingredient/tool names)
@@ -88,7 +89,6 @@ ModTags FlexTag YAMLs.
 - `Resin`
 - `Salt`
 - `Stone`
-- `String`
 - `T_Com_MetalPieceIron_01`
 - `T_Com_MetalPieceSteel_01`
 - `T_IngMine_OreCopper_01`
@@ -116,7 +116,9 @@ ModTags FlexTag YAMLs.
 - `clay`
 - `crucible`
 - `cuirass`
+- `daedric`
 - `dagger`
+- `ebony`
 - `gauntlet`
 - `gold`
 - `greaves`
@@ -140,13 +142,14 @@ ModTags FlexTag YAMLs.
 - `plank`
 - `raw_glass`
 - `resin`
+- `rope`
 - `shield`
 - `silver`
+- `soul gem`
 - `spear`
 - `steel`
 - `steel warhammer`
 - `stick`
-- `string`
 - `war axe`
 - `warhammer`
 - `wood`

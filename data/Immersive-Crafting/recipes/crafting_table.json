@@ -96,7 +96,7 @@
     "key": {
       "A": "ic_plank",
       "B": "ic_cloth",
-      "C": "ic_string"
+      "C": "rope"
     },
     "output": {
       "id": "a_yurt_misc",
@@ -163,7 +163,7 @@
     "key": {
       "A": "T_Com_MetalPieceIron_01",
       "B": "ic_stick",
-      "C": "ic_string"
+      "C": "rope"
     },
     "output": {
       "id": "HB_Hunters_Knife",
@@ -265,7 +265,7 @@
       "   "
     ],
     "key": {
-      "A": "string"
+      "A": "rope"
     },
     "output": {
       "id": "ic_cloth",
@@ -436,7 +436,7 @@
     ],
     "key": {
       "A": "stick",
-      "B": "string"
+      "B": "rope"
     },
     "output": {
       "id": "ic_station_tanningrack",
@@ -456,7 +456,7 @@
     "key": {
       "A": "ic_cloth",
       "B": "ic_stick",
-      "C": "ic_string"
+      "C": "rope"
     },
     "output": {
       "id": "ic_tent_mk1",

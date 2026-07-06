@@ -11,7 +11,7 @@
     ],
     "key": {
       "A": "ic_plank",
-      "B": "ic_string",
+      "B": "rope",
       "C": "ic_bonemold_paste"
     },
     "output": {
@@ -34,7 +34,7 @@
     ],
     "key": {
       "A": "ic_plank",
-      "B": "ic_string",
+      "B": "rope",
       "C": "ic_bonemold_paste",
       "R": "resin"
     },
@@ -100,7 +100,7 @@
     ],
     "key": {
       "A": "ic_plank",
-      "B": "ic_string"
+      "B": "rope"
     },
     "tools": [
       "Knife"

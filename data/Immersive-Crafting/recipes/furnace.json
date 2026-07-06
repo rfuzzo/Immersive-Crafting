@@ -130,6 +130,141 @@
     }
   },
   {
+    "id": "alloy_bronze",
+    "label": "Bronze Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_copper",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "T_Com_MetalPieceBronze_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_ingot_ebony",
+    "label": "Ebony Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ingred_raw_ebony_01",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 5400,
+    "output": {
+      "id": "ic_ingot_ebony",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_ingot_daedric",
+    "label": "Daedric Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 2
+      },
+      {
+        "id": "soul gem",
+        "count": 1,
+        "soul": "filled"
+      },
+      {
+        "id": "Charcoal",
+        "count": 3
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 7200,
+    "output": {
+      "id": "ic_ingot_daedric",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_ebony",
+    "label": "Melt Down Ebony",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ebony",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_ingot_ebony",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_daedric",
+    "label": "Melt Down Daedric",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "daedric",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_ingot_daedric",
+      "count": 1
+    }
+  },
+  {
     "id": "melt_iron",
     "label": "Melt Down Iron",
     "context": "furnace",

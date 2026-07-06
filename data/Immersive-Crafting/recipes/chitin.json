@@ -11,7 +11,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string",
+      "B": "rope",
       "C": "resin"
     },
     "output": {
@@ -34,7 +34,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string",
+      "B": "rope",
       "C": "resin"
     },
     "output": {
@@ -57,7 +57,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string",
+      "B": "rope",
       "C": "resin"
     },
     "output": {
@@ -80,7 +80,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string",
+      "B": "rope",
       "C": "resin"
     },
     "output": {
@@ -103,7 +103,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string",
+      "B": "rope",
       "C": "resin"
     },
     "output": {
@@ -126,7 +126,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string",
+      "B": "rope",
       "C": "resin"
     },
     "output": {
@@ -149,7 +149,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string",
+      "B": "rope",
       "C": "resin"
     },
     "output": {
@@ -172,7 +172,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string",
+      "B": "rope",
       "C": "resin"
     },
     "output": {
@@ -240,7 +240,7 @@
     "key": {
       "A": "chitin_fragment",
       "B": "ic_plank",
-      "C": "ic_string"
+      "C": "rope"
     },
     "output": {
       "id": "a_wp_chitin_bow_02",
@@ -263,7 +263,7 @@
     "key": {
       "A": "chitin_fragment",
       "B": "ic_plank",
-      "C": "ic_string",
+      "C": "rope",
       "R": "resin"
     },
     "output": {
@@ -524,7 +524,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string"
+      "B": "rope"
     },
     "output": {
       "id": "chitin boots",
@@ -561,7 +561,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string"
+      "B": "rope"
     },
     "output": {
       "id": "chitin cuirass",
@@ -598,7 +598,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string"
+      "B": "rope"
     },
     "output": {
       "id": "chitin greaves",
@@ -617,7 +617,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string"
+      "B": "rope"
     },
     "output": {
       "id": "chitin guantlet - left",
@@ -636,7 +636,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string"
+      "B": "rope"
     },
     "output": {
       "id": "chitin guantlet - right",
@@ -655,7 +655,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string"
+      "B": "rope"
     },
     "output": {
       "id": "chitin helm",
@@ -674,7 +674,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string"
+      "B": "rope"
     },
     "output": {
       "id": "chitin pauldron - left",
@@ -693,7 +693,7 @@
     ],
     "key": {
       "A": "chitin_fragment",
-      "B": "ic_string"
+      "B": "rope"
     },
     "output": {
       "id": "chitin pauldron - right",
@@ -712,7 +712,7 @@
     ],
     "key": {
       "A": "ic_plank",
-      "B": "ic_string"
+      "B": "rope"
     },
     "tools": [
       "Knife"

@@ -1045,3 +1045,48 @@ weapons AND armor AND misc items. Known quirks (accepted):
 
 Balance note: 2 iron items -> 1 ingot = 50% return vs the 1-2 ingots most
 iron pieces cost to cast. User owns the ratio.
+
+## String -> rope, alloying + ebony/daedric paths (ratified + built 2026-07-06)
+
+**String = rope** (user ruling): ic_string retired -> T_Com_Rope_01 (TD).
+New `rope` tag; every ic_string/"string"/"String" reference now uses it — the
+lowercase "string" keys (ic_cloth, tanning rack station) were LATENT BUG #4
+this session: no `string` tag ever existed, those recipes matched nothing.
+The fibre->string recipe now outputs the TD rope.
+
+**Alloy/material paths** (user: copper, bronze, glass, ebony, daedric;
+daedric alloyed with a FILLED soul gem):
+- copper: ore -> ic_ingot_copper (built earlier today);
+- bronze: alloy_bronze = 2 copper ingots + charcoal + ingot mold ->
+  T_Com_MetalPieceBronze_01 (simplified: real bronze wants tin; revisit if a
+  tin record ever exists) — plus melt_bronze recycling;
+- glass: already covered (raw_glass -> ic_glass_component);
+- ebony: 3 raw ebony + 2 charcoal + mold -> NEW ic_ingot_ebony (5400s);
+  melt_ebony recycles ebony gear (2 -> 1 ingot);
+- daedric: 2 ebony ingots + 1 FILLED soul gem + 3 charcoal + mold ->
+  NEW ic_ingot_daedric (7200s); melt_daedric recycles daedric gear.
+
+**Engine: instance gates** (`soul: "filled"` on a process input line).
+Filled and empty gems share a record id, so id/tag matching can't tell them
+apart. The line matches placement by the `soul gem` tag (the 5 vanilla gems;
+Azura's Star is NOT in the tag — it can't be consumed); at start time the
+window forwards the gate with the consume entry and the GLOBAL consume counts/
+removes only instances where types.Miscellaneous.getSoul() is non-empty —
+starting with only empty gems refuses with "Requires a filled soul gem" and
+consumes nothing. Filled/empty never stack together (different item data), so
+stack removal stays safe.
+
+Interim meshes (VERIFY/replace, user-owned): ic_ingot_ebony + ic_ingot_daedric
+reuse vanilla raw ebony (n\Ingred_RawEbony_01.NIF); ic_ingot_copper reuses the
+TD bronze ingot (path by convention — confirm against the real record).
+
+Open / next:
+- equipment recipes FROM the new ingots (copper/bronze/ebony/daedric weapons
+  + armor via the existing mold system) — user owns the sets + balance;
+- melt_daedric yields daedric ingots WITHOUT a soul gem (recycling existing
+  gear) — accepted, flag if it bothers;
+- soul gate covers the process path only (shaped recipes don't use soul lines
+  yet); UI-less charge loading (kiln/pit) never runs furnace recipes, so no
+  gate needed there;
+- verify in-game: getSoul API on 0.51; empty-gem refusal; filled gem consumed
+  (and the right instance).

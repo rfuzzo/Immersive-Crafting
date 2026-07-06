@@ -22,6 +22,8 @@ mortar:
   - apparatus_sm_mortar_01
 fibre:
   - ingred_kresh_fiber_01
+rope:
+  - T_Com_Rope_01
 raw_glass:
   - ingred_raw_glass_01
   - ingred_raw_glass_tinos

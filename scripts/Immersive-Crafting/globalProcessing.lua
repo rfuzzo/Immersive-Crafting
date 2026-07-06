@@ -204,15 +204,27 @@ function this.onStart(data)
         return
     end
 
+    -- Instance gate (soul:"filled"): filled and empty soul gems share a record
+    -- id, so the gate is checked per ITEM here — only gems with a trapped soul
+    -- count toward (and are removed for) such an entry.
+    local function satisfiesGate(item, entry)
+        if entry.soul ~= 'filled' then return true end
+        local ok, soul = pcall(function() return types.Miscellaneous.getSoul(item) end)
+        return ok and soul ~= nil and soul ~= ''
+    end
+
     -- verify availability first so we never partially consume
     local inv = types.Actor.inventory(data.actor)
     for _, entry in ipairs(data.consume or {}) do
         local have = 0
         for _, item in ipairs(inv:getAll()) do
-            if item.recordId == entry.id then have = have + (item.count or 1) end
+            if item.recordId == entry.id and satisfiesGate(item, entry) then
+                have = have + (item.count or 1)
+            end
         end
         if have < (entry.count or 1) then
-            notify(data.actor, 'Not enough materials')
+            notify(data.actor, entry.soul == 'filled'
+                and 'Requires a filled soul gem' or 'Not enough materials')
             return
         end
     end
@@ -221,7 +233,7 @@ function this.onStart(data)
         local removed = 0
         for _, item in ipairs(inv:getAll()) do
             if needed <= 0 then break end
-            if item.recordId == entry.id then
+            if item.recordId == entry.id and satisfiesGate(item, entry) then
                 local take = math.min(needed, item.count or 1)
                 local ok = pcall(function() item:remove(take) end)
                 if ok then

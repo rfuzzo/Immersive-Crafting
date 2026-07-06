@@ -196,8 +196,8 @@
     }
   },
   {
-    "id": "ic_string",
-    "label": "String",
+    "id": "t_com_rope_01",
+    "label": "Rope",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
@@ -208,7 +208,7 @@
       "A": "Fibre"
     },
     "output": {
-      "id": "ic_string",
+      "id": "T_Com_Rope_01",
       "count": 1
     }
   },
@@ -223,7 +223,7 @@
     ],
     "key": {
       "A": "Hide",
-      "B": "String"
+      "B": "rope"
     },
     "tools": [
       "Knife"
