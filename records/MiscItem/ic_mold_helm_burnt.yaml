@@ -1,0 +1,11 @@
+type: MiscItem
+flags: ""
+id: ic_mold_helm_burnt
+name: Burnt Helm Mold
+script: ""
+mesh: m\Misc_LW_Flask.NIF
+icon: m\Misc_LW_Flask.tga
+data:
+  weight: 4.0
+  value: 8
+  flags: ""

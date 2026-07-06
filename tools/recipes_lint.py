@@ -48,8 +48,14 @@ CONSUMED_MOLDS = {
     for s in ('raw', 'burnt')
 }
 # placed for the match but RETURNED (never truly consumed): must be a
-# `returned` input line, never a plain ingredient or a tool
-RETURNED_ITEMS = {'ic_mold_armor_burnt'}
+# `returned` input line, never a plain ingredient or a tool. Armor molds are
+# reusable (unlike single-use weapon molds): the generic one plus the burnt
+# per-part molds (boots, greaves, helm, l/r pauldron, l/r bracer, shield,
+# tower shield).
+_ARMOR_MOLD_PARTS = ('armor', 'boots', 'greaves', 'helm',
+                     'pauldron_left', 'pauldron_right',
+                     'bracer_left', 'bracer_right', 'shield', 'tower_shield')
+RETURNED_ITEMS = {f'ic_mold_{p}_burnt' for p in _ARMOR_MOLD_PARTS}
 
 # output-name classification (word-boundary; ids may join words with _ or space)
 WEAPON_KW = ['dagger', 'war axe', 'waraxe', 'spear', 'longsword', 'warhammer',
