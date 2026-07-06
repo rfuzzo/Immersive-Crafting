@@ -50,9 +50,10 @@ interfaces.Settings.registerGroup {
             key = 'StationLoading',
             renderer = 'checkbox',
             name = 'Load stations by dropping items',
-            description = 'UI-less kiln and charcoal pit: items dropped onto the station are '
-                .. 'loaded into it; hold a fire source to it (hold F) to light it, activate '
-                .. 'it when done to collect. The crafting window still works when nothing is loaded.',
+            description = 'UI-less stations: items dropped onto the kiln/charcoal pit are '
+                .. 'loaded into it (hold fire to it to light it); a seed dropped onto a '
+                .. 'planter is sown into the soil (hold F to plant it). The crafting window '
+                .. 'and seed cycling still work as before.',
             default = true,
         },
         {

@@ -187,9 +187,11 @@ return {
         onInit = onLoad,
         onSave = onSave,
         onObjectActive = function(object)
-            -- station items swap into activators; anything else dropped near
-            -- a loadable station joins its charge (UI-less kiln/charcoal pit)
-            if not globalStations.onObjectActive(object) then
+            -- station items swap into activators; seeds dropped near a planter
+            -- are sown into it; anything else dropped near a loadable station
+            -- joins its charge (UI-less kiln/charcoal pit)
+            if not globalStations.onObjectActive(object)
+                and not globalFarming.onObjectActive(object) then
                 globalProcessing.onObjectActive(object)
             end
         end,
@@ -212,6 +214,9 @@ return {
             globalStations.onPack(data)
         end,
         ImmersiveCrafting_IgniteStation = globalProcessing.onIgnite,
-        ImmersiveCrafting_SetOptions = globalProcessing.onSetOptions,
+        ImmersiveCrafting_SetOptions = function(data)
+            globalProcessing.onSetOptions(data)
+            globalFarming.onSetOptions(data)
+        end,
     }
 }

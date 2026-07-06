@@ -751,3 +751,37 @@ Planter (open, user undecided): hold-F planting STAYS (make-believe wins
 over drop-to-plant). Improvement idea on the table: planters REMEMBER their
 last crop and default to replanting it, so tap-cycling is only needed when
 switching crops.
+
+## Planter: sow by dropping + planter memory (ratified + built 2026-07-06)
+
+The planting grammar, ratified after the hold-F discussion — hold-F STAYS as
+the planting verb; what changes is how the seed is CHOSEN (most immersive
+first):
+
+1. **Sown seed** — DROP a seed onto the planter: "You set Marshmerrow into
+   the soil" (one off the stack, absorbed into saveData.sown, same
+   onObjectActive chain as station loading, 100-unit radius, nearest empty
+   planter; gated by the same "Load stations by dropping items" setting).
+   The card flips to "Marshmerrow in the soil — [F] Plant (hold)"; the hold
+   plants exactly that seed (consumed from the soil, not the inventory).
+   Tap-cycling is disabled while a seed sits in the soil. Picking the
+   planter up returns the unplanted seed (Misc activation hook).
+2. **Planter memory** — every successful plant records the crop
+   (saveData.planterMemory); the remembered crop sorts FIRST in the seed
+   list, so plain hold-F replants it and cycling is only needed to switch.
+   Memory dies with the planter object (cleared on pickup).
+3. **Tap-cycle** — unchanged fallback for first-time/expedition planting.
+
+Mirrors: CropSync now carries { crops, sown, memory }; farmState gained
+sownFor/memoryFor. globalFarming.onPlant takes `fromSown` (verify sown entry,
+clear only after the plant actually spawns). init.lua's onObjectActive chain:
+station swap -> seed sowing -> station charge; SetOptions fans out to both
+globalProcessing and globalFarming.
+
+Verify in-game:
+- drop 1 saltrice on an empty planter -> sown message + card; hold F ->
+  planted, no inventory consumed twice; grow/harvest normal
+- drop near planter AND kiln (overlapping radii) -> planter wins for seeds
+- harvest annual -> card offers "Plant Saltrice" first (memory), no cycling
+- pick up planter with sown seed -> seed returned; memory forgotten
+- setting OFF -> dropped seeds stay on the ground; cycling unaffected

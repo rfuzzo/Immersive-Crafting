@@ -69,11 +69,29 @@ local function crops()
     return saveData.crops
 end
 
+--- Seeds SOWN into planters by dropping them (waiting for the hold-F plant).
+--- planter object id -> { seedId, cropId }.
+local function sown()
+    ---@diagnostic disable-next-line: lowercase-global
+    if not saveData then saveData = {} end
+    saveData.sown = saveData.sown or {}
+    return saveData.sown
+end
+
+--- What each planter last grew (hold-F replants it without cycling).
+--- planter object id -> crop id.
+local function memory()
+    ---@diagnostic disable-next-line: lowercase-global
+    if not saveData then saveData = {} end
+    saveData.planterMemory = saveData.planterMemory or {}
+    return saveData.planterMemory
+end
+
 local function notify(actor, text)
     if actor then actor:sendEvent('ImmersiveCrafting_Notify', { text = text }) end
 end
 
---- Push a plain snapshot of all crops to the player (for the contextual card).
+--- Push a plain snapshot of crops, sown seeds and planter memory to the player.
 local function syncPlayer()
     local player = world.players[1]
     if not player then return end
@@ -86,7 +104,8 @@ local function syncPlayer()
             planterId = e.planterId,
         }
     end
-    player:sendEvent('ImmersiveCrafting_CropSync', { crops = snapshot })
+    player:sendEvent('ImmersiveCrafting_CropSync',
+        { crops = snapshot, sown = sown(), memory = memory() })
 end
 
 -- ── growth timers (persisted; game time) ────────────────────────────────────
@@ -121,10 +140,112 @@ scheduleStage = function(objId, delaySeconds)
     async:newGameTimer(delaySeconds, onCropStage, objId)
 end
 
+-- ── sowing by dropping (the seed goes into the ground, F does the planting) ──
+
+local SOW_RADIUS = 100 -- units around a planter that claim a dropped seed
+
+-- player-pushed option (shared with station loading; init.lua fans it out)
+local options = { stationLoading = true }
+
+---@param data { stationLoading: boolean? }
+function this.onSetOptions(data)
+    if data and data.stationLoading ~= nil then
+        options.stationLoading = data.stationLoading and true or false
+    end
+end
+
+--- Global-context tag match: exact record id or FlexTag (I.FlexTagG) tag.
+local function matchesTagGlobal(recordId, query)
+    if recordId:lower() == query:lower() then return true end
+    local flexTag = I.FlexTagG
+    if flexTag and flexTag.objectHasTag then
+        return flexTag.objectHasTag(recordId, query) and true or false
+    end
+    return false
+end
+
+--- Is this record a planter? (the tag/id the planter context matches)
+local function isPlanterRecord(recordId)
+    return matchesTagGlobal(recordId, 'ic_station_planter')
+        or matchesTagGlobal(recordId, 'planter')
+end
+
+--- Is something already growing on (or sown into) this planter?
+local function planterOccupied(planterId)
+    if sown()[planterId] then return true end
+    for _, e in pairs(crops()) do
+        if e.planterId == planterId then return true end
+    end
+    return false
+end
+
+--- The crop definition a seed record belongs to (nil = not a seed).
+---@param recordId string
+---@return table? crop
+local function cropForSeed(recordId)
+    for _, crop in pairs(cropDefs()) do
+        if crop.seed and matchesTagGlobal(recordId, crop.seed) then return crop end
+    end
+    return nil
+end
+
+--- Engine handler (via init.lua's chain): a seed dropped near an empty planter
+--- is SOWN into it — one seed off the stack; hold-F on the card plants it.
+--- Returns true when the seed was absorbed.
+---@param object any object that just became active
+---@return boolean handled
+function this.onObjectActive(object)
+    if not options.stationLoading then return false end
+    if not object.cell then return false end
+
+    local crop = cropForSeed(object.recordId)
+    if not crop then return false end
+
+    -- nearest unoccupied planter in the cell
+    local best, bestDist
+    for _, misc in ipairs(object.cell:getAll(types.Miscellaneous)) do
+        if misc.id ~= object.id and isPlanterRecord(misc.recordId)
+            and not planterOccupied(misc.id) then
+            local d = (misc.position - object.position):length()
+            if d <= SOW_RADIUS and (not bestDist or d < bestDist) then
+                best, bestDist = misc, d
+            end
+        end
+    end
+    if not best then return false end
+
+    sown()[best.id] = { seedId = object.recordId, cropId = crop.id }
+    object:remove(1)
+    notify(world.players[1], ('You set %s into the soil'):format(crop.label or crop.id))
+    log.info(('farming: sowed %s into planter %s'):format(crop.id, tostring(best.id)))
+    syncPlayer()
+    return true
+end
+
+--- Picking up a planter gives an unplanted sown seed back (and forgets the
+--- planter's memory — the object id dies with it). Default pickup proceeds.
+local function onPlanterActivate(object, actor)
+    if not saveData then return end
+    local entry = saveData.sown and saveData.sown[object.id]
+    if entry then
+        pcall(function()
+            local created = world.createObject(entry.seedId, 1)
+            created:moveInto(types.Actor.inventory(actor))
+        end)
+        saveData.sown[object.id] = nil
+        syncPlayer()
+    end
+    if saveData.planterMemory then saveData.planterMemory[object.id] = nil end
+    -- return nil: the vanilla pickup happens as normal
+end
+
+I.Activation.addHandlerForType(types.Miscellaneous, onPlanterActivate)
+
 -- ── planting ─────────────────────────────────────────────────────────────────
 
---- Event: plant a seed into a planter.
----@param data { actor: any, planter: any, cropId: string, seedId: string }
+--- Event: plant a seed into a planter. `fromSown` plants the seed already
+--- SOWN into the planter (dropped in) instead of consuming from the inventory.
+---@param data { actor: any, planter: any, cropId: string, seedId: string, fromSown: boolean? }
 function this.onPlant(data)
     if not (data and data.actor and data.planter and data.cropId and data.seedId) then return end
     local crop = cropDefs()[data.cropId]
@@ -141,17 +262,27 @@ function this.onPlant(data)
         end
     end
 
-    -- consume one seed item (exact record id, chosen player-side)
-    local inv = types.Actor.inventory(data.actor)
-    local seedItem = inv:find(data.seedId)
-    if not seedItem or seedItem.count < 1 then
-        notify(data.actor, 'No seed to plant')
-        return
-    end
-    local okRemove = pcall(function() seedItem:remove(1) end)
-    if not okRemove then
-        log.error('farming: failed to consume seed ' .. tostring(data.seedId))
-        return
+    if data.fromSown then
+        -- the seed is already in the soil (dropped in); verify it — it is
+        -- cleared only after the plant actually spawns
+        local entry = sown()[data.planter.id]
+        if not (entry and entry.cropId == data.cropId) then
+            notify(data.actor, 'No seed to plant')
+            return
+        end
+    else
+        -- consume one seed item (exact record id, chosen player-side)
+        local inv = types.Actor.inventory(data.actor)
+        local seedItem = inv:find(data.seedId)
+        if not seedItem or seedItem.count < 1 then
+            notify(data.actor, 'No seed to plant')
+            return
+        end
+        local okRemove = pcall(function() seedItem:remove(1) end)
+        if not okRemove then
+            log.error('farming: failed to consume seed ' .. tostring(data.seedId))
+            return
+        end
     end
 
     -- spawn the growing plant above the planter bed
@@ -175,6 +306,8 @@ function this.onPlant(data)
         return
     end
 
+    if data.fromSown then sown()[data.planter.id] = nil end
+    memory()[data.planter.id] = crop.id -- the planter remembers its crop
     notify(data.actor, 'Planted ' .. (crop.label or crop.id))
     log.info(('farming: planted %s at planter %s'):format(crop.id, tostring(data.planter.id)))
     syncPlayer()

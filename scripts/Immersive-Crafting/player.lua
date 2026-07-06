@@ -213,7 +213,7 @@ return {
     eventHandlers = {
         ImmersiveCrafting_OpenStation = onOpenStation,
         ImmersiveCrafting_CropSync = function(data)
-            farmState.apply(data and data.crops)
+            farmState.apply(data and data.crops, data and data.sown, data and data.memory)
         end,
         ImmersiveCrafting_ProcessSync = function(data)
             processState.apply(data and data.processes, data and data.charges)
