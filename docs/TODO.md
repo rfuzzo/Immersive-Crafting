@@ -832,3 +832,18 @@ Repair-type "Armorer's Hammer" records), or point these recipes at a new tag.
 
 Decision pending: if the two-step feels good, generalize to iron + bonemold
 (each adds a rough-part record set + hammer recipe); else revert to direct cast.
+
+## Crosshair picks between stacked stations (built 2026-07-06)
+
+User report: crafting cloth placed ON the crafting table — closest-wins made
+the card unpredictable. The per-poll crosshair raycast (previously gaze-only)
+now also disambiguates proximity/activate contexts: gaze contexts (trees,
+rocks) still win outright; failing that, LOOKING at an object that matches one
+of this poll's qualified contexts (range + requires already gated) selects
+that context and cards the exact object under the crosshair. Looking at
+neither keeps closest-wins, so the card doesn't vanish while glancing around.
+One raycast per 0.25s poll (refactored crosshairTarget serves both uses).
+
+Verify in-game: cloth on table -> look at cloth = bushcrafting card, look at
+table = crafting table card; look at the farther of two tables -> that one's
+card ([F]/pack-up act on the looked-at object); hold-to-forage unaffected.

@@ -177,20 +177,17 @@ local function findcurrentContexts(registries, maxRange)
     return results
 end
 
----Find the gaze context, if any: a single crosshair raycast against the world,
----matched against `trigger:"gaze"` contexts (trees, rocks — statics never appear
----in the nearby.* lists, so proximity cannot find them).
+---One crosshair raycast per poll, serving BOTH gaze contexts (trees, rocks —
+---statics never appear in nearby.*) and stacked-station disambiguation
+---(looking at the crafting cloth on the crafting table picks the cloth).
 ---@param registries Registries
----@return ProximityResult?
-local function findGazeContext(registries)
-    -- longest gaze range among gaze contexts (one raycast serves all)
-    local maxRange = 0
+---@return { object: any, recordId: string, distance: number }? what the crosshair rests on
+local function crosshairTarget(registries)
+    -- longest range any context cares about (one raycast serves all)
+    local maxRange = 200
     for _, def in pairs(registries.contexts) do
-        if def.trigger == 'gaze' then
-            maxRange = math.max(maxRange, def.activationRange or 200)
-        end
+        maxRange = math.max(maxRange, def.activationRange or 0)
     end
-    if maxRange == 0 then return nil end -- no gaze contexts defined
 
     local from = camera.getPosition()
     local dir = camera.viewportToWorldVector(util.vector2(0.5, 0.5))
@@ -199,20 +196,60 @@ local function findGazeContext(registries)
     end)
     if not ok or not res or not res.hitObject then return nil end
 
-    local recordId = res.hitObject.recordId
-    local distance = (res.hitPos - self.position):length()
+    return {
+        object = res.hitObject,
+        recordId = res.hitObject.recordId,
+        distance = (res.hitPos - self.position):length(),
+    }
+end
 
+---Match the crosshair hit against `trigger:"gaze"` contexts.
+---@param registries Registries
+---@param hit { object: any, recordId: string, distance: number }?
+---@return ProximityResult?
+local function findGazeContext(registries, hit)
+    if not hit then return nil end
     for _, def in pairs(registries.contexts) do
-        if def.trigger == 'gaze' and distance <= (def.activationRange or 200)
-            and matchesDef(recordId, def) then
+        if def.trigger == 'gaze' and hit.distance <= (def.activationRange or 200)
+            and matchesDef(hit.recordId, def) then
             return {
                 context = def,
-                object = res.hitObject,
-                distance = distance,
+                object = hit.object,
+                distance = hit.distance,
             }
         end
     end
     return nil
+end
+
+---When two stations sit next to each other (crafting cloth ON the crafting
+---table), the crosshair chooses between them: if the looked-at object matches
+---one of the proximity/activate contexts that already qualified this poll
+---(range + `requires` gating), that context wins over plain closest-distance.
+---Deterministic on overlap: exact-object matches beat def-only matches, then
+---context id order.
+---@param currentContexts table<string, ProximityResult>
+---@param hit { object: any, recordId: string, distance: number }?
+---@return ProximityResult?
+local function lookedAtContext(currentContexts, hit)
+    if not hit then return nil end
+    local best, bestExact, bestId = nil, false, nil
+    for id, result in pairs(currentContexts) do
+        local def = result.context
+        if def.trigger ~= 'condition'
+            and hit.distance <= (def.activationRange or 150)
+            and matchesDef(hit.recordId, def) then
+            local exact = result.object and result.object.id == hit.object.id
+            if not best or (exact and not bestExact)
+                or (exact == bestExact and id < bestId) then
+                best, bestExact, bestId = result, exact, id
+            end
+        end
+    end
+    if not best then return nil end
+    -- card the OBJECT under the crosshair (it may not be the context's closest
+    -- candidate — e.g. the farther of two crafting tables)
+    return { context = best.context, object = hit.object, distance = hit.distance }
 end
 
 --- Same logical target? Each poll builds fresh result tables, so identity
@@ -251,9 +288,19 @@ local function updatecurrentContexts()
         end
     end
 
-    -- the gaze target wins over everything: aiming at it is the stronger signal
-    local gaze = findGazeContext(GRegistries)
-    if gaze then closestContext = gaze end
+    -- the crosshair is the stronger signal than distance: a gaze context
+    -- (tree, rock) wins over everything; failing that, LOOKING at one of the
+    -- qualified nearby stations picks it (stacked stations: cloth on table).
+    -- Looking at neither keeps the closest-wins fallback, so the card doesn't
+    -- vanish while glancing around between two stations.
+    local hit = crosshairTarget(GRegistries)
+    local gaze = findGazeContext(GRegistries, hit)
+    if gaze then
+        closestContext = gaze
+    else
+        local looked = lookedAtContext(currentContexts, hit)
+        if looked then closestContext = looked end
+    end
 
     if not closestContext then
         this.currentContext = nil
