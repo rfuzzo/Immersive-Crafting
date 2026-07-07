@@ -579,7 +579,7 @@
     ],
     "key": {
       "A": "chitin_plate",
-      "B": "stick"
+      "B": "ic_stick"
     },
     "output": {
       "id": "chitin dagger",
@@ -752,7 +752,7 @@
     "key": {
       "A": "chitin_plate",
       "B": "plank",
-      "C": "stick"
+      "C": "ic_stick"
     },
     "output": {
       "id": "chitin spear",

@@ -259,16 +259,17 @@ function this.Body(items, view, space, header)
             -- grows: takes all leftover height, pushing search to the bottom
             { type = ui.TYPE.Widget, external = { grow = 1 }, props = { size = v2(0, 4) } },
             -- search at the strip's bottom, filtering both modes live
+
             row({
                 name = 'strip_search_row',
                 props = { align = ui.ALIGNMENT.Center },
                 children = {
-                    spacer({ props = { size = v2(8, 0) } }),
                     text({ text = 'Search', template = I.MWUI.templates.textNormal }),
                     spacer({ props = { size = v2(8, 0) } }),
                     searchBoxLayout(view),
                 },
             }),
+            spacer({ props = { size = v2(0, 10) } }),
         },
     })
 end
