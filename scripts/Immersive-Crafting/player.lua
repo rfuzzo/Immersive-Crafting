@@ -129,7 +129,8 @@ end
 -- no edge callback is registered here.
 
 -- ── debug helpers (console: open `~`, enter `luap`, then e.g.
--- `I.ImmersiveCrafting.giveMaterials()` or `I.ImmersiveCrafting.giveMaterials(20)`) ──
+-- `I.ImmersiveCrafting.giveMaterials()`, `I.ImmersiveCrafting.giveMaterials(20)`
+-- or `I.ImmersiveCrafting.reloadData()` after editing recipe jsons) ──
 
 --- Every distinct ingredient matcher (record id or tag) across all recipe kinds.
 local function allMaterialMatchers()
@@ -200,11 +201,40 @@ local function giveMaterials(countEach)
     return granted, unresolved
 end
 
+--- Reload every JSON data domain (actions, contexts, recipes, crops,
+--- dressing) from disk — iterate on recipe files without restarting the game
+--- (console: `luap`, then `I.ImmersiveCrafting.reloadData()`). The registries
+--- are cleared first so deleted/renamed entries don't linger; handlers are
+--- Lua modules (require-cached) and stay as loaded. The activate-context list
+--- is re-sent to the global side (which replaces, not appends). NOTE: the VFS
+--- indexes files at LAUNCH — edits to existing files are picked up, a
+--- brand-new json file needs a restart.
+local function reloadData()
+    GRegistries.actions = {}
+    GRegistries.contexts = {}
+    GRegistries.recipes = {}
+    GRegistries.shapedRecipes = {}
+    GRegistries.processRecipes = {}
+    GRegistries.crops = {}
+    GRegistries.dressing = {}
+    dataManager.loadAllData()
+    registerActivateContexts()
+    -- an open crafting window may hold references into the old registries
+    if Crafting.isOpen() then Crafting.close() end
+    local msg = ('Reloaded: %d recipes (%d shaped, %d process), %d contexts, %d actions'):format(
+        lib.len(GRegistries.recipes) + lib.len(GRegistries.shapedRecipes) + lib.len(GRegistries.processRecipes),
+        lib.len(GRegistries.shapedRecipes), lib.len(GRegistries.processRecipes),
+        lib.len(GRegistries.contexts), lib.len(GRegistries.actions))
+    log.info(msg)
+    ui.showMessage(msg)
+end
+
 return {
     interfaceName = 'ImmersiveCrafting',
     interface = {
         version = 1,
         giveMaterials = giveMaterials,
+        reloadData = reloadData,
     },
     engineHandlers = {
         onInit = onInit,
