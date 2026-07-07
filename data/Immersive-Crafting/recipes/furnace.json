@@ -6,7 +6,7 @@
     "action": "processing",
     "inputs": [
       {
-        "id": "Ore",
+        "id": "T_IngMine_OreIron_01",
         "count": 3
       },
       {
@@ -52,13 +52,377 @@
     }
   },
   {
+    "id": "t_com_metalpiecesilver_01",
+    "label": "Silver Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_IngMine_OreSilver_01",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "T_Com_MetalPieceSilver_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_metalpiecegold_01",
+    "label": "Gold Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_IngMine_OreGold_01",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "T_Com_MetalPieceGold_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_ingot_copper",
+    "label": "Copper Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_IngMine_OreCopper_01",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "ic_ingot_copper",
+      "count": 1
+    }
+  },
+  {
+    "id": "alloy_bronze",
+    "label": "Bronze Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_copper",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "T_Com_MetalPieceBronze_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_ingot_ebony",
+    "label": "Ebony Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ingred_raw_ebony_01",
+        "count": 3
+      },
+      {
+        "id": "Charcoal",
+        "count": 2
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 5400,
+    "output": {
+      "id": "ic_ingot_ebony",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_ingot_daedric",
+    "label": "Daedric Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 2
+      },
+      {
+        "id": "soul gem",
+        "count": 1,
+        "soul": "filled"
+      },
+      {
+        "id": "Charcoal",
+        "count": 3
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 7200,
+    "output": {
+      "id": "ic_ingot_daedric",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_ebony",
+    "label": "Melt Down Ebony",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ebony",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_ingot_ebony",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_daedric",
+    "label": "Melt Down Daedric",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "daedric",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_ingot_daedric",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_iron",
+    "label": "Melt Down Iron",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "iron",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceIron_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_steel",
+    "label": "Melt Down Steel",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "steel",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceSteel_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_silver",
+    "label": "Melt Down Silver",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "silver",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceSilver_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_gold",
+    "label": "Melt Down Gold",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "gold",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceGold_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_bronze",
+    "label": "Melt Down Bronze",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "bronze",
+        "count": 2
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_MetalPieceBronze_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "hb_hunters_knife_repair",
+    "label": "Reforged Hunter Knife",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "Hb_brokenhunterknife",
+        "count": 1
+      },
+      {
+        "id": "Charcoal",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "HB_Hunters_Knife",
+      "count": 1
+    }
+  },
+  {
     "id": "ic_glass_component",
     "label": "Glass Component",
     "context": "furnace",
     "action": "processing",
     "inputs": [
       {
-        "id": "Raw Glass",
+        "id": "raw_glass",
         "count": 2
       },
       {

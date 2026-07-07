@@ -1,5 +1,65 @@
 [
   {
+    "id": "ac_tannin_corkbulb",
+    "label": "Vegetable Tannin",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "ingred_corkbulb_root_01"
+    },
+    "output": {
+      "id": "a_msc_tannin",
+      "count": 1
+    },
+    "tools": [
+      "mortar"
+    ]
+  },
+  {
+    "id": "ac_tannin_hackle_lo",
+    "label": "Vegetable Tannin",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "ingred_hackle-lo_leaf_01"
+    },
+    "output": {
+      "id": "a_msc_tannin",
+      "count": 1
+    },
+    "tools": [
+      "mortar"
+    ]
+  },
+  {
+    "id": "ac_tannin_trama",
+    "label": "Vegetable Tannin",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "ingred_trama_root_01"
+    },
+    "output": {
+      "id": "a_msc_tannin",
+      "count": 1
+    },
+    "tools": [
+      "mortar"
+    ]
+  },
+  {
     "id": "ic_bonemold_paste",
     "label": "Bonemold Paste",
     "context": "bushcrafting",
@@ -13,7 +73,7 @@
       "B": "Resin"
     },
     "tools": [
-      "Mortar and Pestle"
+      "mortar"
     ],
     "output": {
       "id": "ic_bonemold_paste",
@@ -33,7 +93,7 @@
       "A": "chitin"
     },
     "tools": [
-      "Mortar and Pestle"
+      "mortar"
     ],
     "output": {
       "id": "ic_chitin_dust",
@@ -41,8 +101,8 @@
     }
   },
   {
-    "id": "ic_fibre",
-    "label": "Fibre",
+    "id": "ingred_kresh_fiber_01",
+    "label": "Kresh Fibre",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
@@ -56,12 +116,12 @@
       "Knife"
     ],
     "output": {
-      "id": "ic_fibre",
+      "id": "ingred_kresh_fiber_01",
       "count": 4
     }
   },
   {
-    "id": "ic_mortar_pestle",
+    "id": "apparatus_a_mortar_01",
     "label": "Mortar and Pestle",
     "context": "bushcrafting",
     "action": "shaping",
@@ -73,7 +133,7 @@
       "A": "Stone"
     },
     "output": {
-      "id": "ic_mortar_pestle",
+      "id": "apparatus_a_mortar_01",
       "count": 1
     }
   },
@@ -136,8 +196,8 @@
     }
   },
   {
-    "id": "ic_string",
-    "label": "String",
+    "id": "t_com_rope_01",
+    "label": "Rope",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
@@ -148,13 +208,13 @@
       "A": "Fibre"
     },
     "output": {
-      "id": "ic_string",
+      "id": "T_Com_Rope_01",
       "count": 1
     }
   },
   {
-    "id": "ic_water_bladder",
-    "label": "Water Bladder",
+    "id": "ab_misc_waterskin",
+    "label": "Waterskin",
     "context": "bushcrafting",
     "action": "shaping",
     "pattern": [
@@ -163,13 +223,13 @@
     ],
     "key": {
       "A": "Hide",
-      "B": "String"
+      "B": "rope"
     },
     "tools": [
       "Knife"
     ],
     "output": {
-      "id": "ic_water_bladder",
+      "id": "AB_Misc_Waterskin",
       "count": 1
     }
   }

@@ -1,5 +1,27 @@
 [
   {
+    "id": "glass arrow",
+    "label": "Glass Arrows",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ingred_raw_glass_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "glass arrow",
+      "count": 10
+    },
+    "tools": [
+      "hammer"
+    ]
+  },
+  {
     "id": "glass claymore",
     "label": "glass claymore",
     "context": "crafting_table",

@@ -7,6 +7,7 @@ local globalFarming = require('scripts.Immersive-Crafting.globalFarming')
 local globalProcessing = require('scripts.Immersive-Crafting.globalProcessing')
 local globalLiquids = require('scripts.Immersive-Crafting.globalLiquids')
 local globalStations = require('scripts.Immersive-Crafting.globalStations')
+local globalDressing = require('scripts.Immersive-Crafting.globalDressing')
 
 local function onSave() return saveData end
 
@@ -214,6 +215,7 @@ return {
             globalStations.onPack(data)
         end,
         ImmersiveCrafting_IgniteStation = globalProcessing.onIgnite,
+        ImmersiveCrafting_FieldDress = globalDressing.onFieldDress,
         ImmersiveCrafting_SetOptions = function(data)
             globalProcessing.onSetOptions(data)
             globalFarming.onSetOptions(data)

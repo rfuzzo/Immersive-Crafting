@@ -1,0 +1,47 @@
+# Hunterwind material tags for Immersive Crafting — generated from the
+# hunterwind.omwaddon dump (pelts/skins feed the tanning chain, meats feed
+# cooking, shells feed chitin crafting, the knife doubles as an IC Knife).
+# Conservative: bloods/fats/glands/carcasses/trophies are left untagged.
+chitin_fragment:
+- HB_Brownbeetleshell
+- HB_bluebeetleshell
+- HB_greenbeetleshell
+- Hb_shalkshell
+- hb_mudcrabshell
+hide:
+- Hb_rough_alithides
+- Hb_rough_guarhides
+- Hb_rough_horsehides
+- Hb_rough_kagoutihides
+- Hb_wormmouthlargehide
+- hb_blackbearroughpelt
+- hb_frogskin
+- hb_frosttrollroughpelt
+- hb_grahlroughhides
+- hb_large_netchleather
+- hb_rough_armunkagoutihides
+- hb_rough_boarhides
+- hb_rough_normalbearhides
+- hb_rough_plaguebearhides
+- hb_rough_snowbearhides
+- hb_roughcervidhide
+- hb_trollroughpelt
+knife:
+- HB_Hunters_Knife
+pelt:
+- Hb_rough_alithides
+- Hb_rough_guarhides
+- Hb_rough_horsehides
+- Hb_rough_kagoutihides
+- Hb_wormmouthlargehide
+- hb_blackbearroughpelt
+- hb_frogskin
+- hb_frosttrollroughpelt
+- hb_grahlroughhides
+- hb_rough_armunkagoutihides
+- hb_rough_boarhides
+- hb_rough_normalbearhides
+- hb_rough_plaguebearhides
+- hb_rough_snowbearhides
+- hb_roughcervidhide
+- hb_trollroughpelt

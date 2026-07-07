@@ -1,5 +1,518 @@
 [
   {
+    "id": "a_ar_chitin_boots",
+    "label": "Dark Chitin Boots",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "C  ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope",
+      "C": "resin"
+    },
+    "output": {
+      "id": "a_ar_chitin_boots",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_chitin_bracer_left_01",
+    "label": "Dark Chitin Left Bracer",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "ABC",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope",
+      "C": "resin"
+    },
+    "output": {
+      "id": "a_ar_chitin_bracer_left_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_chitin_bracer_right_01",
+    "label": "Dark Chitin Right Bracer",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "ABC",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope",
+      "C": "resin"
+    },
+    "output": {
+      "id": "a_ar_chitin_bracer_right_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_chitin_cuirass",
+    "label": "Dark Chitin Cuirass",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "BBC",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope",
+      "C": "resin"
+    },
+    "output": {
+      "id": "a_ar_chitin_cuirass",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_chitin_greaves",
+    "label": "Dark Chitin Greaves",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "C  ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope",
+      "C": "resin"
+    },
+    "output": {
+      "id": "a_ar_chitin_greaves",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_chitin_paul_left",
+    "label": "Dark Chitin Left Pauldron",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "ABC",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope",
+      "C": "resin"
+    },
+    "output": {
+      "id": "a_ar_chitin_paul_left",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_chitin_paul_right",
+    "label": "Dark Chitin Right Pauldron",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "ABC",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope",
+      "C": "resin"
+    },
+    "output": {
+      "id": "a_ar_chitin_paul_right",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_chitin_tower",
+    "label": "Dark Chitin Tower Shield",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAA",
+      "BC ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope",
+      "C": "resin"
+    },
+    "output": {
+      "id": "a_ar_chitin_tower",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_axe_02",
+    "label": "Fine Chitin War Axe",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "AB"
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "a_wp_chitin_axe_02",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_axe_03",
+    "label": "Superior Chitin War Axe",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "AB",
+      "R "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_stick",
+      "R": "resin"
+    },
+    "output": {
+      "id": "a_wp_chitin_axe_03",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_bow_02",
+    "label": "Fine Chitin Short Bow",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "CC ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_plank",
+      "C": "rope"
+    },
+    "output": {
+      "id": "a_wp_chitin_bow_02",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_bow_03",
+    "label": "Superior Chitin Short Bow",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AAB",
+      "CCR",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_plank",
+      "C": "rope",
+      "R": "resin"
+    },
+    "output": {
+      "id": "a_wp_chitin_bow_03",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_club_02",
+    "label": "Fine Chitin Club",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "B "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_plank"
+    },
+    "output": {
+      "id": "a_wp_chitin_club_02",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_club_03",
+    "label": "Superior Chitin Club",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "BR"
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_plank",
+      "R": "resin"
+    },
+    "output": {
+      "id": "a_wp_chitin_club_03",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_dagger_02",
+    "label": "Fine Chitin Dagger",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "B "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "a_wp_chitin_dagger_02",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_dagger_03",
+    "label": "Superior Chitin Dagger",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "BR"
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_stick",
+      "R": "resin"
+    },
+    "output": {
+      "id": "a_wp_chitin_dagger_03",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_spear_02",
+    "label": "Fine Chitin Spear",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "BC"
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_plank",
+      "C": "ic_stick"
+    },
+    "output": {
+      "id": "a_wp_chitin_spear_02",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_spear_03",
+    "label": "Superior Chitin Spear",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "BC",
+      "R "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_plank",
+      "C": "ic_stick",
+      "R": "resin"
+    },
+    "output": {
+      "id": "a_wp_chitin_spear_03",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_star_02",
+    "label": "Fine Chitin Throwing Stars",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "  "
+    ],
+    "key": {
+      "A": "chitin_fragment"
+    },
+    "output": {
+      "id": "a_wp_chitin_star_02",
+      "count": 10
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_star_03",
+    "label": "Superior Chitin Throwing Stars",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "R "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "R": "resin"
+    },
+    "output": {
+      "id": "a_wp_chitin_star_03",
+      "count": 10
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_sword_02",
+    "label": "Fine Chitin Shortsword",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "AB"
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "a_wp_chitin_sword_02",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_wp_chitin_sword_03",
+    "label": "Superior Chitin Shortsword",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "AB",
+      "R "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_stick",
+      "R": "resin"
+    },
+    "output": {
+      "id": "a_wp_chitin_sword_03",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "chitin arrow",
+    "label": "Chitin Arrows",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AB",
+      "  "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "chitin arrow",
+      "count": 10
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
     "id": "chitin boots",
     "label": "chitin boots",
     "context": "crafting_table",
@@ -10,8 +523,8 @@
       "   "
     ],
     "key": {
-      "A": "ic_chitin_plate",
-      "B": "ic_string"
+      "A": "chitin_fragment",
+      "B": "rope"
     },
     "output": {
       "id": "chitin boots",
@@ -28,7 +541,7 @@
       "  "
     ],
     "key": {
-      "A": "ic_chitin_plate",
+      "A": "chitin_fragment",
       "B": "ic_plank"
     },
     "output": {
@@ -47,8 +560,8 @@
       "   "
     ],
     "key": {
-      "A": "ic_chitin_plate",
-      "B": "ic_string"
+      "A": "chitin_fragment",
+      "B": "rope"
     },
     "output": {
       "id": "chitin cuirass",
@@ -84,11 +597,49 @@
       "   "
     ],
     "key": {
-      "A": "ic_chitin_plate",
-      "B": "ic_string"
+      "A": "chitin_fragment",
+      "B": "rope"
     },
     "output": {
       "id": "chitin greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "chitin guantlet - left",
+    "label": "Chitin Left Gauntlet",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope"
+    },
+    "output": {
+      "id": "chitin guantlet - left",
+      "count": 1
+    }
+  },
+  {
+    "id": "chitin guantlet - right",
+    "label": "Chitin Right Gauntlet",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope"
+    },
+    "output": {
+      "id": "chitin guantlet - right",
       "count": 1
     }
   },
@@ -103,11 +654,49 @@
       "   "
     ],
     "key": {
-      "A": "ic_chitin_plate",
-      "B": "ic_string"
+      "A": "chitin_fragment",
+      "B": "rope"
     },
     "output": {
       "id": "chitin helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "chitin pauldron - left",
+    "label": "Chitin Left Pauldron",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope"
+    },
+    "output": {
+      "id": "chitin pauldron - left",
+      "count": 1
+    }
+  },
+  {
+    "id": "chitin pauldron - right",
+    "label": "Chitin Right Pauldron",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "chitin_fragment",
+      "B": "rope"
+    },
+    "output": {
+      "id": "chitin pauldron - right",
       "count": 1
     }
   },
@@ -123,7 +712,7 @@
     ],
     "key": {
       "A": "ic_plank",
-      "B": "ic_string"
+      "B": "rope"
     },
     "tools": [
       "Knife"
@@ -143,7 +732,7 @@
       "B "
     ],
     "key": {
-      "A": "ic_chitin_plate",
+      "A": "chitin_fragment",
       "B": "ic_stick"
     },
     "output": {
@@ -171,6 +760,26 @@
     }
   },
   {
+    "id": "chitin throwing star",
+    "label": "Chitin Throwing Stars",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "A ",
+      "  "
+    ],
+    "key": {
+      "A": "chitin_fragment"
+    },
+    "output": {
+      "id": "chitin throwing star",
+      "count": 10
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
     "id": "chitin war axe",
     "label": "chitin war axe",
     "context": "bushcrafting",
@@ -180,7 +789,7 @@
       "B "
     ],
     "key": {
-      "A": "ic_chitin_plate",
+      "A": "chitin_fragment",
       "B": "ic_stick"
     },
     "output": {
@@ -199,7 +808,7 @@
       "   "
     ],
     "key": {
-      "A": "ic_chitin_plate",
+      "A": "chitin_fragment",
       "B": "ic_plank"
     },
     "output": {

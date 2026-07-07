@@ -1,0 +1,12 @@
+type: MiscItem
+flags: ""
+id: ic_ingot_ebony
+name: Ebony Ingot
+script: ""
+# interim: vanilla raw ebony mesh/icon until a proper ingot mesh is picked
+mesh: n\Ingred_RawEbony_01.NIF
+icon: n\Tx_RawEbony.tga
+data:
+  weight: 8.0
+  value: 1500
+  flags: ""

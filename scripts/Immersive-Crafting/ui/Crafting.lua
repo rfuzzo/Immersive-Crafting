@@ -1235,7 +1235,18 @@ function this.onCraft()
         -- returned part is granted back when the run is collected
         local _, returned = splitPlaced()
         local consume = {}
-        for id, count in pairs(placedCounts()) do consume[#consume + 1] = { id = id, count = count } end
+        for id, count in pairs(placedCounts()) do
+            local entry = { id = id, count = count }
+            -- forward instance gates (soul:"filled"): the global consume must
+            -- pick gem instances with a trapped soul — the record id can't tell
+            for _, line in ipairs(matched.inputs or {}) do
+                if line.soul and lib.matchesTag(id, line.id) then
+                    entry.soul = line.soul
+                    break
+                end
+            end
+            consume[#consume + 1] = entry
+        end
         core.sendGlobalEvent('ImmersiveCrafting_StartProcess', {
             actor = self.object,
             station = ctx.object,

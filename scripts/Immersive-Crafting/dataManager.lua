@@ -12,6 +12,29 @@ local CCrop = require('scripts.Immersive-Crafting.models.crop')
 local AbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 
 local vfs = require('openmw.vfs')
+local types = require('openmw.types')
+
+-- item record stores probed for output existence (soft mod dependencies)
+local RECORD_TYPES = {
+    types.Miscellaneous, types.Weapon, types.Armor, types.Clothing,
+    types.Potion, types.Ingredient, types.Book, types.Apparatus,
+    types.Lockpick, types.Probe, types.Repair, types.Light,
+}
+
+--- Does an item record with this id exist in the current load order?
+--- Recipes whose OUTPUT record is missing (its source mod not installed) are
+--- skipped at load, so recipes for Ashlander Crafting / Hunterwind / Yurt /
+--- OAAB / Tamriel Data outputs are SOFT dependencies: without the mod the
+--- recipe simply doesn't exist (no consumed-inputs-for-nothing crafts).
+---@param recordId string
+---@return boolean
+local function outputRecordExists(recordId)
+    for _, t in ipairs(RECORD_TYPES) do
+        local ok, rec = pcall(function() return t.records[recordId] end)
+        if ok and rec then return true end
+    end
+    return false
+end
 
 local this = {}
 
@@ -34,6 +57,7 @@ GRegistries = {
     processRecipes = {},
     crops = {},
     processes = {},
+    dressing = {}, -- creature record id (lower) -> carcass record id (field dressing)
 }
 
 local DATA_ROOT = constants.DATA_ROOT
@@ -125,7 +149,12 @@ local function loadRecipes()
             if data then
                 -- data should be in the form of table[]
                 for _, entry in ipairs(data) do
-                    if entry.pattern then
+                    local out = entry.output and entry.output.id
+                    if out and not outputRecordExists(out) then
+                        -- soft dependency: output's source mod isn't loaded
+                        log.info(('Skipping recipe "%s": output record "%s" not in the load order')
+                            :format(tostring(entry.id), out))
+                    elseif entry.pattern then
                         -- shaped (positional) recipe
                         local r = CShapedRecipe:fromTable(entry)
                         if r then
@@ -210,11 +239,29 @@ local function loadHandlers()
 end
 
 ---Load all data domains.
+--- Field-dressing table: dead creature -> carcass item (data/dressing/*.json).
+--- Entries whose carcass record is missing (Hunterwind not installed) are
+--- skipped — same soft-dependency rule as recipe outputs.
+local function loadDressing()
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "dressing/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            for _, entry in ipairs(data or {}) do
+                if entry.creature and entry.carcass and outputRecordExists(entry.carcass) then
+                    GRegistries.dressing[entry.creature:lower()] = entry.carcass
+                end
+            end
+        end
+    end
+    log.info(('Loaded %d field-dressing entries'):format(len(GRegistries.dressing)))
+end
+
 function this.loadAllData()
     loadActions()
     loadContexts()
     loadRecipes()
     loadCrops()
+    loadDressing()
     loadHandlers()
 
     log.info('All data loaded successfully.')

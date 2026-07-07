@@ -1,0 +1,1090 @@
+[
+  {
+    "creature": "AB_Fau_DreughLand",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "AB_Fau_RatPassive",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "AB_Fau_SfishBlind",
+    "carcass": "hb_blindsfcarcass_l"
+  },
+  {
+    "creature": "AB_Fau_SpiderBlack",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "AB_Fau_SpiderBlackBby",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "AB_Fau_SpiderBlackLrg",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "AB_Fau_SpiderParasol",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "AB_Fau_SpiderParasolBby",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "AB_Fau_SpiderParasolLrg",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "AB_Fau_Sturgeon",
+    "carcass": "hb_sturgeoncarcass_l"
+  },
+  {
+    "creature": "BM_bear_black",
+    "carcass": "hb_normalbearcarcass_s"
+  },
+  {
+    "creature": "BM_bear_black_Claw_UNIQ",
+    "carcass": "hb_normalbearcarcass_l"
+  },
+  {
+    "creature": "BM_bear_black_fat",
+    "carcass": "hb_normalbearcarcass_l"
+  },
+  {
+    "creature": "BM_bear_black_summon",
+    "carcass": "hb_normalbearcarcass_l"
+  },
+  {
+    "creature": "BM_bear_brown",
+    "carcass": "hb_plaguebearcarcass_l"
+  },
+  {
+    "creature": "BM_bear_snow_unique",
+    "carcass": "hb_snowbearcarcass_l"
+  },
+  {
+    "creature": "BM_frost_boar",
+    "carcass": "hb_boarcarcass_l"
+  },
+  {
+    "creature": "BM_horker",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "BM_horker_dead",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "BM_horker_large",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "BM_ice_troll",
+    "carcass": "hb_grahlcarcass_l"
+  },
+  {
+    "creature": "BM_ice_troll_sun",
+    "carcass": "hb_grahlcarcass_l"
+  },
+  {
+    "creature": "BM_ice_troll_tough",
+    "carcass": "hb_grahlcarcass_l"
+  },
+  {
+    "creature": "BM_spriggan",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "BM_spriggan_co1",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "BM_spriggan_co2",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "BM_spriggan_co3",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "BM_spriggan_co4",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "BM_spriggan_st_UNIQUE",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "BM_wolf_grey",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "BM_wolf_grey_lvl_1",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "BM_wolf_grey_summon",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "BM_wolf_hroldar",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "BM_wolf_red",
+    "carcass": "hb_plaguewolfcarcass_l"
+  },
+  {
+    "creature": "BM_wolf_snow_unique",
+    "carcass": "hb_snowwolfcarcass_l"
+  },
+  {
+    "creature": "HB_proof_of_concept",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "Rat",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "Rat_plague",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "Rat_rerlas",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Cre_Dreu_01",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_Alphyn_01",
+    "carcass": "hb_alphyncarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_BearColDs_01",
+    "carcass": "hb_plaguebearcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_BearCol_01",
+    "carcass": "hb_plaguebearcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_BirdStridN_01",
+    "carcass": "hb_stridentcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_BirdStrid_01",
+    "carcass": "hb_stridentcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_FrogBul_01",
+    "carcass": "hb_frogcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_GoatDis_01",
+    "carcass": "hb_mountaingoatcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_Goat_01",
+    "carcass": "hb_mountaingoatcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSadlSt_01",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSadlSt_02",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSadlSt_03",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSadl_01",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSadl_02",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSadl_03",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSt_01",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSt_02",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_HrsSt_03",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_Hrs_01",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_Hrs_02",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_Hrs_03",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_MooncDis_01",
+    "carcass": "hb_mooncrabcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_Moonc_01",
+    "carcass": "hb_mooncrabcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_MuskratCol_01",
+    "carcass": "hb_muskratcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_MuskratDed_01",
+    "carcass": "hb_muskratcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_MuskratDs_01",
+    "carcass": "hb_muskratcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_Muskrat_01",
+    "carcass": "hb_muskratcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_SnkDmAspis_01",
+    "carcass": "hb_aspiscarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_Tantha_01",
+    "carcass": "hb_tanthacarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_WolfColDs_01",
+    "carcass": "hb_plaguewolfcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_WolfColDs_02",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_WolfCol_01",
+    "carcass": "hb_plaguewolfcarcass_l"
+  },
+  {
+    "creature": "T_Cyr_Fau_WolfCol_02",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_DreuDs_01",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_DreuMoW_01",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_DreuQueen_01",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_LandDreuDs_01",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_LandDreu_01",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollCaveD_03",
+    "carcass": "hb_trollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollCave_01",
+    "carcass": "hb_trollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollCave_02",
+    "carcass": "hb_trollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollCave_03",
+    "carcass": "hb_trollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollCave_04",
+    "carcass": "hb_trollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollFrost_01",
+    "carcass": "hb_frosttrollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollFrost_02",
+    "carcass": "hb_frosttrollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollFrost_03",
+    "carcass": "hb_frosttrollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Cre_TrollFrost_04",
+    "carcass": "hb_frosttrollcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_Deer_01",
+    "carcass": "hb_cervidcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_Deer_02",
+    "carcass": "hb_cervidcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerBrow_01",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerBrow_02",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerBrow_03",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerBrow_04",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerGrey_01",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerGrey_02",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerGrey_03",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerGrey_04",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerWhit_01",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_HorkerWhit_02",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_LrgSpider_01",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_LrgSpider_02",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_LrgSpider_03",
+    "carcass": "HB_spidercarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_RatBk_01",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_RatCol_01",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_RatCol_02",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_RatCvDs_01",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_RatCv_01",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_RatDs_01",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_RatGr_01",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Glb_Fau_RatWt_01",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "T_Ham_Fau_Goat_01",
+    "carcass": "hb_goatcarcass_l"
+  },
+  {
+    "creature": "T_Ham_Fau_Goat_02",
+    "carcass": "hb_goatcarcass_l"
+  },
+  {
+    "creature": "T_Ham_Fau_Wormmth_01",
+    "carcass": "hb_wormmouthcarcass_l"
+  },
+  {
+    "creature": "T_MW_Fau_Hirv_01",
+    "carcass": "Hb_guarCarcass_l"
+  },
+  {
+    "creature": "T_Mw_Cre_DreuMoW_01",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_ArmunKagMat_01",
+    "carcass": "hb_armunkagouticarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_ArmunKag_01",
+    "carcass": "hb_armunkagouticarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleBlDs_01",
+    "carcass": "HB_beetlebluecarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleBlRan_01",
+    "carcass": "HB_beetlebluecarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleBl_01",
+    "carcass": "HB_beetlebluecarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleBrDs_01",
+    "carcass": "HB_beetlebrowncarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleBrRan_01",
+    "carcass": "HB_beetlebrowncarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleBr_01",
+    "carcass": "HB_beetlebrowncarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleGrDs_01",
+    "carcass": "HB_beetlegreencarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleGrRan_01",
+    "carcass": "HB_beetlegreencarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BeetleGr_01",
+    "carcass": "HB_beetlegreencarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_BlindSlauFi_01",
+    "carcass": "hb_blindsfcarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_GuarDs_01",
+    "carcass": "Hb_guarCarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_GuarFrDs_01",
+    "carcass": "Hb_guarCarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_GuarHrn_01",
+    "carcass": "Hb_guarCarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_NixRogue_01",
+    "carcass": "HB_houndcarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_NixhDs_01",
+    "carcass": "HB_houndcarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_ParaDs_01",
+    "carcass": "hb_parastyluscarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_ParaVnDs_01",
+    "carcass": "hb_parastyluscarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_ParaVn_01",
+    "carcass": "hb_parastyluscarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_Para_01",
+    "carcass": "hb_parastyluscarcass_l"
+  },
+  {
+    "creature": "T_Mw_Fau_Yethbug_01",
+    "carcass": "hb_yethgrubcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Cre_SprigganEl_01",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "T_Sky_Cre_SprigganNy_01",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "T_Sky_Cre_Spriggan_01",
+    "carcass": "hb_spriggancarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BearBkDs_01",
+    "carcass": "hb_blackbearcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BearBk_01",
+    "carcass": "hb_blackbearcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BearBrDs_01",
+    "carcass": "hb_plaguebearcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BearBr_01",
+    "carcass": "hb_plaguebearcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BearGrDs_01",
+    "carcass": "hb_normalbearcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BearGr_01",
+    "carcass": "Hb_normalbearskin"
+  },
+  {
+    "creature": "T_Sky_Fau_BearRedDs_01",
+    "carcass": "hb_normalbearcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BearRed_01",
+    "carcass": "hb_normalbearcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BearSn_01",
+    "carcass": "hb_snowbearcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_BoarDs_01",
+    "carcass": "hb_boarcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Boar_01",
+    "carcass": "hb_boarcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_ElkWhite_01",
+    "carcass": "hb_cervidcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Elk_01",
+    "carcass": "hb_cervidcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Elk_02",
+    "carcass": "hb_cervidcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Elk_03",
+    "carcass": "hb_cervidcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Elk_04",
+    "carcass": "hb_cervidcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_GoatMnDs_01",
+    "carcass": "hb_mountaingoatcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_GoatMnFr_01",
+    "carcass": "hb_mountaingoatcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_GoatMn_01",
+    "carcass": "hb_mountaingoatcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_HorkerDs_01",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Horker_01",
+    "carcass": "hb_horkercarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_HrsCt_01",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_HrsCt_02",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_HrsCt_03",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_HrsCt_04",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Hrs_01",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Hrs_02",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Hrs_03",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_Hrs_04",
+    "carcass": "hb_horsecarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_WolfBlaDs_01",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_WolfBlaSml_01",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_WolfBla_01",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_WolfGr_01",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_WolfGr_Dis_01",
+    "carcass": "hb_blackwolfcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_WolfRedDs_01",
+    "carcass": "hb_plaguewolfcarcass_l"
+  },
+  {
+    "creature": "T_Sky_Fau_WolfRed_01",
+    "carcass": "hb_plaguewolfcarcass_l"
+  },
+  {
+    "creature": "alit",
+    "carcass": "Hb_alitcarcass_l"
+  },
+  {
+    "creature": "alit_blighted",
+    "carcass": "Hb_alitcarcass_l"
+  },
+  {
+    "creature": "alit_diseased",
+    "carcass": "Hb_alitcarcass_l"
+  },
+  {
+    "creature": "cliff racer",
+    "carcass": "Hb_racercarcass_l"
+  },
+  {
+    "creature": "cliff racer_blighted",
+    "carcass": "Hb_racercarcass_l"
+  },
+  {
+    "creature": "cliff racer_diseased",
+    "carcass": "Hb_racercarcass_l"
+  },
+  {
+    "creature": "dead rat",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "dead_mudcrab",
+    "carcass": "hb_mudcrabcarcass_l"
+  },
+  {
+    "creature": "dead_scrib",
+    "carcass": "HB_scribcarcass_l"
+  },
+  {
+    "creature": "dreugh",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "dreugh_koal",
+    "carcass": "Hb_dreughcarcass_l"
+  },
+  {
+    "creature": "guar",
+    "carcass": "Hb_guarCarcass_l"
+  },
+  {
+    "creature": "guar_feral",
+    "carcass": "Hb_guarCarcass_l"
+  },
+  {
+    "creature": "guar_hrmudcrabnest",
+    "carcass": "Hb_guarCarcass_l"
+  },
+  {
+    "creature": "hb_deadalit",
+    "carcass": "Hb_alitcarcass_h"
+  },
+  {
+    "creature": "hb_deadalphyn",
+    "carcass": "hb_ALPHYNcarcass_h"
+  },
+  {
+    "creature": "hb_deadarmunkagouti",
+    "carcass": "hb_armunkagouticarcass_h"
+  },
+  {
+    "creature": "hb_deadaspis",
+    "carcass": "Hb_aspiscarcass_h"
+  },
+  {
+    "creature": "hb_deadbettynetch",
+    "carcass": "Hb_netchbettycarcass_h"
+  },
+  {
+    "creature": "hb_deadblackbear",
+    "carcass": "hb_blackbearcarcass_h"
+  },
+  {
+    "creature": "hb_deadblackwolf",
+    "carcass": "Hb_blackwolfcarcass_h"
+  },
+  {
+    "creature": "hb_deadbluebeetle",
+    "carcass": "HB_beetlebluecarcass_H"
+  },
+  {
+    "creature": "hb_deadboar",
+    "carcass": "hb_boarcarcass_h"
+  },
+  {
+    "creature": "hb_deadbrownbeetle",
+    "carcass": "HB_beetlebrowncarcass_H"
+  },
+  {
+    "creature": "hb_deadbullnetch",
+    "carcass": "Hb_netchbullcarcass_h"
+  },
+  {
+    "creature": "hb_deaddreugh",
+    "carcass": "hb_dreughcarcass_h"
+  },
+  {
+    "creature": "hb_deadfrog",
+    "carcass": "Hb_frogcarcass_h"
+  },
+  {
+    "creature": "hb_deadgoat",
+    "carcass": "hb_GOATcarcass_h"
+  },
+  {
+    "creature": "hb_deadgrahl",
+    "carcass": "hb_grahlcarcass_h"
+  },
+  {
+    "creature": "hb_deadgreenbeetle",
+    "carcass": "HB_beetlegreencarcass_h"
+  },
+  {
+    "creature": "hb_deadguar",
+    "carcass": "hb_guarcarcass_h"
+  },
+  {
+    "creature": "hb_deadhorker",
+    "carcass": "hb_horkercarcass_h"
+  },
+  {
+    "creature": "hb_deadhorse",
+    "carcass": "hb_horsecarcass_h"
+  },
+  {
+    "creature": "hb_deadhound",
+    "carcass": "Hb_houndcarcass_h"
+  },
+  {
+    "creature": "hb_deadkagouti",
+    "carcass": "HB_kagouti_carcass_h"
+  },
+  {
+    "creature": "hb_deadkwamaf",
+    "carcass": "hb_kwamafcarcass_h"
+  },
+  {
+    "creature": "hb_deadmooncrab",
+    "carcass": "hb_mooncrabcarcass_h"
+  },
+  {
+    "creature": "hb_deadmountaingoat",
+    "carcass": "hb_mountaingoatcarcass_h"
+  },
+  {
+    "creature": "hb_deadmudcrab",
+    "carcass": "hb_mudcrabcarcass_h"
+  },
+  {
+    "creature": "hb_deadmuskrat",
+    "carcass": "hb_muskratcarcass_h"
+  },
+  {
+    "creature": "hb_deadnormalbear",
+    "carcass": "hb_normalbearcarcass_h"
+  },
+  {
+    "creature": "hb_deadparastylus",
+    "carcass": "HB_parastyluscarcass_h"
+  },
+  {
+    "creature": "hb_deadplaguebear",
+    "carcass": "hb_plaguebearcarcass_h"
+  },
+  {
+    "creature": "hb_deadplaguewolf",
+    "carcass": "hb_plaguewolfcarcass_h"
+  },
+  {
+    "creature": "hb_deadracer",
+    "carcass": "Hb_racercarcass_h"
+  },
+  {
+    "creature": "hb_deadrat",
+    "carcass": "Hb_ratcarcass_h"
+  },
+  {
+    "creature": "hb_deadscrib",
+    "carcass": "hb_scribcarcass_h"
+  },
+  {
+    "creature": "hb_deadshalk",
+    "carcass": "Hb_shalkcarcass_h"
+  },
+  {
+    "creature": "hb_deadsnowbear",
+    "carcass": "hb_snowbearcarcass_h"
+  },
+  {
+    "creature": "hb_deadsnowtroll",
+    "carcass": "hb_frosttrollcarcass_h"
+  },
+  {
+    "creature": "hb_deadsnowwolf",
+    "carcass": "hb_snowwolfcarcass_h"
+  },
+  {
+    "creature": "hb_deadspriggan",
+    "carcass": "hb_spriggancarcass_h"
+  },
+  {
+    "creature": "hb_deadstrident",
+    "carcass": "hb_stridentcarcass_h"
+  },
+  {
+    "creature": "hb_deadsturgeon",
+    "carcass": "hb_sturgeoncarcass_h"
+  },
+  {
+    "creature": "hb_deadtantha",
+    "carcass": "Hb_tanthacarcass_h"
+  },
+  {
+    "creature": "hb_deadtroll",
+    "carcass": "hb_trollcarcass_h"
+  },
+  {
+    "creature": "hb_deadvenison",
+    "carcass": "hb_cervidcarcass_h"
+  },
+  {
+    "creature": "hb_deadwormmouth",
+    "carcass": "hb_wormmouthcarcass_h"
+  },
+  {
+    "creature": "hb_deadyethgrub",
+    "carcass": "hb_yethgrubcarcass_h"
+  },
+  {
+    "creature": "kagouti",
+    "carcass": "HB_kagouti_carcass_l"
+  },
+  {
+    "creature": "kagouti_blighted",
+    "carcass": "HB_kagouti_carcass_l"
+  },
+  {
+    "creature": "kagouti_diseased",
+    "carcass": "HB_kagouti_carcass_l"
+  },
+  {
+    "creature": "kagouti_hrk",
+    "carcass": "HB_kagouti_carcass_l"
+  },
+  {
+    "creature": "kagouti_mating",
+    "carcass": "HB_kagouti_carcass_l"
+  },
+  {
+    "creature": "kwama forager blighted",
+    "carcass": "Hb_kwamafcarcass_l"
+  },
+  {
+    "creature": "kwama forager",
+    "carcass": "Hb_kwamafcarcass_l"
+  },
+  {
+    "creature": "mudcrab-Diseased",
+    "carcass": "hb_mudcrabcarcass_l"
+  },
+  {
+    "creature": "mudcrab",
+    "carcass": "hb_mudcrabcarcass_l"
+  },
+  {
+    "creature": "mudcrab_hrmudcrabnest",
+    "carcass": "hb_mudcrabcarcass_l"
+  },
+  {
+    "creature": "netch_betty",
+    "carcass": "Hb_netchbettycarcass_l"
+  },
+  {
+    "creature": "netch_betty_ilgn",
+    "carcass": "Hb_netchbettycarcass_l"
+  },
+  {
+    "creature": "netch_betty_ranched",
+    "carcass": "Hb_netchbettycarcass_l"
+  },
+  {
+    "creature": "netch_bull",
+    "carcass": "Hb_netchbullcarcass_l"
+  },
+  {
+    "creature": "netch_bull_dead",
+    "carcass": "Hb_netchbullcarcass_l"
+  },
+  {
+    "creature": "netch_bull_dead_2",
+    "carcass": "Hb_netchbullcarcass_l"
+  },
+  {
+    "creature": "netch_bull_ilgn",
+    "carcass": "Hb_netchbullcarcass_l"
+  },
+  {
+    "creature": "netch_bull_ranched",
+    "carcass": "Hb_netchbullcarcass_l"
+  },
+  {
+    "creature": "nix-hound blighted",
+    "carcass": "HB_houndcarcass_l"
+  },
+  {
+    "creature": "nix-hound",
+    "carcass": "HB_houndcarcass_l"
+  },
+  {
+    "creature": "rat_blighted",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "rat_cave_fgrh",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "rat_cave_fgt",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "rat_cave_hhte1",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "rat_cave_hhte2",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "rat_diseased",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "rat_telvanni_unique",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "rat_telvanni_unique_2",
+    "carcass": "Hb_ratcarcass_l"
+  },
+  {
+    "creature": "scrib _0hp",
+    "carcass": "HB_scribcarcass_l"
+  },
+  {
+    "creature": "scrib _dead",
+    "carcass": "HB_scribcarcass_l"
+  },
+  {
+    "creature": "scrib blighted",
+    "carcass": "HB_scribcarcass_l"
+  },
+  {
+    "creature": "scrib diseased",
+    "carcass": "HB_scribcarcass_l"
+  },
+  {
+    "creature": "scrib",
+    "carcass": "HB_scribcarcass_l"
+  },
+  {
+    "creature": "scrib_rerlas",
+    "carcass": "HB_scribcarcass_l"
+  },
+  {
+    "creature": "shalk",
+    "carcass": "Hb_shalkcarcass_l"
+  },
+  {
+    "creature": "shalk_blighted",
+    "carcass": "Hb_shalkcarcass_l"
+  },
+  {
+    "creature": "shalk_diseased",
+    "carcass": "Hb_shalkcarcass_l"
+  },
+  {
+    "creature": "slaughterfish",
+    "carcass": "hb_slaughterfish_l"
+  }
+]

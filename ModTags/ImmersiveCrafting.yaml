@@ -7,11 +7,29 @@ wood:
 stone:
   - ic_stone
 charcoal:
-  - ic_charcoal
-  # Tamriel Data mined charcoal/coal — soft interop
+  # Tamriel Data mined charcoal/coal — also the charcoal pit's own product
   - T_IngMine_Charcoal_01
   - T_IngMine_Coal_01
 # clay is tagged in ImmersiveCrafting_Ingredients.yaml (real OAAB/TR clay records)
+# ── crafting tool/material tags on existing records (no ic_* record needed) ──
+crucible:
+  - T_Rga_Crucible_01
+mortar:
+  - apparatus_a_mortar_01
+  - apparatus_j_mortar_01
+  - apparatus_m_mortar_01
+  - apparatus_g_mortar_01
+  - apparatus_sm_mortar_01
+fibre:
+  - ingred_kresh_fiber_01
+rope:
+  - T_Com_Rope_01
+raw_glass:
+  - ingred_raw_glass_01
+  - ingred_raw_glass_tinos
+firestarter:
+  - AB_Misc_FlintAndSteel
+  - AB_Misc_Flint
 # ── foraging tool tags ──
 # tree/rock target tags are generated into ImmersiveCrafting_Statics.yaml by
 # tools/static_tags.py (from the tes3-records dump) — don't hand-add them here.
@@ -62,3 +80,9 @@ mold_raw:
   - ic_mold_tower_shield_raw
   - ic_mold_waraxe_raw
   - ic_mold_warhammer_raw
+# ── material-family additions (Ashlander Crafting interop) ──
+# NOT the bare 'chitin' tag: that one classifies chitin ARMOR/WEAPONS in the
+# per-plugin tag files; this is the raw crafting material family.
+chitin_fragment:
+  - ic_chitin_plate
+  - a_msc_chitin_01

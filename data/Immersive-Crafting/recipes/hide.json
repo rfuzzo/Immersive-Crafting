@@ -1,0 +1,86 @@
+[
+  {
+    "id": "a_ar_hide_boots_01",
+    "label": "Hide Boots",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_hide_01"
+    },
+    "output": {
+      "id": "a_ar_hide_boots_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_hide_bracer_left_01",
+    "label": "Hide Left Bracer",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_hide_01"
+    },
+    "output": {
+      "id": "a_ar_hide_bracer_left_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_hide_bracer_right_01",
+    "label": "Hide Right Bracer",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_hide_01"
+    },
+    "output": {
+      "id": "a_ar_hide_bracer_right_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_hide_chest_01",
+    "label": "Hide Jerkin",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_hide_01"
+    },
+    "output": {
+      "id": "a_ar_hide_chest_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  }
+]

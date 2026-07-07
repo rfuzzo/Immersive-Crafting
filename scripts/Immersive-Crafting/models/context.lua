@@ -8,6 +8,7 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field recordPatternsExclude string[]|nil patterns that veto a recordPatterns match (e.g. "firewat" vs the "fire" pattern)
 ---@field requires string[]|nil Extra FlexTag tags that must also be present nearby (e.g. "fire")
 ---@field trigger string|nil Detection: "proximity" (default), "activate" (activating the object opens it), "gaze" (crosshair raycast — for statics like trees/rocks), or "condition" (named predicate, no object)
+---@field targets string|nil "corpse": candidates are DEAD actors (field dressing) matched via GRegistries.dressing (or recordIds); default: world items/activators
 ---@field condition string|nil trigger:"condition" only — predicate name in conditions.lua (e.g. "near_water")
 ---@field forage CContext.Forage|nil foraging definition (see handlers/foraging.lua)
 ---@field layout CContext.Layout|nil UI layout for the crafting window (grid or process). Falls back to `gridSize`, then a 2x2 grid.

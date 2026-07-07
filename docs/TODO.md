@@ -174,6 +174,7 @@ integrity + the tool-vs-consumed rules and regenerate `docs/ic_records.md`.
 Run `python3 tools/recipes_lint.py` after editing recipes (or `--check` in CI).
 
 Applied per design review (ratified 2026-07-02):
+
 - ✅ `outcome_count` column added (default 1; arrows/bolts ×20 via `output.count`).
 - ✅ Process recipes are **counted multisets** (`inputs: [{id,count}]`, exact match, no
   leftovers); process station layouts use generic slots (firepit 8, kiln 6, furnace 4,
@@ -185,6 +186,7 @@ Applied per design review (ratified 2026-07-02):
   (`processing.json`, `woodworking.json`) removed.
 
 Open items:
+
 - 🟡 **`ic_*` records ship as plugin records — pipeline in place** *(D1 amendment ratified
   2026-07-03)*: `tes3util.exe` packs `records/<Type>/<id>.yaml` → `immersive_crafting.esp`
   (`_pack.ps1`). **All 46 records drafted** and packing clean (44 MiscItem + Armor
@@ -225,7 +227,7 @@ Raw-material gathering from the world, built on two new context triggers:
   within a band around the cell water level). Shown at a nominal distance of 100 so nearer
   stations still win the overlay.
 - ✅ **Foraging definition on the context** (`forage: { verb, label, yield, tools, cooldown }`)
-  + `foraging` action/handler: tools required-not-consumed, yield granted via the existing
+  - `foraging` action/handler: tools required-not-consumed, yield granted via the existing
   `ImmersiveCrafting_CraftShaped` executor (empty consume). Cooldowns are per **object**
   (gaze) / per **context** (condition), in **game seconds** (3600 = 1 game hour — they pass
   while sleeping), persisted in the player save (`forageState.lua`).
@@ -238,6 +240,7 @@ Raw-material gathering from the world, built on two new context triggers:
   replace from the records dump; tree/rock static ids are guesses).
 
 Verify in-game:
+
 - `nearby.castRay` returns `hitObject` for statics (and that `viewportToWorldVector` +
   `camera.getPosition` behave in both 1st/3rd person; `{ ignore = self }` set).
 - `cell.waterLevel` semantics in exteriors (sea level 0) — tune the `near_water` band.
@@ -272,6 +275,7 @@ registries, keyed by record id; eating is detected via `onConsume` + lookup.
   count values are per-meal; `sdRecipeId` optionally reuses SD recipe typing.
 
 Verify in-game (SD loaded):
+
 - `SunsDusk_createStew` payload accepted from an external mod (event is internal,
   not the versioned interface — pin the SD version / re-check on SD updates).
 - Behaviour with **no bowls/plates** in inventory (fallback mesh path).
@@ -301,6 +305,7 @@ Verify in-game (SD loaded):
 SD water: bottles are dynamic Potion records tracked in `saveData.reverse[recordId]
 = { orig, q, liquid }` (orig = the empty container, liquid = 'water'|…), exposed via
 `I.SunsDusk.isConsumable(id)` → (entry, "drink"). Plan:
+
 - extend ingredient matching so a special matcher (e.g. `sd:water`) accepts any item
   SD classifies as a water drink — `matchesTag` can't tag dynamic ids;
 - on consume, **return the empty container** (`entry.orig`) instead of deleting the
@@ -324,6 +329,7 @@ proximity + [F]** (the item↔activator drop-swap remains a kiln/furnace task, n
 farming dependency); **annuals + perennials** (per-crop `regrow`).
 
 Built:
+
 - **Crop lifecycle (global `globalFarming.lua`)**: `ImmersiveCrafting_Plant` consumes
   one seed, spawns the crop's vanilla flora record above the planter (`+15z`, tune),
   scales 0.3 → 0.65 → 1.0 via **persisted game-time timers** (grow while sleeping;
@@ -344,6 +350,7 @@ Built:
   files.
 
 Verify in-game:
+
 - planting end-to-end (seed consumed, plant appears above the bed, `+15z` offset right
   for the planter mesh), scale steps look sane, timers fire after sleep/wait
 - harvest: ripe activation grants + suppresses the container UI; unripe message;
@@ -363,6 +370,7 @@ column `duration`, 27 recipes valued — ingots, charcoal, burnt molds, castings
 bonemold, netch leather, clay pot/crucible/glass) no longer craft instantly.
 
 Flow (globalProcessing.lua + processState.lua mirror, farming-pattern):
+
 - **Start**: taking the result in the crafting window sends
   `ImmersiveCrafting_StartProcess` — inputs verified then consumed up front, run
   registered in global `saveData.processes` (one per station object), a persisted
@@ -379,6 +387,7 @@ Flow (globalProcessing.lua + processState.lua mirror, farming-pattern):
   window knows which station a run belongs to.
 
 Verify in-game:
+
 - full kiln loop: place ore+charcoal → take result → "ready in ~1 h" → wait/sleep
   → activate → ingot collected; save/load mid-run
 - busy-station guards (window refuses, activation messages)
@@ -420,6 +429,7 @@ accepts). Recipe matching stays a forgiving counted multiset over ALL slots, so
 labels/filters never break a valid recipe.
 
 Verify in-game:
+
 - carving: 1 wood + knife at the table → cycler shows 4 outcomes, cycle + craft
   each; steel helm/boots/greaves now all reachable from 2 ingots
 - kiln: 3 Ore stacked in Input + 2 Charcoal in Fuel → Iron Ingot run starts;
@@ -467,6 +477,7 @@ already scales armor RATING by skill, so "less efficient" was free; this adds
 the hard gate.
 
 Verify in-game:
+
 - kiln fits every recipe in 3 slots; furnace smelts iron/steel/glass; furnace
   build appears at the crafting table (needs crucible in the grid)
 - 1 chitin dust at kiln -> cycle helm/boots; 2 -> greaves/shield
@@ -534,6 +545,7 @@ the ACKNOWLEDGED lint exception is gone, and returned items in a TOOL column
 are now a lint error.
 
 Verify in-game:
+
 - start a bonemold firing -> armor mold LEAVES the inventory; collect ->
   mold + piece both granted; save/load mid-run keeps the returned list
 - casting at the furnace works without a crucible in inventory
@@ -567,6 +579,7 @@ tools) replaced by 3 PLAYER-MANAGED tool slots, vanilla-alchemy style
   cycler remains for genuinely identical placements.
 
 Verify in-game:
+
 - knife auto-slots when placing wood at bushcrafting; clearing it flips the
   caption to "(needs Knife)" and blocks the craft until re-slotted
 - tool-slot click -> strip shows only tools; input-slot click switches back
@@ -588,7 +601,7 @@ into the craft and the empty waterskin/cup stays with the player.
 readable from the record in ANY context, so "is this an SD liquid" is instant
 player-side (sdLiquids.lua). WHICH liquid lives only in SD's global registry
 (`saveData.reverse[id] = {orig, q, liquid}`), so unknown ids do one global
-round-trip (ImmersiveCrafting_ClassifyLiquids -> _LiquidSync, answered via
+round-trip (ImmersiveCrafting_ClassifyLiquids ->_LiquidSync, answered via
 SD's GLOBAL I.SunsDusk.isConsumable -> ({orig,q,liquid}, "drink")) into a
 player mirror. First sight of a fresh bottle can miss one frame; every later
 resolve sees it. NOTE: SD's PLAYER-side isConsumable does NOT cover drinks —
@@ -611,6 +624,7 @@ across our event ordering — revisit only if the waste ever hurts.
 Converter: `sd:` refs are engine matchers, excluded from the record/tag report.
 
 Verify in-game (needs SD):
+
 - recipe cell `sd:water` -> filled waterskin appears in the strip and matches;
   crafting removes the bottle and grants the empty container back
 - timed run with sd:water -> empty skin back at START, output on collect
@@ -624,6 +638,7 @@ bottles (logs unresolved — use SD's own water sources when testing).
 ## Forage polish: gather wood + real hold bar (built 2026-07-05)
 
 **Tree foraging reworked** (user request — SD's wood-chopping owns firewood):
+
 - forage_tree: verb "Gather wood", yields 1-3 STICKS (new `yield.countMax` =
   random count..countMax), bare-handed (axe tool dropped — deadfall sticks
   need no tool, and the chitin-dagger bootstrap needs a stick first).
@@ -639,6 +654,7 @@ LINE_W wide. Fills smoothly (overlay already re-renders every frame during a
 hold).
 
 Verify in-game:
+
 - with SD: trees give sticks only; toggle the setting -> +Wood appears
 - without SD: +Wood automatic
 - hold bar renders as a filled gold bar and resets on release/tap
@@ -672,6 +688,7 @@ Four user reports, all fixed:
   "Missing: 2x Clay, ...". Best-effort: gaps stay empty for hand-filling.
 
 Verify in-game:
+
 - open window fresh -> first ingredient click no longer moves it; drag +
   resize still work; release outside then click inside: no jump
 - F opens ONLY our window (cursor, no inventory)
@@ -711,6 +728,7 @@ data/Immersive-Crafting/stations/stations.json ({item, activator} pairs):
   activating them = picking them up IS the pack-up mechanic there.
 
 Verify in-game (after the plugin with the Activator records is built):
+
 - drop kiln item -> activator appears in place; activate -> station opens
   (not picked up); hold F on its card -> packed back into the inventory
 - busy kiln refuses packing; collect first, then pack works
@@ -750,6 +768,7 @@ Ambiguity note: identical charges (bonemold helm vs boots = 1 paste) light
 the FIRST match by id — the window's cycler remains the precise tool.
 
 Verify in-game:
+
 - drop ore+charcoal at kiln -> loaded card; activate -> contents message;
   torch in hand -> hold F -> fire lights, run starts; collect ingot
 - charcoal pit: 4 wood -> light -> charcoal
@@ -790,6 +809,7 @@ station swap -> seed sowing -> station charge; SetOptions fans out to both
 globalProcessing and globalFarming.
 
 Verify in-game:
+
 - drop 1 saltrice on an empty planter -> sown message + card; hold F ->
   planted, no inventory consumed twice; grow/harvest normal
 - drop near planter AND kiln (overlapping radii) -> planter wins for seeds
@@ -814,10 +834,12 @@ molds, gauntlets, ingot mold; `ic_mold_armor` renamed to `ic_mold_cuirass`),
 each. Every new burnt mold must be added to `mold_burnt` to be placeable in the
 Mold slot — the pattern `^ic_mold_.*_burnt$` would auto-cover instead, if the
 explicit tag ever becomes a maintenance burden.
+
 ## Steel armor: cast → hammer two-step (PROTOTYPE, 2026-07-06)
 
 Testing idea 2 (more armor crafting steps) on the steel tier only, to feel
 whether the extra beat reads as ritual or chore before generalizing:
+
 - FURNACE cast: steel ingots + part mold (returned) + charcoal → a rough part
   (new ic_steel_<slot>_rough records, 10, placeholder scrap-metal mesh).
 - CRAFTING TABLE hammer: rough part + `hammer` TOOL → the finished vanilla
@@ -832,6 +854,273 @@ Repair-type "Armorer's Hammer" records), or point these recipes at a new tag.
 
 Decision pending: if the two-step feels good, generalize to iron + bonemold
 (each adds a rough-part record set + hammer recipe); else revert to direct cast.
+
+## Mod integrations: Ashlander Crafting, Hunterwind, Yurt (ratified + built 2026-07-06)
+
+Investigation (tes3util Linux dumps) + ratified decisions: parallel chains
+(keep IC's), tag-and-keep-both chitin, quality tiers = costlier recipes
+(skill-gate later), AC's mwscript menus stay as a parallel path for now.
+
+**Engine — soft mod dependencies:** dataManager now SKIPS any recipe whose
+output record is not in the load order (probed across item record stores at
+load, logged). Recipes for AC/Hunterwind/Yurt/OAAB/TD outputs are safe without
+those mods — no consumed-inputs-for-nothing crafts.
+
+**Ashlander Crafting port (records/menus untouched; ESP loads as-is):**
+
+- Tannin: grind corkbulb/hackle-lo/trama root (Mortar & Pestle, bushcrafting).
+- Leather chain at the tanning rack (TIMED, parallel to ic_netch_leather):
+  hide/pelt + saltrice -> Cured Hide (1h); + tannin + knife -> Tanned Leather
+  (1h); + resin -> Hardened Leather (30min).
+- New material files hide.json (4 pieces) + leather.json (8) using AC records.
+- Chitin: recipes migrated from exact ic_chitin_plate to the new
+  `chitin_fragment` tag (ic_chitin_plate + a_msc_chitin_01 — NOT the bare
+  'chitin' tag, which classifies chitin ARMOR in the per-plugin files); added
+  vanilla pauldrons/gauntlets ("guantlet" — vanilla typo, ids from AC's
+  AddItem lines), throwing stars x10, chitin arrows x10; dark chitin armor
+  (8 AC records, +1 resin each); Fine/Superior (_02/_03) weapon tiers
+  (+1 fragment / +1 fragment +resin); bonemold bows 02/03.
+- Arrows: corkbulb/ebony (crafting table), glass (glass.json), all x10 + stick.
+- Repair prongs 01-04 from 1-4 scrap metal (hammer).
+- ic_chitin_plate reskinned to AC's chitin mesh/icon; tanning-rack ACTIVATOR
+  now uses AC's dedicated activator mesh (ian_rack_empty_02).
+
+**Hunterwind (stays standalone):** generated ModTags/Hunterwind_{Ingredient,
+MiscItem}.yaml — 37 pelts/skins -> hide+pelt (feeding the tanning chain!),
+12 meats -> meat, 5 shells -> chitin_fragment, Hunter Knife -> knife (works as
+an IC tool). Recipes: craft the Hunter Knife (iron ingot + stick + string,
+hammer) and REFORGE the broken one at the furnace (broken + charcoal, 30min)
+— replaces the 20-drake dialogue repair with actual smithing.
+
+**Yurt Crafting:** one recipe — the Yurt Crafting Kit (4 plank + 2 cloth +
+2 string, knife) as the FRAME bundle; the mod's own deploy script still
+consumes 10 guar hides + 10 kresh fiber + 5 corkbulb on placement (no double
+cost, coherent story: kit = frame + tools, deploy wraps it in your hides).
+The interior worktable (global-variable-driven placement) is deliberately NOT
+ported. Yurt = natural Tent Mk2.
+
+Verify in-game (needs the respective ESPs):
+
+- without AC/Hunterwind/Yurt loaded: their recipes absent, log shows skips
+- AC chain end-to-end: grind tannin -> cure guar hide -> tan -> harden ->
+  hardened cuirass; Hunterwind pelt cures at the rack (hide tag)
+- chitin recipes accept BOTH ic plates and AC fragments (+beetle shells)
+- hunter knife reforge; yurt kit crafts then deploys (mod charges materials)
+- balance pass: all counts are first-draft (user-owned)
+
+Open: AC quality tiers should later require Armorer skill (skill-gated
+recipes, roadmap); "menus-off" patched AC ESP via tes3util when the user
+tires of the mwscript UI; bloods/fats/glands from Hunterwind untagged
+(cooking candidates); a_msc_crafting_tool/tanner-specific tools unused (IC
+uses the generic knife/hammer tags).
+
+## Field dressing + Salt fix (ratified + built 2026-07-06)
+
+**Salt cures hides, not grain** (user): the two AC cure recipes swapped
+`ingred_saltrice_01` -> the `Salt` tag (IC's original design).
+
+**Field dressing** replaces Hunterwind's 274 creature-record loot edits with
+IC's contextual grammar (ratified: leave the corpse; take-from-loot-else-mint;
+the HUNTER KNIFE specifically):
+
+- data/dressing/creatures.json: 272 creature -> carcass entries GENERATED from
+  Hunterwind's own creature inventories (their injection method IS the
+  mapping); loaded into GRegistries.dressing with the same soft-dependency
+  filter as recipes (no Hunterwind = empty registry = no cards).
+- Engine: contexts gain `targets: "corpse"` — DEAD actors (nearby.actors +
+  types.Actor.isDead) join the candidate scan for corpse contexts only;
+  living actors never card, corpse contexts never match items/activators.
+- handlers/dressing.lua: "Guar — dead / [F] Field dress (hold 1.5s)", requires
+  the Hunter Knife (hb_hunters_knife); once per corpse (dressState, player
+  save, forageState-style); the corpse STAYS for vanilla looting/disposal.
+- globalDressing.onFieldDress: take-from-loot-else-mint — with UNPATCHED
+  Hunterwind the carcass is pulled out of the corpse's inventory (no
+  doubles); with the patched plugin it's minted. Both configs identical.
+- tools/patch_hunterwind.py: strips the creature overrides from
+  hunterwind.omwaddon via tes3util (verified round-trip); patched plugin
+  loads instead of the original (assets still from the original download —
+  shipping plugin-only patches is fine per user; never HW's assets).
+- Downstream: Hunterwind's own carcass-item scripts (butchering into TD
+  meats, carcass removal) process what field dressing produces — unchanged.
+
+Verify in-game: kill a guar -> card appears only when dead; no knife ->
+"Requires: Hunter Knife"; dress -> carcass granted, second attempt refused;
+unpatched HW -> corpse loot loses the carcass (moved, not duplicated);
+patched -> carcass minted; NPC corpses never card; isDead API on 0.51.
+
+Open: quality tiers (_l vs_h carcasses by skill — HW's hunter level;
+IC could gate on a vanilla skill later); dressState pruning (dressed ids
+outlive corpses harmlessly; prune if saves ever bloat); gaze-switch branch
+(claude/gaze-context-switch) touches the same contextManager region — merge
+that one first or expect a small conflict here.
+
+## ic_* record audit: replace with vanilla/OAAB/TD records (built 2026-07-06)
+
+User directive: drop every `ic_*` record that an existing record (vanilla,
+OAAB_Data, Tamriel_Data, or a mod dependency) can stand in for. 10 records
+retired (recipe ids renamed to the new output ids; `records/MiscItem/*.yaml`
+deleted; the esp shrinks accordingly on the next `_pack.ps1`):
+
+| retired            | replacement                | source    |
+|--------------------|----------------------------|-----------|
+| ic_bowl            | misc_com_wood_bowl_02      | vanilla   |
+| ic_bucket          | misc_com_bucket_01         | vanilla   |
+| ic_mortar_pestle   | apparatus_a_mortar_01      | vanilla   |
+| ic_fibre           | ingred_kresh_fiber_01      | vanilla   |
+| ic_netch_hide      | ingred_netch_leather_01    | vanilla (input-side only) |
+| ic_pan             | AB_Misc_ComCopperPan01     | OAAB      |
+| ic_water_bladder   | AB_Misc_Waterskin          | OAAB      |
+| ic_clay_pot        | AB_Misc_PottersClayPot01   | OAAB      |
+| ic_charcoal        | T_IngMine_Charcoal_01      | Tamriel Data |
+| ic_crucible        | T_Rga_Crucible_01          | Tamriel Data |
+
+Two latent bugs fixed on the way:
+
+- the "Mortar and Pestle" tool matcher matched NOTHING (no such tag, and the
+  record id was ic_mortar_pestle) -> new `mortar` tag on the five vanilla
+  apparatus mortars; all five bushcrafting recipes now use it.
+- ic_netch_hide was unobtainable (tanning input with no source recipe/forage)
+  -> the netch cure now takes vanilla `ingred_netch_leather_01` (raw drop)
+  and still yields `ic_netch_leather` (the cured crafting material).
+
+New tags in ModTags/ImmersiveCrafting.yaml: `crucible` (T_Rga_Crucible_01 —
+the furnace-build "crucible" key finally resolves), `mortar`, `fibre`
+(feeds the ic_string "Fibre" key), `firestarter` (AB_Misc_FlintAndSteel +
+AB_Misc_Flint — the UI-less ignite path had the tag check but no tagged
+records). `charcoal` tag no longer lists ic_charcoal.
+
+Soft-dep note: OAAB/TD outputs ride the existing outputRecordExists() filter —
+without the master the recipe is skipped, nothing breaks.
+
+KEPT (no equivalent found): ic_wood, ic_stone, ic_stick, ic_plank, ic_string,
+ic_cloth, ic_pot, ic_grill, ic_spit, ic_tent_mk1, ic_bedroll_mk1,
+ic_netch_leather, ic_chitin_plate, ic_chitin_dust, ic_bonemold_paste,
+ic_glass_component, all molds, all stations, all steel roughs.
+
+Judgment calls for the user:
+
+- ic_string: T_Com_Rope_01 exists but rope != string — kept ours.
+- ic_pot: TD/OAAB only have kettles/cauldrons — kept ours.
+- ic_cloth: no generic cloth record found (TD folded cloths are outfits) — kept.
+- the pan recipe still consumes iron pieces but now outputs a COPPER pan —
+  rebalance when copper enters (TD has no copper ingot; bronze exists).
+
+## SimplyMining interop (evaluated + built 2026-07-06)
+
+Evaluation: SimplyMining is OpenMW-native Lua (player/global/menu scripts, no
+MWSE) — runs alongside IC with zero engine work. It spawns ore-node containers
+(TR/PC/Sky meshes + its own coal vein) and swing-mining grants the REAL
+records: TD ores (T_IngMine_OreIron/Copper/Silver/Gold/Orichalcum_01,
+T_IngMine_Coal_01) and vanilla ingred_raw_ebony/raw_glass/diamond/
+adamantium_ore_01. The sm_* RepairItem clones are only a vendor-restock trick
+(converted back to the real ingredient on purchase) — nothing to tag there.
+Its nodes are Containers, so IC's context scan (items/activators/corpses)
+never cards them; no collision with gather-stone gaze foraging. Pick
+requirement is hardcoded (miner's pick, BM Nordic Pick, id:find("pick")) —
+no tag hook needed on their side.
+
+Already-working interop (no change needed): mined T_IngMine_Coal_01 is in
+IC's `charcoal` tag -> direct furnace/kiln fuel; raw ebony feeds the ebony
+arrow recipe; the dataset `ore` tag covers all TD ores.
+
+IC changes (the metalwork gap-closing):
+
+- furnace iron ingot input `Ore` (tag) -> exact T_IngMine_OreIron_01: the
+  broad tag was fine when ore was vendor-only, but with mining it would smelt
+  3 of ANY ore (gold!) into an iron ingot.
+- LATENT BUG #3 this session: `Raw Glass` tag didn't exist either -> new
+  `raw_glass` tag (ingred_raw_glass_01 +_tinos), glass component recipe
+  fixed.
+- new furnace lines (same shape as iron: 3 ore + 2 charcoal + returned ingot
+  mold, 3600s): Silver -> T_Com_MetalPieceSilver_01, Gold ->
+  T_Com_MetalPieceGold_01, Bronze <- 3 COPPER ore ->
+  T_Com_MetalPieceBronze_01 (TD has no copper ingot; simplified alloy —
+  revisit when the alloy mechanic / bronze armor lands. JUDGMENT CALL:
+  historically bronze = copper + tin).
+- new crafting-table recipe: Miner's Pick (2 iron ingots + 2 sticks, hammer)
+  — closes the loop pick -> mine -> smelt -> forge pick.
+
+Not covered (no target records): orichalcum/adamantium/diamond ingots — TD
+ingots stop at Bronze/Gold/Iron/Silver/Steel; park for the alloy design.
+
+## Copper ingot + melt-down recycling (built 2026-07-06)
+
+**ic_ingot_copper** (new MiscItem record): 3 copper ore + 2 charcoal +
+returned ingot mold at the furnace (replaces the interim copper->bronze
+line). Interim mesh/icon: Tamriel_Data's BRONZE ingot, per user — the path in
+records/MiscItem/ic_ingot_copper.yaml is written by TD convention
+(t\t_com_metalpiecebronze_01.nif) and MUST be verified against the real
+T_Com_MetalPieceBronze_01 record before packing (tes3-records site is
+unreachable from this environment). No `copper` tag exists yet in the tag
+data — add one (+ this record) when copper equipment lands.
+
+**Melt-down recipes** (user: "smelting items with the tag into their
+ingots") — furnace, 2 material-tagged items + 1 charcoal + returned ingot
+mold, 1800s -> 1 ingot: melt_iron / melt_steel / melt_silver / melt_gold /
+melt_bronze -> the TD MetalPiece ingots. Rides the dataset material tags on
+weapons AND armor AND misc items. Known quirks (accepted):
+
+- the ingots themselves carry their material tag: melting 2 ingots + charcoal
+  back into 1 ingot is possible player error (exact-multiset matching, the
+  result shows before starting — self-inflicted only);
+- `gold` covers TD coin collectibles / gold dishes / the golden egg — melting
+  those is a feature;
+- `bronze`/`silver`/`gold` misc clutter (candlesticks etc.) melts too —
+  intended recycling;
+- ores do NOT carry material tags (only ore/mineral/ingredient) — no shadowing
+  of the ore-smelting lines;
+- no melt lines for glass/ebony/chitin/dwemer (no ingot records) — glass
+  could melt into ic_glass_component later if wanted.
+
+Balance note: 2 iron items -> 1 ingot = 50% return vs the 1-2 ingots most
+iron pieces cost to cast. User owns the ratio.
+
+## String -> rope, alloying + ebony/daedric paths (ratified + built 2026-07-06)
+
+**String = rope** (user ruling): ic_string retired -> T_Com_Rope_01 (TD).
+New `rope` tag; every ic_string/"string"/"String" reference now uses it — the
+lowercase "string" keys (ic_cloth, tanning rack station) were LATENT BUG #4
+this session: no `string` tag ever existed, those recipes matched nothing.
+The fibre->string recipe now outputs the TD rope.
+
+**Alloy/material paths** (user: copper, bronze, glass, ebony, daedric;
+daedric alloyed with a FILLED soul gem):
+
+- copper: ore -> ic_ingot_copper (built earlier today);
+- bronze: alloy_bronze = 2 copper ingots + charcoal + ingot mold ->
+  T_Com_MetalPieceBronze_01 (simplified: real bronze wants tin; revisit if a
+  tin record ever exists) — plus melt_bronze recycling;
+- glass: already covered (raw_glass -> ic_glass_component);
+- ebony: 3 raw ebony + 2 charcoal + mold -> NEW ic_ingot_ebony (5400s);
+  melt_ebony recycles ebony gear (2 -> 1 ingot);
+- daedric: 2 ebony ingots + 1 FILLED soul gem + 3 charcoal + mold ->
+  NEW ic_ingot_daedric (7200s); melt_daedric recycles daedric gear.
+
+**Engine: instance gates** (`soul: "filled"` on a process input line).
+Filled and empty gems share a record id, so id/tag matching can't tell them
+apart. The line matches placement by the `soul gem` tag (the 5 vanilla gems;
+Azura's Star is NOT in the tag — it can't be consumed); at start time the
+window forwards the gate with the consume entry and the GLOBAL consume counts/
+removes only instances where types.Miscellaneous.getSoul() is non-empty —
+starting with only empty gems refuses with "Requires a filled soul gem" and
+consumes nothing. Filled/empty never stack together (different item data), so
+stack removal stays safe.
+
+Interim meshes (VERIFY/replace, user-owned): ic_ingot_ebony + ic_ingot_daedric
+reuse vanilla raw ebony (n\Ingred_RawEbony_01.NIF); ic_ingot_copper reuses the
+TD bronze ingot (path by convention — confirm against the real record).
+
+Open / next:
+
+- equipment recipes FROM the new ingots (copper/bronze/ebony/daedric weapons
+  - armor via the existing mold system) — user owns the sets + balance;
+- melt_daedric yields daedric ingots WITHOUT a soul gem (recycling existing
+  gear) — accepted, flag if it bothers;
+- soul gate covers the process path only (shaped recipes don't use soul lines
+  yet); UI-less charge loading (kiln/pit) never runs furnace recipes, so no
+  gate needed there;
+- verify in-game: getSoul API on 0.51; empty-gem refusal; filled gem consumed
+  (and the right instance).
 
 ## Crosshair picks between stacked stations (built 2026-07-06)
 

@@ -1,0 +1,13 @@
+type: MiscItem
+flags: ""
+id: ic_ingot_daedric
+name: Daedric Ingot
+script: ""
+# interim: vanilla raw ebony mesh/icon until a proper ingot mesh is picked
+# (daedric IS soul-bound ebony, so the look fits for now)
+mesh: n\Ingred_RawEbony_01.NIF
+icon: n\Tx_RawEbony.tga
+data:
+  weight: 8.0
+  value: 4000
+  flags: ""

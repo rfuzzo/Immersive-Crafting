@@ -1,6 +1,6 @@
 [
   {
-    "id": "ic_charcoal",
+    "id": "t_ingmine_charcoal_01",
     "label": "Charcoal",
     "context": "charcoal_pit",
     "action": "processing",
@@ -12,7 +12,7 @@
     ],
     "duration": 7200,
     "output": {
-      "id": "ic_charcoal",
+      "id": "T_IngMine_Charcoal_01",
       "count": 2
     }
   }

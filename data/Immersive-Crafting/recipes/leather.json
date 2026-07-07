@@ -1,0 +1,170 @@
+[
+  {
+    "id": "a_ar_leather_band_01",
+    "label": "Leather Headband",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_leather_01"
+    },
+    "output": {
+      "id": "a_ar_leather_band_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_leather_boots_01",
+    "label": "Leather Boots",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_leather_01"
+    },
+    "output": {
+      "id": "a_ar_leather_boots_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_leather_bracer_left_01",
+    "label": "Hardened Leather Left Bracer",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_hard_leather_01"
+    },
+    "output": {
+      "id": "a_ar_leather_bracer_left_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_leather_bracer_right_01",
+    "label": "Hardened Leather Right Bracer",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_hard_leather_01"
+    },
+    "output": {
+      "id": "a_ar_leather_bracer_right_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_leather_chest_01",
+    "label": "Hardened Leather Cuirass",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_hard_leather_01"
+    },
+    "output": {
+      "id": "a_ar_leather_chest_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_leather_chest_02",
+    "label": "Leather Jerkin",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AA ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_leather_01"
+    },
+    "output": {
+      "id": "a_ar_leather_chest_02",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_leather_glove_left_01",
+    "label": "Leather Left Glove",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_leather_01"
+    },
+    "output": {
+      "id": "a_ar_leather_glove_left_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  },
+  {
+    "id": "a_ar_leather_glove_right_01",
+    "label": "Leather Right Glove",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "A  ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "a_msc_leather_01"
+    },
+    "output": {
+      "id": "a_ar_leather_glove_right_01",
+      "count": 1
+    },
+    "tools": [
+      "knife"
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+type: MiscItem
+flags: ""
+id: ic_ingot_copper
+name: Copper Ingot
+script: ""
+# interim: reuse Tamriel_Data's BRONZE ingot mesh (per user). Path written by
+# TD convention — VERIFY against the real T_Com_MetalPieceBronze_01 record
+# before packing (rfuzzo.github.io/tes3-records; unreachable from this env).
+mesh: t\t_com_metalpiecebronze_01.nif
+icon: t\t_com_metalpiecebronze_01.dds
+data:
+  weight: 5.0
+  value: 100
+  flags: ""

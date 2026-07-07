@@ -8,16 +8,13 @@ ModTags FlexTag YAMLs.
 
 - `ic_bedroll_mk1`
 - `ic_bonemold_paste`
-- `ic_bowl`
-- `ic_bucket`
-- `ic_charcoal`
 - `ic_chitin_dust`
-- `ic_clay_pot`
 - `ic_cloth`
-- `ic_crucible`
-- `ic_fibre`
 - `ic_glass_component`
 - `ic_grill`
+- `ic_ingot_copper`
+- `ic_ingot_daedric`
+- `ic_ingot_ebony`
 - `ic_mold_boots_burnt`
 - `ic_mold_boots_raw`
 - `ic_mold_bracer_left_burnt`
@@ -54,9 +51,7 @@ ModTags FlexTag YAMLs.
 - `ic_mold_waraxe_raw`
 - `ic_mold_warhammer_burnt`
 - `ic_mold_warhammer_raw`
-- `ic_mortar_pestle`
 - `ic_netch_leather`
-- `ic_pan`
 - `ic_plank`
 - `ic_pot`
 - `ic_spit`
@@ -78,14 +73,7 @@ ModTags FlexTag YAMLs.
 - `ic_steel_shield_rough`
 - `ic_steel_towershield_rough`
 - `ic_stick`
-- `ic_string`
 - `ic_tent_mk1`
-- `ic_water_bladder`
-
-## `ic_*` records referenced but never produced (check!)
-
-- `ic_chitin_plate`
-- `ic_netch_hide`
 
 ## Assumed FlexTags (capitalised ingredient/tool names)
 
@@ -93,48 +81,75 @@ ModTags FlexTag YAMLs.
 - `Charcoal`
 - `Clay`
 - `Fibre`
+- `Hb_brokenhunterknife`
 - `Hide`
 - `Knife`
 - `Meat`
-- `Mortar and Pestle`
-- `Ore`
 - `Plant`
-- `Raw Glass`
 - `Resin`
 - `Salt`
 - `Stone`
-- `String`
 - `T_Com_MetalPieceIron_01`
 - `T_Com_MetalPieceSteel_01`
+- `T_IngMine_OreCopper_01`
+- `T_IngMine_OreGold_01`
+- `T_IngMine_OreIron_01`
+- `T_IngMine_OreSilver_01`
 - `Vegetable`
 - `Wood`
 
 ## Vanilla record references (verify against the records dump)
 
+- `a_msc_hard_leather_01`
+- `a_msc_hide_01`
+- `a_msc_leather_01`
+- `a_msc_tannin`
 - `axe`
 - `boots`
 - `bracer`
+- `bronze`
 - `charcoal`
 - `chitin`
 - `chitin club`
+- `chitin_fragment`
 - `chitin_plate`
 - `clay`
 - `crucible`
 - `cuirass`
+- `daedric`
 - `dagger`
+- `ebony`
 - `gauntlet`
+- `gold`
 - `greaves`
 - `hammer`
 - `helmet`
+- `hide`
+- `ingred_corkbulb_root_01`
+- `ingred_hackle-lo_leaf_01`
+- `ingred_netch_leather_01`
+- `ingred_raw_ebony_01`
+- `ingred_raw_glass_01`
+- `ingred_scrap_metal_01`
+- `ingred_trama_root_01`
+- `iron`
 - `iron_ingot`
+- `knife`
 - `longsword`
+- `mortar`
 - `pauldron`
+- `pelt`
 - `plank`
+- `raw_glass`
+- `resin`
+- `rope`
 - `shield`
+- `silver`
+- `soul gem`
 - `spear`
+- `steel`
 - `steel warhammer`
 - `stick`
-- `string`
 - `war axe`
 - `warhammer`
 - `wood`

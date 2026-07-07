@@ -1,0 +1,12 @@
+[
+  {
+    "id": "field_dressing",
+    "label": "Field Dressing",
+    "recordIds": [],
+    "targets": "corpse",
+    "activationRange": 150,
+    "actions": [
+      "dressing"
+    ]
+  }
+]
