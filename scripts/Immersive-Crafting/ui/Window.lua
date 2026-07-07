@@ -47,7 +47,7 @@ local MIN_SIZE = v2(280, 240) -- resize floor: the frame stays usable
 local HEADER_GRAB = 26        -- px from the top that drag (move) the window
 
 --- Build the draggable/resizable window layout.
----@param opts { title?: string, body: openmw.ui.Content, props?: table, getElement: fun():any }
+---@param opts { title?: string, body: openmw.ui.Content, props?: table, getElement: fun():any, onResize: (fun())|nil } onResize fires when an edge-resize drag ends, so the owner can reflow content to the new size
 ---@return table layout
 local function Window(opts)
     local getElement = opts.getElement
@@ -135,11 +135,15 @@ local function Window(opts)
         mouseRelease = async:callback(function()
             local element = getElement()
             if not element then return end
+            local wasResizing = element.layout.userData.edgeWhenMouseDown ~= nil
             -- clear the drag state so a later click elsewhere can never apply
             -- a stale delta (phantom window jump)
             element.layout.userData.lastMouseDownPosition = nil
             element.layout.userData.edgeWhenMouseDown = nil
             element.layout.userData.draggingWindow = nil
+            -- a resize drag just ended: let the owner reflow its content to
+            -- the new size (e.g. the materials strip recalculates rows/cols)
+            if wasResizing and opts.onResize then opts.onResize() end
         end),
     }
 

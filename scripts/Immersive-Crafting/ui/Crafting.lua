@@ -1145,6 +1145,9 @@ function this.rebuild()
         body = ui.content({ content }),
         props = { anchor = v2(0.5, 0.5), relativePosition = v2(0.4, 0.5), size = windowSize },
         getElement = function() return element end,
+        -- reflow to the new size as soon as a resize drag ends (the strip
+        -- recalculates its rows/columns from the changed pixel budget)
+        onResize = function() this.rebuild() end,
     })
 
     element = ui.create(dlg)
