@@ -170,6 +170,7 @@ function CProcessingHandler:evaluate(ctx)
         else
             details[#details + 1] = 'Needs fire in hand (a torch)'
         end
+        details[#details + 1] = 'Activate to take the last item back'
         ---@type ViewModel
         return {
             status = 'Loaded',

@@ -402,16 +402,33 @@ function this.onStationActivated(object, actor)
     if not saveData then return false end
     local e = processes()[object.id]
     if not e then
-        -- a cold LOADED station doesn't open the window: report the charge
-        -- (light it with a fire source in hand — hold F on its card)
+        -- a cold LOADED station doesn't open the window: activating it takes
+        -- the LAST loaded stack back out (the drop-in undo — a wrong fuel is
+        -- one activation away from the inventory). Light it with a fire
+        -- source in hand instead (hold F on its card). Empty again -> the
+        -- next activation falls through to normal station handling.
         local charge = saveData.charges and saveData.charges[object.id]
         if charge and #charge > 0 then
             if actor.type ~= types.Player then return true end
-            local parts = {}
-            for _, entry in ipairs(charge) do
-                parts[#parts + 1] = ('%d x %s'):format(entry.count or 1, recordName(entry.id))
+            local entry = charge[#charge]
+            local ok, err = pcall(function()
+                local created = world.createObject(entry.id, entry.count or 1)
+                created:moveInto(types.Actor.inventory(actor))
+            end)
+            if not ok then
+                log.error(('process: failed to unload "%s": %s'):format(tostring(entry.id), tostring(err)))
+                return true
             end
-            notify(actor, ('Loaded: %s'):format(table.concat(parts, ', ')))
+            charge[#charge] = nil
+            if #charge == 0 then saveData.charges[object.id] = nil end
+            local parts = {}
+            for _, rest in ipairs(charge) do
+                parts[#parts + 1] = ('%d x %s'):format(rest.count or 1, recordName(rest.id))
+            end
+            notify(actor, ('Took back %d x %s%s'):format(
+                entry.count or 1, recordName(entry.id),
+                #parts > 0 and (' — still loaded: ' .. table.concat(parts, ', ')) or ''))
+            syncPlayer()
             return true
         end
         return false

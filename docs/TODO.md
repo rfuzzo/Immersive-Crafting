@@ -1136,3 +1136,14 @@ One raycast per 0.25s poll (refactored crosshairTarget serves both uses).
 Verify in-game: cloth on table -> look at cloth = bushcrafting card, look at
 table = crafting table card; look at the farther of two tables -> that one's
 card ([F]/pack-up act on the looked-at object); hold-to-forage unaffected.
+
+## UI-less stations: unload by activating (built 2026-07-07)
+
+User: no way to remove dropped-in items, and a second fuel could jam the
+charge. Fix: activating a cold LOADED station now pops the LAST loaded stack
+back into the inventory (LIFO undo; the old activation behaviour was only a
+status message — the card's "Contains:" line already shows the charge).
+Wrong fuel = one activation to fix; empty again -> activation falls through
+to normal station handling. Load filtering stays permissive on purpose:
+recipe-aware rejection would need FlexTag matching, which is player-side
+only (the global drop handler can't tag-match).
