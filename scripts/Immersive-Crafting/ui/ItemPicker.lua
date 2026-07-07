@@ -45,6 +45,7 @@ local this = {}
 
 local page = 1
 local searchQuery = '' ---@type string live filter over the entries (label/record id substring)
+local searchFocused = false ---@type boolean the search TextEdit has keyboard focus (game action keys must not fire while typing)
 local iconTextureCache = {} ---@type table<string, any>
 
 ---@param path string?
@@ -101,6 +102,10 @@ local function searchBoxLayout(view)
                 local v = searchBox and searchBox.userData.view
                 if v then v.refresh() end
             end),
+            -- while typing here, the owner suppresses game action keys (the
+            -- contextual 'F' would close the window mid-word otherwise)
+            focusGain = async:callback(function() searchFocused = true end),
+            focusLoss = async:callback(function() searchFocused = false end),
         },
     }
     searchBox = {
@@ -122,8 +127,16 @@ end
 function this.reset()
     page = 1
     searchQuery = ''
-    searchBox = nil -- next Body() builds a fresh, empty box
+    searchFocused = false -- the widget is going away; never leave this stuck on
+    searchBox = nil       -- next Body() builds a fresh, empty box
     this.hideTooltip()
+end
+
+--- Is the search box focused? The owner gates game action keys on this
+--- (typing must never fire them).
+---@return boolean
+function this.isSearchFocused()
+    return searchFocused
 end
 
 -- ── header ───────────────────────────────────────────────────────────────────

@@ -30,6 +30,7 @@ local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 local c = require('scripts.Immersive-Crafting.ui.components')
+local ItemPicker = require('scripts.Immersive-Crafting.ui.ItemPicker')
 
 local v2 = util.vector2
 
@@ -350,8 +351,11 @@ end
 ---Main update function called every frame
 function this.onUpdate(dt)
     -- Poll the contextual action key every frame so hold timing is smooth and
-    -- edge-accurate (see handleActionInput).
-    handleActionInput(input.getBooleanActionValue('ContextualAction'), dt)
+    -- edge-accurate (see handleActionInput). Typing in the crafting strip's
+    -- search box must never fire it (an 'f' mid-word closed the window).
+    handleActionInput(
+        input.getBooleanActionValue('ContextualAction') and not ItemPicker.isSearchFocused(),
+        dt)
 
     -- Periodically update UI — but refresh every frame while a hold is in
     -- progress so the hold bar fills smoothly.
