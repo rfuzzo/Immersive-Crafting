@@ -46,6 +46,7 @@ local this = {}
 ---@field processRecipes table<string, CProcessRecipe>
 ---@field crops table<string, CCrop>
 ---@field handlers table<string, CAbstractHandler>
+---@field dressing table<string, string> -- creature record id (lower) -> carcass record id (field dressing)
 
 ---@type Registries
 GRegistries = {

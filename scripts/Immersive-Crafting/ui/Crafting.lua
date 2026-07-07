@@ -84,7 +84,7 @@ local windowSize = WINDOW_SIZE ---@type any initial size for THIS station's layo
 local element = nil
 local placed = {} ---@type table<string, {recordId:string, icon:string?, count:integer}> slotId -> placed stack (grid slots always hold 1; process slots stack)
 local selectedSlot = nil ---@type string? input slot the next picked material goes into
-local toolSlots = {} ---@type table<integer, {recordId:string, icon:string?}> 1..TOOL_SLOTS -> player-slotted tool (alchemy apparatus style; never consumed)
+local toolSlots = {} ---@type table<integer, {recordId:string?, icon:string?}> 1..TOOL_SLOTS -> player-slotted tool (alchemy apparatus style; never consumed)
 local selectedToolSlot = nil ---@type integer? tool slot awaiting a pick (mutually exclusive with selectedSlot)
 local autoFilled = {} ---@type table<string, boolean> recipe ids whose tools were already auto-slotted (so clearing a tool by hand sticks)
 local materials = {} ---@type { recordId:string, icon:string?, count:integer, label:string? }[]
@@ -664,7 +664,7 @@ local function applyRecipe(recipeId)
                     local got = claim(matcher, 1)
                     if got[1] then
                         placed[('%d:%d'):format(r, col)] =
-                            { recordId = got[1].recordId, icon = got[1].icon, count = 1 }
+                        { recordId = got[1].recordId, icon = got[1].icon, count = 1 }
                     else
                         missing[matcher] = (missing[matcher] or 0) + 1
                     end
@@ -1236,7 +1236,7 @@ function this.onCraft()
         local _, returned = splitPlaced()
         local consume = {}
         for id, count in pairs(placedCounts()) do
-            local entry = { id = id, count = count }
+            local entry = { id = id, count = count, soul = nil }
             -- forward instance gates (soul:"filled"): the global consume must
             -- pick gem instances with a trapped soul — the record id can't tell
             for _, line in ipairs(matched.inputs or {}) do

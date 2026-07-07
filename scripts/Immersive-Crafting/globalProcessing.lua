@@ -178,7 +178,7 @@ local function registerRun(station, data)
         recipeId = data.recipeId,
         label = data.label or data.recipeId,
         output = data.output,
-        returned = data.returned, -- items held by the station, given back on collect
+        returned = data.returned,       -- items held by the station, given back on collect
         startedAt = core.getGameTime(), -- for the station card's progress bar
         readyAt = core.getGameTime() + data.duration,
         done = false,
@@ -194,7 +194,7 @@ end
 --- Event: start a timed process at a station. Inputs are consumed UP FRONT —
 --- including `returned` items (the mold sits in the kiln for the duration);
 --- those are granted back to the collector along with the output.
----@param data { actor: any, station: any, recipeId: string, label: string, consume: { id: string, count: integer }[], returned: { id: string, count: integer }[]?, output: { id: string, count: integer }, duration: number }
+---@param data { actor: any, station: any, recipeId: string, label: string, consume: { id: string, count: integer, soul: string? }[], returned: { id: string, count: integer }[]?, output: { id: string, count: integer }, duration: number }
 function this.onStart(data)
     if not (data and data.actor and data.station and data.output and data.duration) then return end
     local stationId = data.station.id
@@ -437,7 +437,8 @@ function this.onCollect(data)
 end
 
 --- Event: the player (re)loaded — send the full snapshot.
-function this.onRequestSync()
+---@param data table {  }
+function this.onRequestSync(data)
     syncPlayer()
 end
 

@@ -40,7 +40,7 @@ local PLANT_Z_OFFSET = 15 -- rough planter-bed height; tune per planter mesh
 
 -- ── crop definitions (global-side copy of crops/*.json) ─────────────────────
 
-local defs = nil ---@type table<string, CCrop-like>?
+local defs = nil ---@type table<string, CCrop>?
 
 local function cropDefs()
     if defs then return defs end
@@ -157,6 +157,7 @@ end
 --- Global-context tag match: exact record id or FlexTag (I.FlexTagG) tag.
 local function matchesTagGlobal(recordId, query)
     if recordId:lower() == query:lower() then return true end
+    ---@diagnostic disable-next-line: undefined-field
     local flexTag = I.FlexTagG
     if flexTag and flexTag.objectHasTag then
         return flexTag.objectHasTag(recordId, query) and true or false
@@ -314,7 +315,8 @@ function this.onPlant(data)
 end
 
 --- Event: the player (re)loaded — send the full crop snapshot.
-function this.onRequestSync()
+---@param data table { }
+function this.onRequestSync(data)
     syncPlayer()
 end
 

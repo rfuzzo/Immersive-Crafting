@@ -65,7 +65,7 @@ end
 
 --- Gather candidate station objects (items + activators) within range.
 ---@param maxRange number
----@return { object: any, recordId: string, distance: number }[]
+---@return { object: any, recordId: string, distance: number, corpse: boolean? }[]
 local function gatherNearby(maxRange)
     local playerPos = self.position
     local list = {}
@@ -88,8 +88,12 @@ local function gatherNearby(maxRange)
             if okDead and dead then
                 local distance = (actor.position - playerPos):length()
                 if distance <= maxRange then
-                    list[#list + 1] = { object = actor, recordId = actor.recordId,
-                        distance = distance, corpse = true }
+                    list[#list + 1] = {
+                        object = actor,
+                        recordId = actor.recordId,
+                        distance = distance,
+                        corpse = true
+                    }
                 end
             end
         end
@@ -218,7 +222,8 @@ local function crosshairTarget(registries)
     local from = camera.getPosition()
     local dir = camera.viewportToWorldVector(util.vector2(0.5, 0.5))
     local ok, res = pcall(function()
-        return nearby.castRay(from, from + dir * maxRange, { ignore = self })
+        return nearby.castRay(from, from + dir * maxRange,
+            { ignore = self, collisionType = nearby.COLLISION_TYPE.Default, radius = 0 })
     end)
     if not ok or not res or not res.hitObject then return nil end
 
@@ -262,7 +267,7 @@ local function lookedAtContext(currentContexts, hit)
     local best, bestExact, bestId = nil, false, nil
     for id, result in pairs(currentContexts) do
         local def = result.context
-        if def.trigger ~= 'condition'
+        if def and def.trigger ~= 'condition'
             and hit.distance <= (def.activationRange or 150)
             and matchesDef(hit.recordId, def) then
             local exact = result.object and result.object.id == hit.object.id
