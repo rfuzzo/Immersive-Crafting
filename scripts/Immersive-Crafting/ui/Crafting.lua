@@ -533,8 +533,8 @@ local function stationRecipes()
     return list
 end
 
---- Ingredient summary for the recipe guide tooltip, e.g.
---- "8x Clay, Iron Dagger (returned)" / "2x Wood, tools: Knife".
+--- Ingredient summary for the recipe guide tooltip — a bulleted list, one
+--- ingredient per line ("- 8x Clay\n- Iron Dagger (returned)\n- tools: Knife").
 ---@param r CShapedRecipe|CProcessRecipe
 ---@return string
 local function recipeIngredientSummary(r)
@@ -572,7 +572,8 @@ local function recipeIngredientSummary(r)
     if r.tools and #r.tools > 0 then
         parts[#parts + 1] = 'tools: ' .. table.concat(r.tools, ', ')
     end
-    return table.concat(parts, ', ')
+    if #parts == 0 then return '' end
+    return '- ' .. table.concat(parts, '\n- ')
 end
 
 --- Strip entries for the recipe guide: one per recipe, output icon + count.

@@ -28,6 +28,9 @@ end
 
 --- Show/move the tooltip next to the mouse.
 --- Same label -> just follow the mouse; new label -> recreate.
+--- Multi-line labels (`\n`) render as one text row per line — the engine's
+--- Text widget does not honour newlines itself (recipe tooltips showed their
+--- ingredient list inline).
 ---@param label string
 ---@param mousePos any
 function this.show(label, mousePos)
@@ -38,6 +41,10 @@ function this.show(label, mousePos)
     end
     this.hide()
     currentLabel = label
+    local lines = {}
+    for line in (label .. '\n'):gmatch('([^\n]*)\n') do
+        lines[#lines + 1] = c.text({ text = line, template = I.MWUI.templates.textNormal })
+    end
     element = ui.create({
         layer = 'Notification',
         name = 'ic_tooltip',
@@ -47,7 +54,7 @@ function this.show(label, mousePos)
             {
                 template = I.MWUI.templates.padding,
                 content = ui.content {
-                    c.text({ text = label, template = I.MWUI.templates.textNormal }),
+                    c.column({ children = lines }),
                 },
             },
         },
