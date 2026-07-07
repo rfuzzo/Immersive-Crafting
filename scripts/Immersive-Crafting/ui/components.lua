@@ -64,15 +64,23 @@ function this.column(opts)
 end
 
 --- Grid: a vertical Flex of horizontal Flex rows, `columns` items per row.
----@param opts { name: string?, columns: integer?, items: table[], props: table? }
+--- `gap` (optional) inserts that many pixels between columns AND rows, so
+--- borderless slots (the materials strip) read as distinct tiles.
+---@param opts { name: string?, columns: integer?, items: table[], props: table?, gap: integer? }
 function this.grid(opts)
     local columns = math.max(1, opts.columns or 1)
+    local gap = opts.gap or 0
     local rows = {}
     local currentRow = nil
     for index, item in ipairs(opts.items or {}) do
         if (index - 1) % columns == 0 then
+            if gap > 0 and currentRow then
+                rows[#rows + 1] = { type = ui.TYPE.Widget, props = { size = util.vector2(0, gap) } }
+            end
             currentRow = { type = ui.TYPE.Flex, props = { horizontal = true }, content = ui.content({}) }
             rows[#rows + 1] = currentRow
+        elseif gap > 0 then
+            currentRow.content:add({ type = ui.TYPE.Widget, props = { size = util.vector2(gap, 0) } })
         end
         currentRow.content:add(item)
     end
@@ -84,6 +92,18 @@ function this.grid(opts)
         name = opts.name,
         props = props,
         content = ui.content(rows),
+    }
+end
+
+--- Thin horizontal divider line (MWUI horizontalLine). It auto-fills the width
+--- of its parent column via the template's own relativeSize, so place it in the
+--- column whose width it should match (no width arg needed).
+---@param opts { name: string? }?
+function this.hline(opts)
+    return {
+        type = ui.TYPE.Image,
+        name = opts and opts.name,
+        template = I.MWUI.templates.horizontalLine,
     }
 end
 

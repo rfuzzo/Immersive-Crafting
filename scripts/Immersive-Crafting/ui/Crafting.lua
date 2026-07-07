@@ -68,11 +68,14 @@ local components = require('scripts.Immersive-Crafting.ui.components')
 
 local v2 = util.vector2
 
-local WINDOW_SIZE = v2(480, 470)
+local WINDOW_SIZE = v2(480, 500) -- taller than the old 470 to pay for the title
+-- divider + symmetric padding + footer divider while keeping ~2 material rows
 local LINE_W = 430
 local TOOL_SLOTS = 3
 local TOOL_ICON = v2(40, 40)
 local STRIP_MIN_ROWS = 4 -- the materials/recipes strip opens at least this tall
+local PAD = 16           -- symmetric inner window padding (all four sides)
+local GAP = 12           -- vertical rhythm between the window's sections
 
 local this = {}
 
@@ -1042,12 +1045,12 @@ function this.rebuild()
     local inputRows = layout.kind == 'grid' and (layout.size[1] or 2)
         or math.ceil(#(layout.inputs or {}) / 4)
     -- pixel space left for the materials strip once the fixed chrome around it
-    -- is paid (title bar, content offset, tools row, input grid, footer); the
-    -- strip is the window's grow child, so ALL of the leftover is its — it
-    -- derives its row/column count from this (rows first)
+    -- is paid (title bar + divider, PAD frame, tools row, input grid, footer +
+    -- divider); the strip is the window's grow child, so ALL of the leftover is
+    -- its — it derives its row/column count from this (rows first)
     local stripSpace = v2(
-        winSize.x - 48,
-        winSize.y - 170 - inputRows * 48)
+        winSize.x - PAD * 2 - 16,
+        winSize.y - 186 - inputRows * 48)
 
     resolve()
     view.selectedSlot = selectedSlot
@@ -1058,14 +1061,12 @@ function this.rebuild()
         return
     end
 
-    local content = {
+    -- the window's inner column: sections separated by a single GAP rhythm; the
+    -- itempicker grows to fill leftover height, pinning the footer to the bottom
+    local innerColumn = {
         type = ui.TYPE.Flex,
         name = 'crafting_content',
-        props = { position = v2(20, 20) },
-        external = {
-            grow = 1,
-            stretch = 1
-        },
+        external = { grow = 1, stretch = 1 },
         content = ui.content({
             {
                 type = ui.TYPE.Flex,
@@ -1084,12 +1085,12 @@ function this.rebuild()
                 end)()),
             },
 
-            { type = ui.TYPE.Widget, props = { size = v2(0, 10) } },
+            { type = ui.TYPE.Widget, props = { size = v2(0, GAP) } },
 
             -- grid
             inputs,
 
-            { type = ui.TYPE.Widget, props = { size = v2(0, 6) } },
+            { type = ui.TYPE.Widget, props = { size = v2(0, GAP) } },
 
             {
                 name = 'itempicker',
@@ -1118,8 +1119,10 @@ function this.rebuild()
                 })
             },
 
+            { type = ui.TYPE.Widget, props = { size = v2(0, GAP) } },
+            components.hline(),
             { type = ui.TYPE.Widget, props = { size = v2(0, 8) } },
-            -- footer: close button
+            -- footer: close button, right-aligned
             {
                 name = 'footer',
                 type = ui.TYPE.Flex,
@@ -1129,12 +1132,32 @@ function this.rebuild()
                 },
                 content = ui.content({ closeButton() })
             },
+        }),
+    }
+
+    -- symmetric PAD frame: side spacers + top/bottom spacers wrap the inner
+    -- column, replacing the old top-left-only position(20,20) offset
+    local content = {
+        type = ui.TYPE.Flex,
+        name = 'crafting_pad',
+        external = { grow = 1, stretch = 1 },
+        content = ui.content({
+            { type = ui.TYPE.Widget, props = { size = v2(0, PAD) } },
             {
-                type = ui.TYPE.Widget,
-                props = {
-                    size = v2(0, 8)
-                }
+                type = ui.TYPE.Flex,
+                props = { horizontal = true },
+                external = { grow = 1, stretch = 1 },
+                content = ui.content({
+                    { type = ui.TYPE.Widget, props = { size = v2(PAD, 0) } },
+                    {
+                        type = ui.TYPE.Flex,
+                        external = { grow = 1, stretch = 1 },
+                        content = ui.content({ innerColumn }),
+                    },
+                    { type = ui.TYPE.Widget, props = { size = v2(PAD, 0) } },
+                }),
             },
+            { type = ui.TYPE.Widget, props = { size = v2(0, PAD) } },
         }),
     }
 

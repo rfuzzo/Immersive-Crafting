@@ -31,12 +31,13 @@ local Tooltip = require('scripts.Immersive-Crafting.ui.Tooltip')
 
 local v2 = util.vector2
 local ICON_SIZE = v2(40, 40)
--- layout pitch: borderless 40px slot + breathing room; used to derive how many
--- rows/columns fit the space the owner hands us
-local ICON_PITCH = 42
--- the strip's own vertical chrome around the item grid: header row + spacers
--- + the bottom-anchored search row
-local CHROME_H = 56
+-- layout pitch: borderless 40px slot + 4px grid gap; used to derive how many
+-- rows/columns fit the space the owner hands us (must match GRID_GAP)
+local ICON_PITCH = 44
+local GRID_GAP = 4 -- gap between strip slots so items read as distinct tiles
+-- the strip's own vertical chrome around the item grid: header row + divider +
+-- spacers + the bottom-anchored search row (+ its divider)
+local CHROME_H = 76
 -- fallback layout when the owner passes no space
 local DEFAULT_COLUMNS = 6
 local DEFAULT_ROWS = 2
@@ -90,8 +91,11 @@ local function searchBoxLayout(view)
         name = 'strip_search_input',
         type = ui.TYPE.TextEdit,
         template = I.MWUI.templates.textEditLine,
+        -- grow so the field fills the row; a non-zero base width keeps it
+        -- visible even if grow doesn't apply (guards the collapse bug below)
+        external = { grow = 1, stretch = 1 },
         props = {
-            size = v2(140, 18),
+            size = v2(120, 18),
             autoSize = false,
             text = searchQuery,
         },
@@ -108,9 +112,14 @@ local function searchBoxLayout(view)
             focusLoss = async:callback(function() searchFocused = false end),
         },
     }
+    -- full-width field: a GROWING bordered Flex (not the box Container, which
+    -- would shrink-wrap the input) fills the search row; padding + TextEdit fill
+    -- it through the border/padding relativeSize slots
     searchBox = {
         name = 'strip_search',
-        template = I.MWUI.templates.box,
+        type = ui.TYPE.Flex,
+        template = I.MWUI.templates.borders,
+        external = { grow = 1, stretch = 1 },
         userData = { view = view, input = input },
         content = ui.content {
             {
@@ -215,7 +224,9 @@ function this.Body(items, view, space, header)
         headerChildren[#headerChildren + 1] = pageButton('>', page < pages, 1, view)
     end
     if header and header.button then
-        headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(18, 0) } })
+        -- grow spacer pushes the toggle to the header's right edge (the header
+        -- row is given `stretch` below so this fills)
+        headerChildren[#headerChildren + 1] = { type = ui.TYPE.Widget, external = { grow = 1 }, props = { size = v2(0, 0) } }
         headerChildren[#headerChildren + 1] = c.button({
             name = 'strip_toggle',
             label = header.button.label,
@@ -243,7 +254,7 @@ function this.Body(items, view, space, header)
 
     local body
     if #slots > 0 then
-        body = grid({ name = 'materials_grid', columns = columns, items = slots })
+        body = grid({ name = 'materials_grid', columns = columns, items = slots, gap = GRID_GAP })
     else
         body = text({ text = '(nothing here)', template = I.MWUI.templates.textNormal })
     end
@@ -253,23 +264,28 @@ function this.Body(items, view, space, header)
         -- bottom edge — the same grow mechanism that pins Close to the window's
         external = { grow = 1, stretch = 1 },
         children = {
-            row({ name = 'materials_header', children = headerChildren }),
-            spacer({ props = { size = v2(0, 4) } }),
+            -- header: title + pager on the left, toggle pushed to the right
+            row({ name = 'materials_header', external = { stretch = 1 }, children = headerChildren }),
+            spacer({ props = { size = v2(0, 6) } }),
+            c.hline(),
+            spacer({ props = { size = v2(0, 8) } }),
             body,
             -- grows: takes all leftover height, pushing search to the bottom
             { type = ui.TYPE.Widget, external = { grow = 1 }, props = { size = v2(0, 4) } },
-            -- search at the strip's bottom, filtering both modes live
-
+            -- divider, then the full-width search at the strip's bottom
+            c.hline(),
+            spacer({ props = { size = v2(0, 8) } }),
             row({
                 name = 'strip_search_row',
                 props = { align = ui.ALIGNMENT.Center },
+                external = { stretch = 1 },
                 children = {
                     text({ text = 'Search', template = I.MWUI.templates.textNormal }),
                     spacer({ props = { size = v2(8, 0) } }),
                     searchBoxLayout(view),
                 },
             }),
-            spacer({ props = { size = v2(0, 10) } }),
+            spacer({ props = { size = v2(0, 8) } }),
         },
     })
 end

@@ -1166,3 +1166,34 @@ hit point, up-axis tilted onto the hit normal (yaw kept; tilt = rotate(angle
 between up and normal, up x normal)). No hit / no player -> plain swap.
 Verify in-game: tilt DIRECTION on a slope (if mirrored, negate the angle),
 and that upright stations (kiln, furnace) are unaffected (no flag).
+
+## UI padding/polish pass (2026-07-07)
+
+Prototyped in the openmw-ui viewer (rfuzzo/openmw-ui — headless Chromium
+renders real openmw.ui/MWUI Lua), then ported to the shared UI. Applies to
+EVERY station window (grid + process) since it lives in the shared shell.
+
+Window.lua: divider line under the title; body is now a plain growing Flex
+(dropped its bordersThick) so the frame reads as ONE window border, not two
+concentric ones (window > {grid, strip}).
+
+Crafting.lua: content wrapped in a symmetric PAD (16px all sides) frame instead
+of the old top-left-only position(20,20); one GAP (12px) rhythm between
+sections (was 10/6/8); a divider above the footer; WINDOW_SIZE 470 -> 500 to
+pay for the added dividers/padding while keeping ~2 material rows; stripSpace
+constant retuned.
+
+ItemPicker.lua: the Recipes/Materials toggle is pushed to the header's right
+edge (grow spacer); divider lines under the header and above the search;
+4px gaps between the borderless slots so items read as distinct tiles
+(ICON_PITCH 42->44, grid gap); the Search field is now a full-width GROWING
+bordered Flex (was a fixed 140px box that didn't stretch).
+
+components.lua: grid() gained an optional `gap`; new hline() helper
+(MWUI horizontalLine, auto-fills parent width — the width arg on the old
+Crafting.hLine was a no-op, the template's relativeSize already fills).
+
+Branch claude/ui-padding-pass. Verify in-game: open each station (bushcrafting
+2x2, crafting table 3x3, kiln/furnace/tanning rack process, firepit) — footer
+must stay inside the frame, strip shows >=2 material rows, search field spans
+the strip width and still takes focus/typing (action-key gating intact).

@@ -197,9 +197,14 @@ local function Window(opts)
                             headerSection,
                         },
                     },
+                    -- divider under the title; the body below is a PLAIN growing
+                    -- Flex (no second bordersThick) so the frame reads as one
+                    -- window border, not two concentric ones. Inner padding is
+                    -- the caller's job (Crafting.lua's symmetric PAD frame).
+                    { type = ui.TYPE.Widget, props = { size = v2(0, 6) } },
+                    { type = ui.TYPE.Image, template = I.MWUI.templates.horizontalLine },
                     {
                         name = 'body',
-                        template = I.MWUI.templates.bordersThick,
                         type = ui.TYPE.Flex,
                         external = { grow = 1, stretch = 1 },
                         content = opts.body,
