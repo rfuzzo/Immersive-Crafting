@@ -1197,3 +1197,26 @@ Branch claude/ui-padding-pass. Verify in-game: open each station (bushcrafting
 2x2, crafting table 3x3, kiln/furnace/tanning rack process, firepit) — footer
 must stay inside the frame, strip shows >=2 material rows, search field spans
 the strip width and still takes focus/typing (action-key gating intact).
+
+## Vanilla-alchemy-aligned crafting layout (2026-07-07)
+
+Restructured the crafting window's upper area to mirror the vanilla alchemy
+window (the mod's model): a compact LEFT column (Tools stacked over the input
+grid = Apparatus over Ingredients) beside a large RIGHT Result panel that fills
+the height (= Created Effects). This kills the dead space that used to sit right
+of the grid and gives the result + its notes (takes/needs/mold returned) real
+room. The aside Mold slot (kiln/furnace) moves under the inputs in the left
+column. Materials strip stays full-width below (= ingredient list); padded
+Close bottom-right (= Cancel).
+
+Crafting.lua: `tools_result_row` + separate grid replaced by a `upper_row`
+(left_column | 16px | result_panel[bordersThick, grows]). Window height stays
+500 (the upper area's vertical extent is unchanged — tools+grid already set it;
+the result just moved into the right panel), so strip still shows ~2 rows
+(grid) / ~4 rows (process).
+components.button: `pad` option (12px sides / 3px top+bottom) for a proper
+standalone footer button; closeButton uses it.
+
+Prototyped + verified in the openmw-ui viewer. Branch claude/ui-padding-pass.
+Verify in-game: result panel fills the right on every station (grid + process),
+process aside Mold slot renders under the inputs, Close is comfortably inside.

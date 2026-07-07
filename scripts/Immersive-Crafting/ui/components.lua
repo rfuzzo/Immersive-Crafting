@@ -118,25 +118,38 @@ function this.box(opts)
     }
 end
 
---- Bordered text button (MWUI box + padding + label).
----@param opts { label: string, name: string?, onClick: fun()? }
+--- Bordered text button (MWUI box + padding + label). `pad` swaps the ~2px
+--- padding template for generous interior spacing (12px sides, 3px top/bottom)
+--- so a standalone button — the footer Close — reads as a proper button.
+---@param opts { label: string, name: string?, onClick: fun()?, pad: boolean? }
 function this.button(opts)
+    local label = {
+        type = ui.TYPE.Text,
+        template = I.MWUI.templates.textNormal,
+        props = { text = opts.label },
+    }
+    local inner
+    if opts.pad then
+        inner = this.column({ children = {
+            this.spacer({ props = { size = util.vector2(0, 3) } }),
+            this.row({ children = {
+                this.spacer({ props = { size = util.vector2(12, 0) } }),
+                label,
+                this.spacer({ props = { size = util.vector2(12, 0) } }),
+            } }),
+            this.spacer({ props = { size = util.vector2(0, 3) } }),
+        } })
+    else
+        inner = {
+            template = I.MWUI.templates.padding,
+            content = ui.content({ label }),
+        }
+    end
     return {
         template = I.MWUI.templates.box,
         name = opts.name,
         events = opts.onClick and { mouseClick = async:callback(opts.onClick) } or nil,
-        content = ui.content({
-            {
-                template = I.MWUI.templates.padding,
-                content = ui.content({
-                    {
-                        type = ui.TYPE.Text,
-                        template = I.MWUI.templates.textNormal,
-                        props = { text = opts.label },
-                    },
-                }),
-            },
-        }),
+        content = ui.content({ inner }),
     }
 end
 

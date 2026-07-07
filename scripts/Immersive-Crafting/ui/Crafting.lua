@@ -1006,6 +1006,7 @@ local function closeButton()
     return components.button({
         name = 'close_button',
         label = 'Close',
+        pad = true, -- generous interior padding: it stands alone in the footer
         onClick = function() this.close() end,
     })
 end
@@ -1068,27 +1069,54 @@ function this.rebuild()
         name = 'crafting_content',
         external = { grow = 1, stretch = 1 },
         content = ui.content({
+            -- upper area, vanilla-alchemy style: a compact LEFT column (Tools
+            -- stacked over the input grid — Apparatus over Ingredients) beside a
+            -- large RIGHT Result panel that fills the height (Created Effects).
+            -- The aside Mold slot (kiln/furnace) sits under the inputs on the left.
             {
                 type = ui.TYPE.Flex,
-                name = 'tools_result_row',
+                name = 'upper_row',
                 props = { horizontal = true },
-                content = ui.content((function()
-                    local aside = asideSection()
-                    local parts = { toolsSection() }
-                    if aside then
-                        parts[#parts + 1] = { type = ui.TYPE.Widget, props = { size = v2(26, 0) } }
-                        parts[#parts + 1] = aside
-                    end
-                    parts[#parts + 1] = { type = ui.TYPE.Widget, props = { size = v2(26, 0) } }
-                    parts[#parts + 1] = resultSection()
-                    return parts
-                end)()),
+                external = { stretch = 1 },
+                content = ui.content({
+                    (function()
+                        local colKids = {
+                            toolsSection(),
+                            { type = ui.TYPE.Widget, props = { size = v2(0, GAP) } },
+                            inputs,
+                        }
+                        local aside = asideSection()
+                        if aside then
+                            colKids[#colKids + 1] = { type = ui.TYPE.Widget, props = { size = v2(0, GAP) } }
+                            colKids[#colKids + 1] = aside
+                        end
+                        return { type = ui.TYPE.Flex, name = 'left_column', content = ui.content(colKids) }
+                    end)(),
+                    { type = ui.TYPE.Widget, props = { size = v2(16, 0) } },
+                    {
+                        name = 'result_panel',
+                        type = ui.TYPE.Flex,
+                        template = I.MWUI.templates.bordersThick,
+                        external = { grow = 1, stretch = 1 },
+                        content = ui.content({
+                            {
+                                type = ui.TYPE.Flex,
+                                content = ui.content({
+                                    { type = ui.TYPE.Widget, props = { size = v2(0, 4) } },
+                                    {
+                                        type = ui.TYPE.Flex,
+                                        props = { horizontal = true },
+                                        content = ui.content({
+                                            { type = ui.TYPE.Widget, props = { size = v2(6, 0) } },
+                                            resultSection(),
+                                        }),
+                                    },
+                                }),
+                            },
+                        }),
+                    },
+                }),
             },
-
-            { type = ui.TYPE.Widget, props = { size = v2(0, GAP) } },
-
-            -- grid
-            inputs,
 
             { type = ui.TYPE.Widget, props = { size = v2(0, GAP) } },
 
