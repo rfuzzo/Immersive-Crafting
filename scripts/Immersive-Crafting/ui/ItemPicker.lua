@@ -263,6 +263,7 @@ function this.Body(items, view, space, header)
                 name = 'strip_search_row',
                 props = { align = ui.ALIGNMENT.Center },
                 children = {
+                    spacer({ props = { size = v2(8, 0) } }),
                     text({ text = 'Search', template = I.MWUI.templates.textNormal }),
                     spacer({ props = { size = v2(8, 0) } }),
                     searchBoxLayout(view),

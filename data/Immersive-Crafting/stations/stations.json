@@ -11,7 +11,7 @@
       "offset": [
         0,
         15,
-        -10
+        -20
       ]
     },
     "openCharge": true
@@ -23,7 +23,8 @@
   {
     "item": "ic_station_charcoalpit",
     "activator": "ic_station_charcoalpit_a",
-    "loadable": true
+    "loadable": true,
+    "alignToGround": true
   },
   {
     "item": "ic_station_tanningrack",

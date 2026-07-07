@@ -98,38 +98,43 @@ local function missingTools(tools)
     return missing
 end
 
---- Resolve a station's charge against its process recipes and light it.
---- Exact multiset matching means a resolvable charge burns completely; ties
---- (bonemold helm vs boots) go to the first match by id — the window's
---- cycler remains the tool for choosing precisely.
+--- Resolve a station's charge against its process recipes: the recipe that
+--- would burn, or why nothing will. Exact multiset matching means a
+--- resolvable charge burns completely; ties (bonemold helm vs boots) go to
+--- the first tool-satisfied match by id — the window's cycler remains the
+--- tool for choosing precisely. Used by the card (so an invalid charge shows
+--- BEFORE the player wastes the hold) and by the ignite itself.
 ---@param ctx HandlerContext
 ---@param charge { id: string, count: integer }[]
-local function igniteCharge(ctx, charge)
+---@return CProcessRecipe? recipe, string? problem why nothing burns (set iff recipe is nil)
+local function resolveCharge(ctx, charge)
     local placedIds = {}
     for _, e in ipairs(charge) do
         for _ = 1, (e.count or 1) do placedIds[#placedIds + 1] = e.id end
     end
     local matches = processCrafting.resolveProcessRecipes(placedIds, ctx.action, ctx.context)
     if #matches == 0 then
-        ui.showMessage('That will not make anything')
-        return
+        return nil, 'This will not make anything'
     end
-
-    local recipe, firstMissing
+    local firstMissing
     for _, r in ipairs(matches) do
         local missing = missingTools(r.tools)
         if #missing == 0 then
-            recipe = r
-            break
+            if r.duration and r.duration > 0 then return r, nil end
+            return nil, 'This needs the crafting window' -- instant recipes stay windowed
         end
         firstMissing = firstMissing or missing
     end
+    return nil, 'Needs: ' .. table.concat(firstMissing, ', ')
+end
+
+--- Light a loaded station's charge (fire already verified in hand).
+---@param ctx HandlerContext
+---@param charge { id: string, count: integer }[]
+local function igniteCharge(ctx, charge)
+    local recipe, problem = resolveCharge(ctx, charge)
     if not recipe then
-        ui.showMessage('Needs: ' .. table.concat(firstMissing, ', '))
-        return
-    end
-    if not (recipe.duration and recipe.duration > 0) then
-        ui.showMessage('This needs the crafting window') -- instant recipes stay windowed
+        ui.showMessage(problem or 'This will not make anything')
         return
     end
 
@@ -226,9 +231,16 @@ function CProcessingHandler:evaluate(ctx)
         end
         local details = { 'Contains: ' .. table.concat(parts, ', ') }
         local action = nil
-        if fireInHand() then
+        -- resolve NOW so an invalid charge shows on the card instead of
+        -- after a wasted hold-F
+        local recipe, problem = resolveCharge(ctx, charge)
+        if not recipe then
+            details[#details + 1] = problem
+        elseif fireInHand() then
+            details[#details + 1] = ('Will make: %s'):format(recipe.label or recipe.id)
             action = { id = 'ignite', label = 'Light the fire', enabled = true, hold = IGNITE_HOLD }
         else
+            details[#details + 1] = ('Will make: %s'):format(recipe.label or recipe.id)
             details[#details + 1] = 'Needs fire in hand (a torch)'
         end
         if stored and #stored > 0 then

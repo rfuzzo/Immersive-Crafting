@@ -1147,3 +1147,22 @@ Wrong fuel = one activation to fix; empty again -> activation falls through
 to normal station handling. Load filtering stays permissive on purpose:
 recipe-aware rejection would need FlexTag matching, which is player-side
 only (the global drop handler can't tag-match).
+
+## Charge pre-validation + align-to-ground placement (built 2026-07-07)
+
+**Card pre-validation** (user: hold-F was wasted before learning the charge
+is invalid): the loaded-station card resolves the charge against the recipes
+UP FRONT via the shared resolveCharge() (also used by the ignite itself) —
+invalid shows the reason on the card ("This will not make anything" /
+"Needs: hammer" / "This needs the crafting window") and offers NO ignite
+action; valid shows "Will make: X" before the fire requirement.
+
+**Align-to-ground** (charcoal pile clipped into slopes): stations.json
+`"alignToGround": true` (charcoal pit). Raycasts are local-only, so the swap
+round-trips: global defers the item->activator swap, asks the player to probe
+(ImmersiveCrafting_ProbeGround: castRay straight down, World+HeightMap,
+ignoring the item), and finishes in onGroundProbe — position snapped to the
+hit point, up-axis tilted onto the hit normal (yaw kept; tilt = rotate(angle
+between up and normal, up x normal)). No hit / no player -> plain swap.
+Verify in-game: tilt DIRECTION on a slope (if mirrored, negate the angle),
+and that upright stations (kiln, furnace) are unaffected (no flag).

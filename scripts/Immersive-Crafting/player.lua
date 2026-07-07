@@ -5,6 +5,8 @@ local input = require('openmw.input')
 local types = require('openmw.types')
 local omwSelf = require('openmw.self')
 local ui = require('openmw.ui')
+local util = require('openmw.util')
+local nearby = require('openmw.nearby')
 
 local dataManager = require('scripts.Immersive-Crafting.dataManager')
 local contextManager = require('scripts.Immersive-Crafting.contextManager')
@@ -255,6 +257,24 @@ return {
         end,
         ImmersiveCrafting_LiquidSync = function(data)
             sdLiquids.apply(data)
+        end,
+        -- align-to-ground station placement: raycasts are local-script-only,
+        -- so the global side asks us to probe the terrain under a drop point
+        -- and finishes the item->activator swap with the hit normal we return
+        ImmersiveCrafting_ProbeGround = function(data)
+            if not (data and data.token and data.position) then return end
+            local from = data.position + util.vector3(0, 0, 50)
+            local to = data.position - util.vector3(0, 0, 300)
+            local res = nearby.castRay(from, to, {
+                ignore = data.object,
+                radius = 0,
+                collisionType = nearby.COLLISION_TYPE.World + nearby.COLLISION_TYPE.HeightMap,
+            })
+            core.sendGlobalEvent('ImmersiveCrafting_GroundProbe', {
+                token = data.token,
+                normal = res and res.hit and res.hitNormal or nil,
+                position = res and res.hit and res.hitPos or nil,
+            })
         end,
     }
 }

@@ -30,6 +30,7 @@
 
 local world = require('openmw.world')
 local types = require('openmw.types')
+local util = require('openmw.util')
 
 local io = require('scripts.Immersive-Crafting.io')
 local log = require('scripts.Immersive-Crafting.log')
@@ -42,10 +43,11 @@ local byItem = nil ---@type table<string, string>? item record id -> activator r
 local byActivator = nil ---@type table<string, string>? activator record id -> item record id
 local fxByActivator = nil ---@type table<string, { record: string, offset: number[]? }>? activator record id -> process FX
 local loadable = nil ---@type table<string, boolean>? activator record id -> accepts a dropped-in charge (UI-less kiln/charcoal pit)
+local alignToGround = nil ---@type table<string, boolean>? item record id -> tilt the placed activator to the terrain normal (mound-like meshes)
 
 local function maps()
     if byItem then return byItem, byActivator end
-    byItem, byActivator, fxByActivator, loadable = {}, {}, {}, {}
+    byItem, byActivator, fxByActivator, loadable, alignToGround = {}, {}, {}, {}, {}
     for _, entry in ipairs(io.loadJsonFile(STATIONS_PATH) or {}) do
         if entry.item and entry.activator then
             byItem[entry.item:lower()] = entry.activator
@@ -55,6 +57,9 @@ local function maps()
             end
             if entry.loadable then
                 loadable[entry.activator:lower()] = true
+            end
+            if entry.alignToGround then
+                alignToGround[entry.item:lower()] = true
             end
         end
     end
@@ -82,18 +87,13 @@ function this.isLoadable(recordId)
     return loadable[recordId] or false
 end
 
---- Engine handler: swap station items lying in the world for their activator.
---- Returns true when the object IS a station item (handled here — even if the
---- swap failed, it must not be treated as station-charge input).
----@param object any object that just became active
----@return boolean handled
-function this.onObjectActive(object)
-    if object.type ~= types.Miscellaneous then return false end
-    local items = maps()
-    local activatorId = items[object.recordId]
-    if not activatorId then return false end
-
-    local cell, pos, rot = object.cell, object.position, object.rotation
+--- Swap one unit of a station item for its activator at position/rotation.
+---@param object any the station item
+---@param activatorId string
+---@param pos any placement position
+---@param rot any placement rotation (util.transform)
+local function placeActivator(object, activatorId, pos, rot)
+    local cell = object.cell
     local ok, err = pcall(function()
         local created = world.createObject(activatorId, 1)
         created:teleport(cell, pos, { rotation = rot })
@@ -102,11 +102,69 @@ function this.onObjectActive(object)
         -- most likely: the activator record isn't in the load order yet
         log.warn(('stations: cannot place "%s" (%s) — item left as-is'):format(
             activatorId, tostring(err)))
-        return true
+        return
     end
     object:remove(1)
     log.info(('stations: placed %s'):format(activatorId))
+end
+
+-- align-to-ground swaps wait for the player to raycast the terrain (raycasts
+-- are local-script-only); keyed by the item object's id
+local pendingAlign = {} ---@type table<string, any>
+
+--- Engine handler: swap station items lying in the world for their activator.
+--- Returns true when the object IS a station item (handled here — even if the
+--- swap failed, it must not be treated as station-charge input).
+--- `alignToGround` stations don't swap immediately: the player probes the
+--- terrain under the drop point first (ImmersiveCrafting_ProbeGround) and the
+--- swap completes in onGroundProbe, tilted to the surface normal.
+---@param object any object that just became active
+---@return boolean handled
+function this.onObjectActive(object)
+    if object.type ~= types.Miscellaneous then return false end
+    local items = maps()
+    local activatorId = items[object.recordId]
+    if not activatorId then return false end
+
+    if alignToGround[object.recordId] and world.players[1] then
+        pendingAlign[object.id] = object
+        world.players[1]:sendEvent('ImmersiveCrafting_ProbeGround', {
+            token = object.id,
+            object = object,
+            position = object.position,
+        })
+        return true
+    end
+
+    placeActivator(object, activatorId, object.position, object.rotation)
     return true
+end
+
+--- Event (from the player): terrain probe result — finish an align-to-ground
+--- swap. Tilts the activator's up-axis onto the surface normal (keeping the
+--- item's yaw) and drops it onto the hit point; no hit -> plain swap.
+---@param data { token: string, normal: any?, position: any? }
+function this.onGroundProbe(data)
+    if not (data and data.token) then return end
+    local object = pendingAlign[data.token]
+    pendingAlign[data.token] = nil
+    if not (object and object:isValid() and object.count and object.count > 0) then return end
+    local items = maps()
+    local activatorId = items[object.recordId]
+    if not activatorId then return end
+
+    local pos = data.position or object.position
+    local rot = object.rotation
+    if data.normal then
+        local up = util.vector3(0, 0, 1)
+        local n = data.normal:normalize()
+        local axis = up:cross(n)
+        local angle = math.acos(util.clamp(up:dot(n), -1, 1))
+        if axis:length() > 1e-4 and angle > 1e-3 then
+            rot = util.transform.rotate(angle, axis:normalize()) * rot
+        end
+    end
+    placeActivator(object, activatorId, pos, rot)
 end
 
 --- Event: pack a placed station back into its item form.

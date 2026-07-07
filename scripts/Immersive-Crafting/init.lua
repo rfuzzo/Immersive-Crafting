@@ -215,6 +215,7 @@ return {
             globalStations.onPack(data)
         end,
         ImmersiveCrafting_IgniteStation = globalProcessing.onIgnite,
+        ImmersiveCrafting_GroundProbe = globalStations.onGroundProbe,
         ImmersiveCrafting_FieldDress = globalDressing.onFieldDress,
         ImmersiveCrafting_SetOptions = function(data)
             globalProcessing.onSetOptions(data)
