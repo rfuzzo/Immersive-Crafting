@@ -86,3 +86,6 @@ mold_raw:
 chitin_fragment:
   - ic_chitin_plate
   - a_msc_chitin_01
+
+plank:
+  - ic_plank

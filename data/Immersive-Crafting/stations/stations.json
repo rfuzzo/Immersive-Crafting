@@ -10,11 +10,11 @@
       "record": "Light_Fire",
       "offset": [
         0,
-        0,
-        10
+        15,
+        -10
       ]
     },
-    "loadable": true
+    "openCharge": true
   },
   {
     "item": "ic_station_furnace",

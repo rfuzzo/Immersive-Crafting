@@ -61,7 +61,7 @@
       "kiln",
       "ic_station_kiln_a"
     ],
-    "activationRange": 150,
+    "activationRange": 250,
     "trigger": "activate",
     "layout": {
       "kind": "process",
@@ -74,7 +74,7 @@
           "key": "fuel",
           "label": "Fuel",
           "accepts": [
-            "Charcoal",
+            "charcoal",
             "wood"
           ]
         },

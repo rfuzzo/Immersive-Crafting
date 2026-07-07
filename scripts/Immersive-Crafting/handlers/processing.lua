@@ -3,6 +3,7 @@ local omwSelf = require('openmw.self')
 local util = require('openmw.util')
 local types = require('openmw.types')
 local ui = require('openmw.ui')
+local nearby = require('openmw.nearby')
 
 local CAbstractHandler = require('scripts.Immersive-Crafting.handlers.CAbstractHandler')
 local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
@@ -10,9 +11,51 @@ local processState = require('scripts.Immersive-Crafting.processState')
 local processCrafting = require('scripts.Immersive-Crafting.processCrafting')
 local stationPack = require('scripts.Immersive-Crafting.stationPack')
 local lib = require('scripts.Immersive-Crafting.lib')
+local io = require('scripts.Immersive-Crafting.io')
 local log = require('scripts.Immersive-Crafting.log')
 
 local IGNITE_HOLD = 1.5 -- seconds of holding F (with fire in hand) to light a charge
+
+-- open-charge stations (kiln): items are PLACED VISIBLY in/on the mesh, never
+-- absorbed — the charge is whatever loose items lie within this radius.
+-- Mirrored in globalProcessing (the ignite consume scan).
+local OPEN_CHARGE_RADIUS = 120
+
+--- Activator record ids flagged `"openCharge": true` in stations.json.
+local openChargeSet = nil ---@type table<string, boolean>?
+local function isOpenCharge(recordId)
+    if not openChargeSet then
+        openChargeSet = {}
+        for _, e in ipairs(io.loadJsonFile('data/Immersive-Crafting/stations/stations.json') or {}) do
+            if e.activator and e.openCharge then openChargeSet[e.activator:lower()] = true end
+        end
+    end
+    return openChargeSet[(recordId or ''):lower()] or false
+end
+
+--- The loose items physically placed in/on an open-charge station, as a
+--- charge list (same shape the synced charge registry uses).
+---@param station any the station game object
+---@return { id: string, count: integer, name: string? }[]
+local function worldCharge(station)
+    local list, index = {}, {}
+    for _, item in ipairs(nearby.items) do
+        if item.count and (item.position - station.position):length() <= OPEN_CHARGE_RADIUS then
+            local e = index[item.recordId]
+            if e then
+                e.count = e.count + (item.count or 1)
+            else
+                local name
+                local ok, rec = pcall(function() return item.type.records[item.recordId] end)
+                if ok and rec and rec.name and rec.name ~= '' then name = rec.name end
+                e = { id = item.recordId, count = item.count or 1, name = name }
+                index[item.recordId] = e
+                list[#list + 1] = e
+            end
+        end
+    end
+    return list
+end
 
 --- "~N min" / "~N h" of remaining GAME time.
 local function fmtRemaining(readyAt)
@@ -109,6 +152,16 @@ local function igniteCharge(ctx, charge)
         end
     end
 
+    -- open-charge station (kiln): the charge is the loose items in/on it —
+    -- tell the global side what to consume from the world (validated there)
+    local consume = nil
+    if isOpenCharge(ctx.object and ctx.object.recordId) then
+        consume = {}
+        for _, e in ipairs(charge) do
+            consume[#consume + 1] = { id = e.id, count = e.count or 1 }
+        end
+    end
+
     core.sendGlobalEvent('ImmersiveCrafting_IgniteStation', {
         actor = omwSelf.object,
         station = ctx.object,
@@ -117,6 +170,7 @@ local function igniteCharge(ctx, charge)
         output = recipe.output,
         duration = recipe.duration,
         returned = #returned > 0 and returned or nil,
+        consume = consume,
     })
 end
 
@@ -149,15 +203,22 @@ function CProcessingHandler:evaluate(ctx)
         end
         ---@type ViewModel
         return {
-            status = (run.label or 'Working') .. ' — in progress',
+            -- the bar + "Ready in" already say it's working; a suffix overflowed
+            status = run.label or 'Working',
             progress = progress,
             details = { 'Ready in ' .. fmtRemaining(run.readyAt) },
         }
     end
 
     -- a loaded (but unlit) station owns the card: show the charge, and the
-    -- hold-to-light action when the player holds fire
-    local charge = ctx.object and processState.chargeFor(ctx.object.id)
+    -- hold-to-light action when the player holds fire. Open-charge stations
+    -- (kiln) read the charge from the items physically placed in them.
+    local stored = ctx.object and processState.chargeFor(ctx.object.id)
+    local open = ctx.object and isOpenCharge(ctx.object.recordId)
+    local charge = stored
+    if (not charge or #charge == 0) and open then
+        charge = worldCharge(ctx.object)
+    end
     if charge and #charge > 0 and ctx.context.trigger == 'activate' then
         local parts = {}
         for _, e in ipairs(charge) do
@@ -170,7 +231,11 @@ function CProcessingHandler:evaluate(ctx)
         else
             details[#details + 1] = 'Needs fire in hand (a torch)'
         end
-        details[#details + 1] = 'Activate to take the last item back'
+        if stored and #stored > 0 then
+            -- absorbed charge (charcoal pit): activation is the undo. An
+            -- open-charge station's items are simply picked up off it.
+            details[#details + 1] = 'Activate to take the last item back'
+        end
         ---@type ViewModel
         return {
             status = 'Loaded',
@@ -249,6 +314,9 @@ function CProcessingHandler:OnActivate(ctx)
     -- loaded charge (with fire in hand) or PACKS the station up
     if ctx.context.trigger == 'activate' then
         local charge = ctx.object and processState.chargeFor(ctx.object.id)
+        if (not charge or #charge == 0) and ctx.object and isOpenCharge(ctx.object.recordId) then
+            charge = worldCharge(ctx.object)
+        end
         if charge and #charge > 0 then
             if fireInHand() then igniteCharge(ctx, charge) end
             return

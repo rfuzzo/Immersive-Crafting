@@ -20,6 +20,12 @@
     A station entry may also declare `processFx` ({ record, offset }): an
     object globalProcessing spawns at the station while a timed run burns
     (the kiln's fire in the opening) and removes when it finishes.
+
+    Charge styles: `loadable` stations ABSORB a dropped item into a stored
+    charge (charcoal pit — the mound swallows it); `openCharge` stations
+    (kiln) never absorb — items are placed VISIBLY in the mesh and the ignite
+    path consumes them from the world (handlers/processing.lua +
+    globalProcessing.onIgnite `consume`).
 ]]
 
 local world = require('openmw.world')

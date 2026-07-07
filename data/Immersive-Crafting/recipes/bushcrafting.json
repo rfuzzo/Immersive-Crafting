@@ -138,6 +138,26 @@
     }
   },
   {
+    "id": "ic_plank",
+    "label": "Plank",
+    "context": "bushcrafting",
+    "action": "shaping",
+    "pattern": [
+      "AA",
+      "  "
+    ],
+    "key": {
+      "A": "Wood"
+    },
+    "tools": [
+      "axe"
+    ],
+    "output": {
+      "id": "ic_plank",
+      "count": 1
+    }
+  },
+  {
     "id": "ic_station_craftingtable",
     "label": "Crafting Table",
     "context": "bushcrafting",

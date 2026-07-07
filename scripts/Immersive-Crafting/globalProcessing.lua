@@ -264,6 +264,10 @@ end
 -- ── UI-less loading + ignition (kiln, charcoal pit) ─────────────────────────
 
 local LOAD_RADIUS = 150 -- units around a loadable station that claim a dropped item
+-- open-charge stations (kiln): items lie visibly in/on the mesh; the ignite
+-- consume scan claims loose items within this radius. Mirrored in
+-- handlers/processing.lua (the card/ignite charge scan).
+local OPEN_CHARGE_RADIUS = 120
 
 --- Engine handler (via init.lua, after the drop-swap check): an item dropped
 --- near an idle LOADABLE station joins its charge (the item is absorbed;
@@ -314,7 +318,11 @@ end
 --- Event: light a loaded station (the player resolved the charge against the
 --- station's recipes and holds a fire source). The WHOLE charge burns —
 --- process matching is exact, so a resolvable charge has no leftovers.
----@param data { actor: any, station: any, recipeId: string, label: string, output: table, duration: number, returned: { id: string, count: integer }[]? }
+--- With `consume` set (open-charge station: the kiln), the charge is the
+--- loose items physically placed in/on the station — they are consumed from
+--- the WORLD here (validated first; one may have been picked up since the
+--- card was shown) instead of from the stored charge registry.
+---@param data { actor: any, station: any, recipeId: string, label: string, output: table, duration: number, returned: { id: string, count: integer }[]?, consume: { id: string, count: integer }[]? }
 function this.onIgnite(data)
     if not (data and data.actor and data.station and data.output and data.duration) then return end
     local stationId = data.station.id
@@ -322,13 +330,48 @@ function this.onIgnite(data)
         notify(data.actor, 'This station is already working')
         return
     end
-    local charge = charges()[stationId]
-    if not charge or #charge == 0 then
-        notify(data.actor, 'Nothing is loaded')
-        return
+
+    if data.consume then
+        -- pool: loose items within the open-charge radius of the station
+        local pool = {}
+        for _, obj in ipairs(data.station.cell:getAll()) do
+            if isLoadableItem(obj)
+                and (obj.position - data.station.position):length() <= OPEN_CHARGE_RADIUS then
+                pool[#pool + 1] = obj
+            end
+        end
+        -- verify availability first so we never partially consume
+        for _, entry in ipairs(data.consume) do
+            local have = 0
+            for _, obj in ipairs(pool) do
+                if obj.recordId == entry.id then have = have + (obj.count or 1) end
+            end
+            if have < (entry.count or 1) then
+                notify(data.actor, 'The loaded materials are gone')
+                return
+            end
+        end
+        for _, entry in ipairs(data.consume) do
+            local needed = entry.count or 1
+            for _, obj in ipairs(pool) do
+                if needed <= 0 then break end
+                if obj.recordId == entry.id then
+                    local take = math.min(needed, obj.count or 1)
+                    if pcall(function() obj:remove(take) end) then
+                        needed = needed - take
+                    end
+                end
+            end
+        end
+    else
+        local charge = charges()[stationId]
+        if not charge or #charge == 0 then
+            notify(data.actor, 'Nothing is loaded')
+            return
+        end
+        charges()[stationId] = nil
     end
 
-    charges()[stationId] = nil
     registerRun(data.station, data)
     notify(data.actor, ('%s — ready in %s'):format(data.label or 'Process', fmtDuration(data.duration)))
     syncPlayer()

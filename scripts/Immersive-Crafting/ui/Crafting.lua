@@ -883,18 +883,23 @@ end
 --- it consumes the placed inputs and moves the item into the inventory. When
 --- several recipes match the same placement, `< i/n >` cycles between them.
 local function resultSection()
+    -- caption = "Name xN" on the first line; each annotation (duration, mold
+    -- returned, missing tools/materials) is its OWN line below — appended
+    -- inline they overflowed the window (and Text ignores embedded newlines)
     local resource, countLabel, caption
+    local notes = {}
     if matched and matched.sdMeal then
         -- Sun's Dusk meal: SD mints the record on craft; icon comes from the meal def
         resource = textureForPath(matched.sdMeal.icon)
         local n = matched.sdMeal.count or 1
         countLabel = n > 1 and n or nil
-        caption = ('%s x%d  (meal)'):format(matched.label or matched.id, n)
+        caption = ('%s x%d'):format(matched.label or matched.id, n)
+        notes[#notes + 1] = '(meal)'
         local missing = missingTools(matched)
         if #missing > 0 then
-            caption = caption .. ('  (needs %s)'):format(table.concat(missing, ', '))
+            notes[#notes + 1] = ('(needs %s)'):format(table.concat(missing, ', '))
         elseif not canCraft then
-            caption = caption .. '  (not enough materials)'
+            notes[#notes + 1] = '(not enough materials)'
         end
     elseif matched then
         resource = textureForPath(recordIconPath(matched.output.id))
@@ -905,18 +910,18 @@ local function resultSection()
             local dur = matched.duration >= 3600
                 and ('~%d h'):format(math.ceil(matched.duration / 3600))
                 or ('~%d min'):format(math.max(1, math.ceil(matched.duration / 60)))
-            caption = caption .. ('  (takes %s)'):format(dur)
+            notes[#notes + 1] = ('(takes %s)'):format(dur)
         end
         local hasReturned = matched.returned and #matched.returned > 0
         for _, line in ipairs(matched.inputs or {}) do
             if line.returned then hasReturned = true end
         end
-        if hasReturned then caption = caption .. '  (mold returned)' end
+        if hasReturned then notes[#notes + 1] = '(mold returned)' end
         local missing = missingTools(matched)
         if #missing > 0 then
-            caption = caption .. ('  (needs %s)'):format(table.concat(missing, ', '))
+            notes[#notes + 1] = ('(needs %s)'):format(table.concat(missing, ', '))
         elseif not canCraft then
-            caption = caption .. '  (not enough materials)'
+            notes[#notes + 1] = '(not enough materials)'
         end
     else
         caption = '(no match)'
@@ -971,7 +976,15 @@ local function resultSection()
                 content = ui.content({
                     resultSlot,
                     { type = ui.TYPE.Widget, props = { size = v2(8, 0) } },
-                    { type = ui.TYPE.Text,   props = { text = caption }, template = I.MWUI.templates.textNormal },
+                    (function()
+                        local lines = {
+                            { type = ui.TYPE.Text, props = { text = caption }, template = I.MWUI.templates.textNormal },
+                        }
+                        for _, note in ipairs(notes) do
+                            lines[#lines + 1] = { type = ui.TYPE.Text, props = { text = note }, template = I.MWUI.templates.textNormal }
+                        end
+                        return { type = ui.TYPE.Flex, content = ui.content(lines) }
+                    end)(),
                 })
             },
         }),

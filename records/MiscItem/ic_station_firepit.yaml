@@ -3,8 +3,8 @@ flags: ""
 id: ic_station_firepit
 name: Firepit
 script: ""
-mesh: x\ex_scrapwood05.NIF
-icon: n\Tx_trama_root_01.tga
+mesh: l\light_pitfire00.NIF
+icon: l\Light_De_Candle_11.tga
 data:
   weight: 8.0
   value: 5

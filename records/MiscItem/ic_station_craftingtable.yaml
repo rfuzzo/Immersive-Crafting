@@ -4,7 +4,7 @@ id: ic_station_craftingtable
 name: Crafting Table
 script: ""
 mesh: f\furn_de_ex_table_02.nif
-icon: m\Tx_repair_A_01.tga
+icon: m\misc_dwrv_Ark_cube00.tga
 data:
   weight: 15.0
   value: 25

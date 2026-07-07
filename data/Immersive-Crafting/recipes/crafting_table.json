@@ -314,26 +314,6 @@
     }
   },
   {
-    "id": "ic_plank",
-    "label": "Plank",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AA",
-      "  "
-    ],
-    "key": {
-      "A": "Wood"
-    },
-    "tools": [
-      "axe"
-    ],
-    "output": {
-      "id": "ic_plank",
-      "count": 1
-    }
-  },
-  {
     "id": "ic_pot",
     "label": "Pot",
     "context": "crafting_table",
