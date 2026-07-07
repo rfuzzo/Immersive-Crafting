@@ -1220,3 +1220,18 @@ standalone footer button; closeButton uses it.
 Prototyped + verified in the openmw-ui viewer. Branch claude/ui-padding-pass.
 Verify in-game: result panel fills the right on every station (grid + process),
 process aside Mold slot renders under the inputs, Close is comfortably inside.
+
+## Contextual overlay card polish (2026-07-07)
+
+Same styling language as the window pass, applied to ContextualOverlay.lua (the
+[F] card near stations / forageables):
+- the "[F] <label>" text is now a KEYCAP badge: the bound key in a small
+  bordered box + the label (header template when enabled) — reads as a prompt.
+- secondary detail lines (Missing: X, input roles, forage label) are dimmed to
+  a muted tan (textColor) so they sit below the status/action in the hierarchy.
+- interior CARD_PAD margin (6px sides / 5px ends) so content doesn't kiss the
+  border; hold bar a touch taller (8->10); LINE_W 190->196.
+Prototyped + verified in the openmw-ui viewer. Branch claude/ui-padding-pass.
+Verify in-game: keycap renders on station + forage cards; disabled action uses
+the normal (not header) label; dimmed details legible; hold bar still fills
+smoothly while the forage key is held.

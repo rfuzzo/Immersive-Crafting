@@ -40,14 +40,17 @@ local updateInterval = 0.25 -- Check for nearby context every 0.25 seconds
 -- Position: lower-right, card top at ~3/4 screen height, growing downward.
 local OVERLAY_POS = v2(0.99, 0.70)
 local OVERLAY_ANCHOR = v2(1, 0)
-local LINE_W = 190
+local LINE_W = 196
+local CARD_PAD_X = 6 -- interior padding added inside the card's border
+local CARD_PAD_Y = 5
 
 -- Hold bar (drawn while a forage key is held): a bordered track with a solid
 -- gold fill, sized to the card's line width.
-local HOLD_BAR_H = 8
+local HOLD_BAR_H = 10
 local whiteTexture = ui.texture { path = 'white' }
 local HOLD_BAR_FILL = util.color.rgb(0.95, 0.78, 0.35)  -- matches the selected-slot gold
 local HOLD_BAR_TRACK = util.color.rgb(0.08, 0.07, 0.05) -- faint dark track behind the fill
+local DETAIL_COLOR = util.color.rgb(0.60, 0.52, 0.38)   -- muted tan for secondary detail lines
 
 local this = {}
 
@@ -79,6 +82,43 @@ local function hLine()
     }
 end
 
+--- A keycap badge: the bound key letter in a small bordered box (reads as a
+--- prompt, e.g. [F] Collect -> a boxed F followed by the label).
+---@param key string
+local function keycap(key)
+    return c.box({
+        children = {
+            c.column({ children = {
+                c.spacer({ props = { size = v2(0, 1) } }),
+                c.row({ children = {
+                    c.spacer({ props = { size = v2(5, 0) } }),
+                    c.text({ text = key }),
+                    c.spacer({ props = { size = v2(5, 0) } }),
+                } }),
+                c.spacer({ props = { size = v2(0, 1) } }),
+            } }),
+        },
+    })
+end
+
+--- The action row: a keycap 'F' badge + the label (header template when the
+--- action is enabled, normal otherwise).
+---@param label string
+---@param enabled boolean
+local function actionRow(label, enabled)
+    return c.row({
+        props = { align = ui.ALIGNMENT.Center },
+        children = {
+            keycap('F'),
+            c.spacer({ props = { size = v2(7, 0) } }),
+            c.text({
+                text = label,
+                template = enabled and I.MWUI.templates.textHeader or I.MWUI.templates.textNormal,
+            }),
+        },
+    })
+end
+
 --- Build one action card's rows from its ViewModel.
 ---@param viewModel ViewModel
 ---@param rows table[] target list
@@ -97,17 +137,15 @@ local function renderViewModel(viewModel, rows)
         rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
     end
 
-    -- action hint: "[F] <label>" (gold when enabled). Held actions append a hint.
+    -- action hint: an [F] keycap + <label> (gold when enabled). Held actions
+    -- append a "(hold)" hint until the bar is showing.
     if viewModel.action then
-        local template = viewModel.action.enabled
-            and I.MWUI.templates.textHeader
-            or I.MWUI.templates.textNormal
         local label = viewModel.action.label
         if viewModel.action.hold and viewModel.action.hold > 0 and not viewModel.progress then
             label = label .. ' (hold)'
         end
-        rows[#rows + 1] = c.text({ text = ('[F] %s'):format(label), template = template })
-        rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
+        rows[#rows + 1] = actionRow(label, viewModel.action.enabled and true or false)
+        rows[#rows + 1] = c.spacer({ props = { size = v2(0, 4) } })
     end
 
     -- hold progress bar: shown only while the key is actively held. A solid
@@ -144,9 +182,9 @@ local function renderViewModel(viewModel, rows)
         rows[#rows + 1] = c.spacer({ props = { size = v2(0, 3) } })
     end
 
-    -- details (e.g. "Missing: Water", input roles)
+    -- details (e.g. "Missing: Water", input roles) — dimmed as secondary text
     for _, detail in ipairs(viewModel.details or {}) do
-        rows[#rows + 1] = c.text({ text = detail })
+        rows[#rows + 1] = c.text({ text = detail, props = { textColor = DETAIL_COLOR } })
     end
 end
 
@@ -197,7 +235,12 @@ local function updateOverlayUI()
     end
     if #rows == 0 then return end
 
-    -- auto-sized card: transparent box + padding + vertical flex
+    -- auto-sized card: transparent box + padding + interior CARD_PAD margin so
+    -- the content doesn't kiss the border (matches the window pass)
+    local paddedRows = { c.spacer({ props = { size = v2(0, CARD_PAD_Y) } }) }
+    for _, r in ipairs(rows) do paddedRows[#paddedRows + 1] = r end
+    paddedRows[#paddedRows + 1] = c.spacer({ props = { size = v2(0, CARD_PAD_Y) } })
+
     overlayElement = ui.create({
         layer = 'HUD',
         name = 'contextualOverlay',
@@ -210,7 +253,11 @@ local function updateOverlayUI()
             {
                 template = I.MWUI.templates.padding,
                 content = ui.content {
-                    c.column({ name = 'overlay_rows', children = rows }),
+                    c.row({ children = {
+                        c.spacer({ props = { size = v2(CARD_PAD_X, 0) } }),
+                        c.column({ name = 'overlay_rows', children = paddedRows }),
+                        c.spacer({ props = { size = v2(CARD_PAD_X, 0) } }),
+                    } }),
                 },
             },
         },
