@@ -10,8 +10,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -56,8 +55,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -102,8 +100,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -148,8 +145,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -240,8 +236,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -286,8 +281,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -332,8 +326,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -378,8 +371,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -424,8 +416,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -462,8 +453,7 @@
         "count": 1
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -508,8 +498,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -554,8 +543,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -600,8 +588,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -692,8 +679,7 @@
         "count": 1
       },
       {
-        "id": "charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -784,8 +770,7 @@
         "count": 1
       },
       {
-        "id": "Charcoal",
-        "count": 2
+        "fuel": 6
       }
     ],
     "duration": 1800,

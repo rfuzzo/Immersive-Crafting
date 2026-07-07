@@ -98,12 +98,13 @@ local function missingTools(tools)
     return missing
 end
 
---- Resolve a station's charge against its process recipes: the recipe that
---- would burn, or why nothing will. Exact multiset matching means a
---- resolvable charge burns completely; ties (bonemold helm vs boots) go to
---- the first tool-satisfied match by id — the window's cycler remains the
---- tool for choosing precisely. Used by the card (so an invalid charge shows
---- BEFORE the player wastes the hold) and by the ignite itself.
+--- Resolve a station's charge against its process recipes: the (batch) match
+--- that would burn, or why nothing will. Matching claims k input sets plus
+--- the minimal covering fuel subset — excess fuel in the charge is fine and
+--- stays unburned; ties (bonemold helm vs boots) go to the first
+--- tool-satisfied match by id — the window's cycler remains the tool for
+--- choosing precisely. Used by the card (so an invalid charge shows BEFORE
+--- the player wastes the hold) and by the ignite itself.
 ---@param ctx HandlerContext
 ---@param charge { id: string, count: integer }[]
 ---@return CProcessRecipe? recipe, string? problem why nothing burns (set iff recipe is nil)
@@ -157,14 +158,12 @@ local function igniteCharge(ctx, charge)
         end
     end
 
-    -- open-charge station (kiln): the charge is the loose items in/on it —
-    -- tell the global side what to consume from the world (validated there)
-    local consume = nil
-    if isOpenCharge(ctx.object and ctx.object.recordId) then
-        consume = {}
-        for _, e in ipairs(charge) do
-            consume[#consume + 1] = { id = e.id, count = e.count or 1 }
-        end
+    -- consume exactly what the match CLAIMED (k batches of inputs + the mold +
+    -- the minimal covering fuel subset) — excess fuel in the charge is never
+    -- claimed, so it stays: lying in the open kiln, or loaded in the pit
+    local consume = {}
+    for id, n in pairs(recipe.claimedCounts or {}) do
+        consume[#consume + 1] = { id = id, count = n }
     end
 
     core.sendGlobalEvent('ImmersiveCrafting_IgniteStation', {
@@ -176,6 +175,9 @@ local function igniteCharge(ctx, charge)
         duration = recipe.duration,
         returned = #returned > 0 and returned or nil,
         consume = consume,
+        -- open-charge station (kiln): the charge is the loose items in/on it,
+        -- consumed from the WORLD; otherwise from the stored charge registry
+        fromWorld = isOpenCharge(ctx.object and ctx.object.recordId) or nil,
     })
 end
 

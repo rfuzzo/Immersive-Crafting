@@ -316,13 +316,14 @@ function this.onObjectActive(object)
 end
 
 --- Event: light a loaded station (the player resolved the charge against the
---- station's recipes and holds a fire source). The WHOLE charge burns —
---- process matching is exact, so a resolvable charge has no leftovers.
---- With `consume` set (open-charge station: the kiln), the charge is the
---- loose items physically placed in/on the station — they are consumed from
---- the WORLD here (validated first; one may have been picked up since the
---- card was shown) instead of from the stored charge registry.
----@param data { actor: any, station: any, recipeId: string, label: string, output: table, duration: number, returned: { id: string, count: integer }[]?, consume: { id: string, count: integer }[]? }
+--- station's recipes and holds a fire source). Only the CLAIMED items burn
+--- (`consume` — k batches of inputs + the minimal covering fuel subset);
+--- excess fuel survives the firing. With `fromWorld` (open-charge station:
+--- the kiln), the charge is the loose items physically placed in/on the
+--- station — consumed from the WORLD here (validated first; one may have
+--- been picked up since the card was shown); otherwise the claims are
+--- subtracted from the stored charge registry and the remainder stays loaded.
+---@param data { actor: any, station: any, recipeId: string, label: string, output: table, duration: number, returned: { id: string, count: integer }[]?, consume: { id: string, count: integer }[]?, fromWorld: boolean? }
 function this.onIgnite(data)
     if not (data and data.actor and data.station and data.output and data.duration) then return end
     local stationId = data.station.id
@@ -331,7 +332,7 @@ function this.onIgnite(data)
         return
     end
 
-    if data.consume then
+    if data.fromWorld and data.consume then
         -- pool: loose items within the open-charge radius of the station
         local pool = {}
         for _, obj in ipairs(data.station.cell:getAll()) do
@@ -369,7 +370,36 @@ function this.onIgnite(data)
             notify(data.actor, 'Nothing is loaded')
             return
         end
-        charges()[stationId] = nil
+        if data.consume then
+            -- subtract the claims; leftovers (excess fuel) STAY loaded
+            local counts = {}
+            for _, e in ipairs(charge) do
+                counts[e.id] = (counts[e.id] or 0) + (e.count or 1)
+            end
+            for _, entry in ipairs(data.consume) do
+                if (counts[entry.id] or 0) < (entry.count or 1) then
+                    notify(data.actor, 'The loaded materials are gone')
+                    return
+                end
+            end
+            local remainder = {}
+            for _, e in ipairs(charge) do
+                local left = e.count or 1
+                for _, entry in ipairs(data.consume) do
+                    if entry.id == e.id and (entry.count or 0) > 0 then
+                        local take = math.min(left, entry.count)
+                        left = left - take
+                        entry.count = entry.count - take
+                    end
+                end
+                if left > 0 then
+                    remainder[#remainder + 1] = { id = e.id, count = left, name = e.name }
+                end
+            end
+            charges()[stationId] = #remainder > 0 and remainder or nil
+        else
+            charges()[stationId] = nil -- legacy: no claims sent, whole charge burns
+        end
     end
 
     registerRun(data.station, data)

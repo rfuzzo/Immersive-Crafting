@@ -108,7 +108,6 @@ ModTags FlexTag YAMLs.
 - `boots`
 - `bracer`
 - `bronze`
-- `charcoal`
 - `chitin`
 - `chitin club`
 - `chitin_fragment`
@@ -149,7 +148,6 @@ ModTags FlexTag YAMLs.
 - `spear`
 - `steel`
 - `steel warhammer`
-- `stick`
 - `war axe`
 - `warhammer`
 - `wood`

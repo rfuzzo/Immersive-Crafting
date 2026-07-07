@@ -1235,3 +1235,60 @@ Prototyped + verified in the openmw-ui viewer. Branch claude/ui-padding-pass.
 Verify in-game: keycap renders on station + forage cards; disabled action uses
 the normal (not header) label; dimmed details legible; hold bar still fills
 smoothly while the forage key is held.
+
+## Crafting-flow review: ratified decisions (2026-07-07)
+
+User's in-game review + answers:
+1. Big stations -> BUILT IN PLACE: kiln, firepit, charcoal pit, furnace (drop
+   components on the ground, hold F to build the activator there). CARRIED:
+   crafting table, tanning rack. New chain: CLAY BRICKS are pit-fired at the
+   firepit and become the kiln/furnace build components. Bootstrap: build
+   firepit from ground materials -> pit-fire bricks -> build kiln.
+2. "Swallow fuel" = the kiln should ACCEPT and CONSUME dropped fuel. Root
+   cause found: kiln ceramics had NO fuel lines, so dropped fuel made the
+   exact-multiset match FAIL (and pots fired with just a torch). Fixed by
+   fuel values (below).
+3. Fuel excess -> REFUND (consume the minimal covering subset; the rest is
+   never consumed).
+4. Pit firing -> YES: the firepit fires ceramics/molds slowly with a failure
+   chance (tier below the kiln). [Round 2]
+5. Grid clicking: acceptable; recipe guide is the low-click path — polish
+   later (open grid stations on Recipes strip? craft-again?). [parked]
+6. Fuel values by tag, MC-style. [Round 1, below]
+
+## Round 1: fuel values + batch firing (built 2026-07-07)
+
+**Fuels registry** — data/fuels/fuels.json `{matcher: units}`: wood 1,
+charcoal 3, T_IngMine_Coal_01 4. lib.fuelValue(recordId) = MAX over matching
+entries (a record entry can upgrade a broader tag). Loaded into
+GRegistries.fuels.
+
+**Fuel lines** — process inputs may now be `{"fuel": N}` (units per batch)
+instead of an id/count line: ANY fuel-valued item feeds it. Matching claims
+the minimal covering subset LARGEST-VALUE-FIRST; excess fuel is allowed and
+NEVER consumed (refund by never-claiming). Overfilling the fire stopped being
+an error.
+
+**Batch matching** — processCrafting rewritten: each recipe matches at its
+largest k where the placement holds k exact input sets (+ k x fuel). Output
+xk; duration = base x (1 + 0.5 x (k-1)) — firing together is the point of a
+kiln. `returned` lines (molds) serve the WHOLE batch (never scaled). Matches
+are proxies (__index recipe) carrying batch, scaled output/duration and
+claimedCounts — every consumer (result panel, tools, ignite) reads through
+transparently. sdMeal recipes never batch (SD mints one meal).
+
+**Consumption by claims** — windowed onCraft and UI-less ignite consume
+exactly claimedCounts. Open-charge kiln: claims removed from the loose items
+on it (excess fuel stays lying there). Stored charges (charcoal pit): claims
+subtracted, REMAINDER STAYS LOADED. Result panel notes "(batch of k)".
+
+**Recipe conversion** — every `Charcoal xN` line -> `fuel 3N` across furnace/
+molds/steel/bonemold/iron; kiln ceramics GAINED fuel (pot 3, crucible 6);
+steel ingot keeps 1 Charcoal as its CARBON SOURCE (material) plus fuel 6 —
+wood alone can't make steel.
+
+Verify in-game: kiln with 2 clay + 1 wood -> pot consumes the wood; 4 clay +
+fuel -> "(batch of 2)", both consumed, double output, 1.5x duration; excess
+charcoal in the furnace no longer blocks the match and survives the run;
+charcoal pit remainder stays loaded after ignite; steel needs charcoal even
+with wood fuel; molds still fire (fuel 3 each).

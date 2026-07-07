@@ -22,10 +22,11 @@ local log = require('scripts.Immersive-Crafting.log')
 local CProcessRecipe = {}
 
 ---@class CProcessRecipe.Input
----@field id string record id or FlexTag tag
----@field count integer how many are required
----@field returned boolean|nil must be placed for the match but is NOT consumed (reusable molds)
+---@field id string|nil record id or FlexTag tag (absent on fuel lines)
+---@field count integer|nil how many are required
+---@field returned boolean|nil must be placed for the match but is NOT consumed (reusable molds); NOT scaled by the batch count — one mold serves the whole batch
 ---@field soul string|nil "filled": only soul gems with a trapped soul satisfy this line — an INSTANCE gate, checked at consume time (filled and empty gems share a record id, so id/tag matching cannot tell them apart)
+---@field fuel number|nil burn units required per batch instead of an id/count: ANY fuel-valued items feed it (data/fuels/*.json — wood 1, charcoal 3...); the minimal covering subset burns, excess fuel is allowed and never consumed
 
 --- Deserialize from table
 ---@param tbl any
@@ -48,8 +49,8 @@ function CProcessRecipe:fromTable(tbl)
         return nil
     end
     for _, entry in ipairs(tbl.inputs) do
-        if type(entry) ~= 'table' or not entry.id then
-            log.error(('Invalid CProcessRecipe "%s": each input needs an id'):format(tbl.id))
+        if type(entry) ~= 'table' or not (entry.id or entry.fuel) then
+            log.error(('Invalid CProcessRecipe "%s": each input needs an id (or fuel units)'):format(tbl.id))
             return nil
         end
     end

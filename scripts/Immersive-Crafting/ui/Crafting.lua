@@ -915,6 +915,9 @@ local function resultSection()
                 or ('~%d min'):format(math.max(1, math.ceil(matched.duration / 60)))
             notes[#notes + 1] = ('(takes %s)'):format(dur)
         end
+        if matched.batch and matched.batch > 1 then
+            notes[#notes + 1] = ('(batch of %d)'):format(matched.batch)
+        end
         local hasReturned = matched.returned and #matched.returned > 0
         for _, line in ipairs(matched.inputs or {}) do
             if line.returned then hasReturned = true end
@@ -1302,11 +1305,12 @@ function this.onCraft()
     if matched.sdMeal then
         craftSdMeal()
     elseif matched.duration and matched.duration > 0 and ctx.object then
-        -- everything placed goes INTO the station (incl. the mold); the
-        -- returned part is granted back when the run is collected
+        -- the CLAIMED items go into the station (k batches of inputs + the mold
+        -- + the minimal covering fuel subset); unclaimed excess fuel is simply
+        -- never consumed. The returned part is granted back on collect.
         local _, returned = splitPlaced()
         local consume = {}
-        for id, count in pairs(placedCounts()) do
+        for id, count in pairs(matched.claimedCounts or placedCounts()) do
             local entry = { id = id, count = count, soul = nil }
             -- forward instance gates (soul:"filled"): the global consume must
             -- pick gem instances with a trapped soul — the record id can't tell

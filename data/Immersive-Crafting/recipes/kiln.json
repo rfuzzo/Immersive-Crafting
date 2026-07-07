@@ -8,6 +8,9 @@
       {
         "id": "Clay",
         "count": 2
+      },
+      {
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -25,6 +28,9 @@
       {
         "id": "Clay",
         "count": 3
+      },
+      {
+        "fuel": 6
       }
     ],
     "duration": 3600,

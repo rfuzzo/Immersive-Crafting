@@ -89,6 +89,23 @@ function this.matchesTag(recordId, query)
     return false
 end
 
+--- Burn value of a record in fuel units (0 = not a fuel). The fuels registry
+--- maps tags/record ids to units (data/fuels/*.json); an item's value is the
+--- MAX over matching entries, so a specific record entry (coal) can upgrade a
+--- broader tag (charcoal). Uncached: the table is tiny and FlexTag tags
+--- stagger in after load, so caching could pin stale zeroes.
+---@param recordId string
+---@return number
+function this.fuelValue(recordId)
+    local best = 0
+    for matcher, value in pairs((GRegistries and GRegistries.fuels) or {}) do
+        if type(value) == 'number' and value > best and this.matchesTag(recordId, matcher) then
+            best = value
+        end
+    end
+    return best
+end
+
 --- Does this station (context) offer this recipe? A recipe belongs to the
 --- context naming it; a context's `inherits` list additionally pulls in
 --- another context's recipes — entries are a context id string, or

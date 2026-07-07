@@ -47,6 +47,7 @@ local this = {}
 ---@field crops table<string, CCrop>
 ---@field handlers table<string, CAbstractHandler>
 ---@field dressing table<string, string> -- creature record id (lower) -> carcass record id (field dressing)
+---@field fuels table<string, number> -- fuel matcher (tag or record id) -> burn units (see lib.fuelValue)
 
 ---@type Registries
 GRegistries = {
@@ -59,6 +60,7 @@ GRegistries = {
     crops = {},
     processes = {},
     dressing = {}, -- creature record id (lower) -> carcass record id (field dressing)
+    fuels = {},    -- fuel matcher (tag or record id) -> burn units
 }
 
 local DATA_ROOT = constants.DATA_ROOT
@@ -257,12 +259,27 @@ local function loadDressing()
     log.info(('Loaded %d field-dressing entries'):format(len(GRegistries.dressing)))
 end
 
+--- Fuel table: `{ "<tag or record id>": <burn units> }` maps (fuels/*.json).
+--- An item's burn value is the MAX over matching entries (lib.fuelValue), so
+--- a specific record entry can upgrade a broader tag's value (e.g. coal over
+--- the charcoal tag).
+local function loadFuels()
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "fuels/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then mergeMap(GRegistries.fuels, data) end
+        end
+    end
+    log.info(('Loaded %d fuel values'):format(len(GRegistries.fuels)))
+end
+
 function this.loadAllData()
     loadActions()
     loadContexts()
     loadRecipes()
     loadCrops()
     loadDressing()
+    loadFuels()
     loadHandlers()
 
     log.info('All data loaded successfully.')

@@ -10,8 +10,7 @@
         "count": 3
       },
       {
-        "id": "Charcoal",
-        "count": 2
+        "fuel": 6
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -37,7 +36,10 @@
       },
       {
         "id": "Charcoal",
-        "count": 3
+        "count": 1
+      },
+      {
+        "fuel": 6
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -62,8 +64,7 @@
         "count": 3
       },
       {
-        "id": "Charcoal",
-        "count": 2
+        "fuel": 6
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -88,8 +89,7 @@
         "count": 3
       },
       {
-        "id": "Charcoal",
-        "count": 2
+        "fuel": 6
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -114,8 +114,7 @@
         "count": 3
       },
       {
-        "id": "Charcoal",
-        "count": 2
+        "fuel": 6
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -140,8 +139,7 @@
         "count": 2
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -166,8 +164,7 @@
         "count": 3
       },
       {
-        "id": "Charcoal",
-        "count": 2
+        "fuel": 6
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -197,8 +194,7 @@
         "soul": "filled"
       },
       {
-        "id": "Charcoal",
-        "count": 3
+        "fuel": 9
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -223,8 +219,7 @@
         "count": 2
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -249,8 +244,7 @@
         "count": 2
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -275,8 +269,7 @@
         "count": 2
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -301,8 +294,7 @@
         "count": 2
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -327,8 +319,7 @@
         "count": 2
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -353,8 +344,7 @@
         "count": 2
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -379,8 +369,7 @@
         "count": 2
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       },
       {
         "id": "ic_mold_ingot_burnt",
@@ -405,8 +394,7 @@
         "count": 1
       },
       {
-        "id": "Charcoal",
-        "count": 1
+        "fuel": 3
       }
     ],
     "duration": 1800,
@@ -430,8 +418,7 @@
         "count": 1
       },
       {
-        "id": "Charcoal",
-        "count": 2
+        "fuel": 6
       }
     ],
     "duration": 3600,
