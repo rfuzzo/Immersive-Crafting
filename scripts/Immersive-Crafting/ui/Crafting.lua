@@ -1027,10 +1027,13 @@ function this.rebuild()
     end
     local inputRows = layout.kind == 'grid' and (layout.size[1] or 2)
         or math.ceil(#(layout.inputs or {}) / 4)
-    local pickerDims = {
-        columns = math.max(3, math.min(12, math.floor((winSize.x - 60) / 46))),
-        rows = math.max(1, math.min(6, math.floor((winSize.y - 245 - inputRows * 48) / 46))),
-    }
+    -- pixel space left for the materials strip once the fixed chrome around it
+    -- is paid (title bar, content offset, tools row, input grid, footer); the
+    -- strip is the window's grow child, so ALL of the leftover is its — it
+    -- derives its row/column count from this (rows first)
+    local stripSpace = v2(
+        winSize.x - 48,
+        winSize.y - 170 - inputRows * 48)
 
     resolve()
     view.selectedSlot = selectedSlot
@@ -1087,14 +1090,14 @@ function this.rebuild()
                     and ItemPicker.Body(recipeEntries(), {
                         onPick = function(recipeId) applyRecipe(recipeId) end,
                         refresh = function() this.rebuild() end,
-                    }, pickerDims, {
+                    }, stripSpace, {
                         title = 'Recipes',
                         button = { label = 'Materials', onClick = toggleStrip },
                     })
                     or ItemPicker.Body(availableMaterials(), {
                         onPick = view.onPick,
                         refresh = function() this.rebuild() end,
-                    }, pickerDims, {
+                    }, stripSpace, {
                         title = 'Materials',
                         button = { label = 'Recipes', onClick = toggleStrip },
                     }),
@@ -1300,14 +1303,15 @@ function this.open(handlerCtx)
     layout = ctx.context.layout
     -- open tall enough that the strip keeps STRIP_MIN_ROWS rows under this
     -- layout's input rows (the 3x3 table squeezed it to one row otherwise);
-    -- mirrors rebuild()'s pickerDims row formula
+    -- mirrors rebuild()'s stripSpace budget (170 fixed chrome + 48/input row)
+    -- plus the strip's own chrome and 42px row pitch (ItemPicker)
     local inputRows = 2
     if layout then
         inputRows = layout.kind == 'grid' and (layout.size[1] or 2)
             or math.ceil(#(layout.inputs or {}) / 4)
     end
     windowSize = v2(WINDOW_SIZE.x,
-        math.max(WINDOW_SIZE.y, 245 + inputRows * 48 + STRIP_MIN_ROWS * 46))
+        math.max(WINDOW_SIZE.y, 170 + inputRows * 48 + 56 + STRIP_MIN_ROWS * 42))
     placed = {}
     selectedSlot = nil
     toolSlots = {}

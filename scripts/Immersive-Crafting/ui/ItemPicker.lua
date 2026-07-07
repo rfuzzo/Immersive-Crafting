@@ -31,7 +31,13 @@ local Tooltip = require('scripts.Immersive-Crafting.ui.Tooltip')
 
 local v2 = util.vector2
 local ICON_SIZE = v2(40, 40)
--- fallback layout when the owner passes no dims
+-- layout pitch: borderless 40px slot + breathing room; used to derive how many
+-- rows/columns fit the space the owner hands us
+local ICON_PITCH = 42
+-- the strip's own vertical chrome around the item grid: header row + spacers
+-- + the bottom-anchored search row
+local CHROME_H = 56
+-- fallback layout when the owner passes no space
 local DEFAULT_COLUMNS = 6
 local DEFAULT_ROWS = 2
 
@@ -140,14 +146,16 @@ local function pageButton(label, enabled, delta, view)
     }
 end
 
---- Build the embedded strip. The owner computes `dims` from the live window
---- size (alchemy-style auto layout); without dims a 6x2 fallback is used.
+--- Build the embedded strip. The owner passes the pixel `space` the strip may
+--- fill (alchemy-style auto layout) — rows and columns are derived from it
+--- (rows from the height left over after the strip's own chrome, columns from
+--- the width). Without space a 6x2 fallback is used.
 ---@param items { recordId: string, icon: string?, count: integer, label: string?, tooltip: string? }[] entries (pre-filtered)
 ---@param view { onPick: fun(recordId: string, iconPath: string?), refresh: fun() }
----@param dims { columns: integer, rows: integer }?
+---@param space any? util.vector2 — available pixel space for the whole strip
 ---@param header { title: string?, button: { label: string, onClick: fun() }? }?
 ---@return table layout
-function this.Body(items, view, dims, header)
+function this.Body(items, view, space, header)
     -- the strip is rebuilt in place — any tooltip now points at a dead widget
     this.hideTooltip()
 
@@ -164,8 +172,16 @@ function this.Body(items, view, dims, header)
         items = filtered
     end
 
-    local columns = math.max(1, (dims and dims.columns) or DEFAULT_COLUMNS)
-    local pageSize = columns * math.max(1, (dims and dims.rows) or DEFAULT_ROWS)
+    -- rows first: as many rows as the leftover height fits, then columns
+    -- from the width — together the page grid fills the strip's space
+    local columns, rows
+    if space then
+        columns = math.max(1, math.floor(space.x / ICON_PITCH))
+        rows = math.max(1, math.floor((space.y - CHROME_H) / ICON_PITCH))
+    else
+        columns, rows = DEFAULT_COLUMNS, DEFAULT_ROWS
+    end
+    local pageSize = columns * rows
     local pages = math.max(1, math.ceil(#items / pageSize))
     if page > pages then page = pages end
     if page < 1 then page = 1 end
@@ -220,11 +236,15 @@ function this.Body(items, view, dims, header)
     end
 
     return column({
+        -- fill the (growing) strip box, so the search row can anchor to its
+        -- bottom edge — the same grow mechanism that pins Close to the window's
+        external = { grow = 1, stretch = 1 },
         children = {
             row({ name = 'materials_header', children = headerChildren }),
             spacer({ props = { size = v2(0, 4) } }),
             body,
-            spacer({ props = { size = v2(0, 4) } }),
+            -- grows: takes all leftover height, pushing search to the bottom
+            { type = ui.TYPE.Widget, external = { grow = 1 }, props = { size = v2(0, 4) } },
             -- search at the strip's bottom, filtering both modes live
             row({
                 name = 'strip_search_row',
