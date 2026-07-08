@@ -175,6 +175,8 @@ local function igniteCharge(ctx, charge)
         duration = recipe.duration,
         returned = #returned > 0 and returned or nil,
         consume = consume,
+        batch = recipe.batch,
+        failChance = recipe.failChance, -- pit firing: each batch may crack
         -- open-charge station (kiln): the charge is the loose items in/on it,
         -- consumed from the WORLD; otherwise from the stored charge registry
         fromWorld = isOpenCharge(ctx.object and ctx.object.recordId) or nil,

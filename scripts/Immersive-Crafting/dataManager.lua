@@ -48,6 +48,8 @@ local this = {}
 ---@field handlers table<string, CAbstractHandler>
 ---@field dressing table<string, string> -- creature record id (lower) -> carcass record id (field dressing)
 ---@field fuels table<string, number> -- fuel matcher (tag or record id) -> burn units (see lib.fuelValue)
+---@field constructions CConstruction[] -- build-in-place stations (see globalBuilding/buildScan)
+---@field milestones table<string, { id: string, title: string, lines: string[] }> -- tutorial popup texts by milestone id
 
 ---@type Registries
 GRegistries = {
@@ -61,6 +63,8 @@ GRegistries = {
     processes = {},
     dressing = {}, -- creature record id (lower) -> carcass record id (field dressing)
     fuels = {},    -- fuel matcher (tag or record id) -> burn units
+    constructions = {},
+    milestones = {},
 }
 
 local DATA_ROOT = constants.DATA_ROOT
@@ -273,6 +277,43 @@ local function loadFuels()
     log.info(('Loaded %d fuel values'):format(len(GRegistries.fuels)))
 end
 
+--- Build-in-place constructions (constructions/*.json): drop the components
+--- on the ground, hold F to build the station activator there. See
+--- buildScan.lua (detection) and globalBuilding.lua (execution — the global
+--- side loads the same files itself; registries are player-side only).
+---@class CConstruction
+---@field id string milestone id too (e.g. "kiln")
+---@field label string display name
+---@field activator string activator record spawned on build
+---@field components { id: string, count: integer }[] loose items consumed (ids or FlexTag tags)
+---@field tools string[]|nil tools required in the inventory (NOT consumed; e.g. a shovel for the pit)
+---@field holdTime number|nil hold-F seconds (default 3)
+---@field salvage { id: string, count: integer }[]|nil granted when the built station is packed up (concrete record ids)
+local function loadConstructions()
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "constructions/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            for _, entry in ipairs(data or {}) do
+                if entry.id and entry.activator and entry.components then
+                    GRegistries.constructions[#GRegistries.constructions + 1] = entry
+                end
+            end
+        end
+    end
+    log.info(('Loaded %d constructions'):format(#GRegistries.constructions))
+end
+
+--- Milestone popup texts (milestones/*.json): { id, title, lines[] }.
+local function loadMilestones()
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "milestones/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then mergeById(GRegistries.milestones, data) end
+        end
+    end
+    log.info(('Loaded %d milestone texts'):format(len(GRegistries.milestones)))
+end
+
 function this.loadAllData()
     loadActions()
     loadContexts()
@@ -280,6 +321,8 @@ function this.loadAllData()
     loadCrops()
     loadDressing()
     loadFuels()
+    loadConstructions()
+    loadMilestones()
     loadHandlers()
 
     log.info('All data loaded successfully.')

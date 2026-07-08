@@ -1,0 +1,13 @@
+type: MiscItem
+flags: ""
+id: ic_clay_brick
+name: Clay Brick
+script: ""
+# interim: the vanilla bread loaf is the most brick-shaped mesh in the game —
+# replace with a proper brick when one is picked (user mesh pass)
+mesh: n\Ingred_bread_01.NIF
+icon: m\Tx_bread_01.tga
+data:
+  weight: 4.0
+  value: 8
+  flags: ""

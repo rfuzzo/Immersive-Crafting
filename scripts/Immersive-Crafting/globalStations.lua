@@ -167,21 +167,50 @@ function this.onGroundProbe(data)
     placeActivator(object, activatorId, pos, rot)
 end
 
---- Event: pack a placed station back into its item form.
+--- Event: pack a placed station up. BUILT stations (constructions) dismantle
+--- into their salvage components — you don't fold a kiln into a backpack;
+--- item-swap stations return their item form.
 ---@param data { actor: any, station: any }
 function this.onPack(data)
     if not (data and data.actor and data.station) then return end
     local station = data.station
     if not station:isValid() then return end
 
+    local globalBuilding = require('scripts.Immersive-Crafting.globalBuilding')
+    local salvage, buildLabel = globalBuilding.salvageFor(station.recordId)
+
     local _, activators = maps()
     local itemId = activators[station.recordId]
-    if not itemId then return end
+    if not salvage and not itemId then return end
 
     -- a running/finished timed process owns the station — collect it first
     if saveData and saveData.processes and saveData.processes[station.id] then
         data.actor:sendEvent('ImmersiveCrafting_Notify',
             { text = 'This station is busy — collect its work first' })
+        return
+    end
+
+    if salvage then
+        -- dismantle: grant the salvage components (partial — mortar doesn't
+        -- come off bricks cleanly), remove the structure
+        local parts = {}
+        for _, entry in ipairs(salvage) do
+            local ok, err = pcall(function()
+                local created = world.createObject(entry.id, entry.count or 1)
+                created:moveInto(types.Actor.inventory(data.actor))
+            end)
+            if ok then
+                parts[#parts + 1] = ('%dx %s'):format(entry.count or 1, entry.id)
+            else
+                log.error(('stations: failed to salvage "%s": %s'):format(entry.id, tostring(err)))
+            end
+        end
+        station:remove()
+        data.actor:sendEvent('ImmersiveCrafting_Notify', {
+            text = ('Dismantled %s%s'):format(buildLabel or station.recordId,
+                #parts > 0 and (' — salvaged ' .. table.concat(parts, ', ')) or ''),
+        })
+        log.info(('stations: dismantled %s'):format(station.recordId))
         return
     end
 

@@ -15,6 +15,9 @@ local Crafting = require('scripts.Immersive-Crafting.ui.Crafting')
 local equipGate = require('scripts.Immersive-Crafting.equipGate')
 local forageState = require('scripts.Immersive-Crafting.forageState')
 local dressState = require('scripts.Immersive-Crafting.dressState')
+local progressState = require('scripts.Immersive-Crafting.progressState')
+local Popup = require('scripts.Immersive-Crafting.ui.Popup')
+require('scripts.Immersive-Crafting.buildScan') -- registers the construction_ready condition
 local sdLiquids = require('scripts.Immersive-Crafting.sdLiquids')
 local sdCooking = require('scripts.Immersive-Crafting.sdCooking')
 local farmState = require('scripts.Immersive-Crafting.farmState')
@@ -88,16 +91,24 @@ local function onLoad(data)
     registerActivateContexts()
     forageState.load(data and data.forage)
     dressState.load(data and data.dressed)
+    progressState.load(data and data.progress)
     sdCooking.init()
     core.sendGlobalEvent('ImmersiveCrafting_RequestCropSync', {})
     pushOptions()
+
+    -- first time ever: the welcome popup teaches the firepit bootstrap
+    if progressState.grant('welcome') then Popup.milestone('welcome') end
 
     log.info('Immersive Crafting player script loaded from save')
 end
 
 ---Called before saving
 local function onSave()
-    return { forage = forageState.serialize(), dressed = dressState.serialize() }
+    return {
+        forage = forageState.serialize(),
+        dressed = dressState.serialize(),
+        progress = progressState.serialize(),
+    }
 end
 
 ---Main update loop
@@ -124,6 +135,7 @@ local function onUpdate(dt)
 
     overlay.onUpdate(dt)
     equipGate.onUpdate(dt)
+    Popup.onUpdate(dt)
 end
 
 -- The contextual action key is polled every frame inside the overlay's onUpdate
@@ -219,6 +231,9 @@ local function reloadData()
     GRegistries.processRecipes = {}
     GRegistries.crops = {}
     GRegistries.dressing = {}
+    GRegistries.fuels = {}
+    GRegistries.constructions = {}
+    GRegistries.milestones = {}
     dataManager.loadAllData()
     registerActivateContexts()
     -- an open crafting window may hold references into the old registries
@@ -257,6 +272,13 @@ return {
         end,
         ImmersiveCrafting_LiquidSync = function(data)
             sdLiquids.apply(data)
+        end,
+        -- a station was BUILT (globalBuilding): record the milestone and show
+        -- its tutorial popup once
+        ImmersiveCrafting_Milestone = function(data)
+            if data and data.id and progressState.grant(data.id) then
+                Popup.milestone(data.id)
+            end
         end,
         -- align-to-ground station placement: raycasts are local-script-only,
         -- so the global side asks us to probe the terrain under a drop point

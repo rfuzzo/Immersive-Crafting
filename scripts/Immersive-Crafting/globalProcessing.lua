@@ -171,7 +171,7 @@ end)
 --- Register a run at a station and schedule its completion (shared by the
 --- crafting-window start and UI-less ignition).
 ---@param station any
----@param data { recipeId: string, label: string?, output: table, returned: table[]?, duration: number }
+---@param data { recipeId: string, label: string?, output: table, returned: table[]?, duration: number, batch: integer?, failChance: number? }
 local function registerRun(station, data)
     processes()[station.id] = {
         stationId = station.id,
@@ -179,6 +179,8 @@ local function registerRun(station, data)
         label = data.label or data.recipeId,
         output = data.output,
         returned = data.returned,       -- items held by the station, given back on collect
+        batch = data.batch or 1,        -- batches in the run (pit firing rolls per batch)
+        failChance = data.failChance,   -- pit firing: chance each batch cracks (nil = reliable)
         startedAt = core.getGameTime(), -- for the station card's progress bar
         readyAt = core.getGameTime() + data.duration,
         done = false,
@@ -439,17 +441,36 @@ end
 -- ── collect / activation hook ────────────────────────────────────────────────
 
 --- Grant a finished run's output (plus anything the station held, e.g. the
---- mold) and clear it.
+--- mold) and clear it. Pit firing (`failChance`): each BATCH rolls
+--- independently — cracked batches yield nothing, survivors yield their
+--- share. A fully cracked firing still returns the held items (the mold
+--- survives; the ware didn't).
 local function collect(actor, stationId)
     local e = processes()[stationId]
     if not e then return end
-    local ok, err = pcall(function()
-        local created = world.createObject(e.output.id, e.output.count or 1)
-        created:moveInto(types.Actor.inventory(actor))
-    end)
-    if not ok then
-        log.error(('process: collect failed for "%s": %s'):format(tostring(e.output.id), tostring(err)))
-        return
+
+    local grantCount = e.output.count or 1
+    local cracked = 0
+    if e.failChance and e.failChance > 0 then
+        local batches = math.max(1, e.batch or 1)
+        local perBatch = math.floor(grantCount / batches)
+        local survived = 0
+        for _ = 1, batches do
+            if math.random() >= e.failChance then survived = survived + 1 end
+        end
+        cracked = batches - survived
+        grantCount = perBatch * survived
+    end
+
+    if grantCount > 0 then
+        local ok, err = pcall(function()
+            local created = world.createObject(e.output.id, grantCount)
+            created:moveInto(types.Actor.inventory(actor))
+        end)
+        if not ok then
+            log.error(('process: collect failed for "%s": %s'):format(tostring(e.output.id), tostring(err)))
+            return
+        end
     end
     for _, entry in ipairs(e.returned or {}) do
         local rok, rerr = pcall(function()
@@ -462,7 +483,14 @@ local function collect(actor, stationId)
     end
     extinguishFx(e) -- safety net; normally already out since onProcessDone
     processes()[stationId] = nil
-    notify(actor, ('Collected %d x %s'):format(e.output.count or 1, e.label or e.output.id))
+    if grantCount <= 0 then
+        notify(actor, ('The firing cracked — nothing of the %s survived'):format(e.label or 'ware'))
+    elseif cracked > 0 then
+        notify(actor, ('Collected %d x %s (%d batch%s cracked)'):format(
+            grantCount, e.label or e.output.id, cracked, cracked == 1 and '' or 'es'))
+    else
+        notify(actor, ('Collected %d x %s'):format(grantCount, e.label or e.output.id))
+    end
     syncPlayer()
 end
 

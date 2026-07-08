@@ -1292,3 +1292,58 @@ fuel -> "(batch of 2)", both consumed, double output, 1.5x duration; excess
 charcoal in the furnace no longer blocks the match and survives the run;
 charcoal pit remainder stays loaded after ignite; steel needs charcoal even
 with wood fuel; molds still fire (fuel 3 each).
+
+## Round 2: build-in-place, bricks, pit firing, progression (built 2026-07-07)
+
+**Build-in-place** (ratified: kiln/firepit/charcoal pit/furnace BUILT; crafting
+table + tanning rack stay carried items):
+- data/constructions/constructions.json: firepit (2 Stone + 2 Wood), charcoal
+  pit (4 Wood + 2 Stone, needs a SHOVEL in the inventory), kiln (6 clay bricks
+  + 2 Clay), furnace (8 clay bricks + 1 crucible). holdTime + salvage per
+  entry.
+- buildScan.lua (player): scans loose items around the player for a COMPLETE
+  component set; registers the `construction_ready` condition; the
+  "Construction" card (contexts/building.json + handlers/building.lua) shows
+  "<Station> — materials ready / [F] Build (hold)". Card only on a full set —
+  no partial-progress noise, dropped wood near a pit stays a charge.
+- globalBuilding.lua: re-validates the set in the cell, spawns the activator
+  at the components' CENTROID, consumes the loose items, fires the milestone.
+  Places the station FIRST (missing record -> nothing consumed).
+- Pack-up: built stations DISMANTLE into salvage (globalStations.onPack
+  precedence; partial returns — mortar doesn't come off bricks cleanly);
+  item-swap stations unchanged. Legacy station ITEMS still swap to activators
+  when dropped (old saves), and pack to salvage afterwards.
+- The 4 station shaped recipes are GONE (ic_station_kiln @firepit,
+  ic_station_firepit @bushcrafting, charcoalpit + furnace @crafting table).
+
+**Clay bricks + pit firing**:
+- ic_clay_brick (NEW record; interim mesh: the vanilla bread loaf — most
+  brick-shaped mesh in the game, replace in the mesh pass).
+- firepit: ic_clay_brick_pit — 2 Clay + fuel 3 -> 2 bricks, 3600s,
+  failChance 0.25 (pit firing: each BATCH rolls on collect; cracked batches
+  yield nothing; "(pit-fired — may crack)" note in the result panel; held
+  molds still return). kiln: ic_clay_brick — same but 1800s and reliable
+  (pit version excluded from the kiln's firepit inherit).
+- Bootstrap: forage wood/stone -> build firepit -> dig clay -> pit-fire
+  bricks -> build kiln -> fire reliably -> crucible -> furnace.
+
+**Progression + tutorial popups**:
+- progressState.lua (player save `progress`): milestone set. Granted on BUILD
+  (globalBuilding -> ImmersiveCrafting_Milestone) and on FIRST USE of a
+  station context (Crafting.open — a world-found kiln unlocks too), plus
+  'welcome' on first load.
+- ui/Popup.lua: dismissable semi-transparent card (top-center, click or 14s),
+  queued; texts in data/milestones/milestones.json (welcome/firepit/kiln/
+  furnace/charcoal_pit chain teaches the bootstrap).
+- Recipe-guide gating: recipes carry `milestone` (raw molds -> kiln, steel
+  hammering -> furnace); the GUIDE hides them until unlocked; matching is
+  never gated. Settings: "Tutorial popups" (default on), "Show all recipes
+  in the guide" (default off).
+
+Verify in-game: welcome popup on fresh load; drop 2+2 -> firepit build card ->
+built + popup; pit-fire bricks (some crack); kiln build from 6 bricks + 2
+clay; furnace from 8 bricks + crucible; dismantle salvage; charcoal pit needs
+shovel; molds hidden in table guide until kiln built/used; found world kiln
+unlocks on open; ShowAllRecipes bypass; legacy station items still swap+pack.
+Open: mesh for ic_clay_brick (bread interim!); balance failChance/durations;
+gaze-context-switch branch still unmerged (contextManager conflicts).

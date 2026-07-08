@@ -1,0 +1,47 @@
+[
+  {
+    "id": "welcome",
+    "title": "Immersive Crafting",
+    "lines": [
+      "Gather sticks and stones from trees and rocks (hold F).",
+      "Drop 2 stones and 2 pieces of wood together on open ground,",
+      "then hold F to build a firepit — every craft starts at a fire."
+    ]
+  },
+  {
+    "id": "firepit",
+    "title": "Firepit built",
+    "lines": [
+      "You can cook here — and pit-fire clay into bricks (slowly,",
+      "and some will crack). Dig clay at the waterside with a shovel.",
+      "Six good bricks and some clay build a kiln."
+    ]
+  },
+  {
+    "id": "kiln",
+    "title": "Kiln built",
+    "lines": [
+      "The kiln fires ceramics and molds reliably. Shape raw molds",
+      "at a crafting table, burn them here, then cast metal in them.",
+      "Eight bricks and a crucible build a furnace."
+    ]
+  },
+  {
+    "id": "furnace",
+    "title": "Furnace built",
+    "lines": [
+      "The furnace smelts ore into ingots and casts them in burnt",
+      "molds — armor and weapons, if you have the metal for it.",
+      "Melt down old gear to reclaim ingots."
+    ]
+  },
+  {
+    "id": "charcoal_pit",
+    "title": "Charcoal pit built",
+    "lines": [
+      "Load it with wood and light it with a fire in hand.",
+      "Charcoal burns three times as long as wood — kilns and",
+      "furnaces want it, and steel cannot be made without it."
+    ]
+  }
+]

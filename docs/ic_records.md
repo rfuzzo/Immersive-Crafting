@@ -9,6 +9,7 @@ ModTags FlexTag YAMLs.
 - `ic_bedroll_mk1`
 - `ic_bonemold_paste`
 - `ic_chitin_dust`
+- `ic_clay_brick`
 - `ic_cloth`
 - `ic_glass_component`
 - `ic_grill`
@@ -55,11 +56,7 @@ ModTags FlexTag YAMLs.
 - `ic_plank`
 - `ic_pot`
 - `ic_spit`
-- `ic_station_charcoalpit`
 - `ic_station_craftingtable`
-- `ic_station_firepit`
-- `ic_station_furnace`
-- `ic_station_kiln`
 - `ic_station_planter`
 - `ic_station_tanningrack`
 - `ic_steel_boots_rough`
@@ -113,7 +110,6 @@ ModTags FlexTag YAMLs.
 - `chitin_fragment`
 - `chitin_plate`
 - `clay`
-- `crucible`
 - `cuirass`
 - `daedric`
 - `dagger`

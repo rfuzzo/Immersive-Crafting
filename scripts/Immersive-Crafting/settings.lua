@@ -65,6 +65,24 @@ interfaces.Settings.registerGroup {
                 .. "leave this off and use its wood-chopping mechanic instead.",
             default = false,
         },
+        {
+            key = 'TutorialPopups',
+            renderer = 'checkbox',
+            name = 'Tutorial popups',
+            description = 'Show a short explanation card when a progression milestone '
+                .. 'unlocks (first firepit, kiln, furnace...). Turn off if you know '
+                .. 'the mod.',
+            default = true,
+        },
+        {
+            key = 'ShowAllRecipes',
+            renderer = 'checkbox',
+            name = 'Show all recipes in the guide',
+            description = 'The recipe guide normally hides recipes of station tiers '
+                .. 'you have not built or used yet (raw molds before your first kiln). '
+                .. 'Enable to always list everything. Crafting itself is never gated.',
+            default = false,
+        },
     },
 }
 

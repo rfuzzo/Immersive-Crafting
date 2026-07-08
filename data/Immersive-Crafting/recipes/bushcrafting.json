@@ -178,24 +178,6 @@
     }
   },
   {
-    "id": "ic_station_firepit",
-    "label": "Firepit (built)",
-    "context": "bushcrafting",
-    "action": "shaping",
-    "pattern": [
-      "AA",
-      "BB"
-    ],
-    "key": {
-      "A": "Stone",
-      "B": "Wood"
-    },
-    "output": {
-      "id": "ic_station_firepit",
-      "count": 1
-    }
-  },
-  {
     "id": "ic_stick",
     "label": "Stick",
     "context": "bushcrafting",

@@ -20,6 +20,26 @@
     }
   },
   {
+    "id": "ic_clay_brick",
+    "label": "Clay Bricks",
+    "context": "kiln",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "Clay",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_clay_brick",
+      "count": 2
+    }
+  },
+  {
     "id": "t_rga_crucible_01",
     "label": "Crucible",
     "context": "kiln",

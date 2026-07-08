@@ -1,0 +1,7 @@
+[
+  {
+    "id": "building",
+    "label": "Build",
+    "handler": "building"
+  }
+]

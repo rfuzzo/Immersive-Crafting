@@ -1,0 +1,11 @@
+[
+  {
+    "id": "building",
+    "label": "Construction",
+    "trigger": "condition",
+    "condition": "construction_ready",
+    "actions": [
+      "building"
+    ]
+  }
+]

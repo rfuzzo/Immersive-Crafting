@@ -386,7 +386,8 @@
     "output": {
       "id": "steel_boots",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_cuirass",
@@ -405,7 +406,8 @@
     "output": {
       "id": "steel_cuirass",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_gauntlet_left",
@@ -424,7 +426,8 @@
     "output": {
       "id": "steel_gauntlet_left",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_gauntlet_right",
@@ -443,7 +446,8 @@
     "output": {
       "id": "steel_gauntlet_right",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_greaves",
@@ -462,7 +466,8 @@
     "output": {
       "id": "steel_greaves",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_helm",
@@ -481,7 +486,8 @@
     "output": {
       "id": "steel_helm",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_pauldron_left",
@@ -500,7 +506,8 @@
     "output": {
       "id": "steel_pauldron_left",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_pauldron_right",
@@ -519,7 +526,8 @@
     "output": {
       "id": "steel_pauldron_right",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_shield",
@@ -538,7 +546,8 @@
     "output": {
       "id": "steel_shield",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   },
   {
     "id": "steel_towershield",
@@ -557,6 +566,7 @@
     "output": {
       "id": "steel_towershield",
       "count": 1
-    }
+    },
+    "milestone": "furnace"
   }
 ]

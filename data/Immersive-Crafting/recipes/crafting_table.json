@@ -350,43 +350,6 @@
     }
   },
   {
-    "id": "ic_station_charcoalpit",
-    "label": "Charcoal Pit",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AA",
-      "BB"
-    ],
-    "key": {
-      "A": "Wood",
-      "B": "Stone"
-    },
-    "output": {
-      "id": "ic_station_charcoalpit",
-      "count": 1
-    }
-  },
-  {
-    "id": "ic_station_furnace",
-    "label": "Furnace",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AAA",
-      "ABA",
-      "AAA"
-    ],
-    "key": {
-      "A": "Stone",
-      "B": "crucible"
-    },
-    "output": {
-      "id": "ic_station_furnace",
-      "count": 1
-    }
-  },
-  {
     "id": "ic_station_planter",
     "label": "Planter",
     "context": "crafting_table",

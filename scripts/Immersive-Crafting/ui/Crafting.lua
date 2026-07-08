@@ -53,6 +53,7 @@ local util = require('openmw.util')
 local core = require('openmw.core')
 local self = require('openmw.self')
 local types = require('openmw.types')
+local storage = require('openmw.storage')
 
 local Window = require('scripts.Immersive-Crafting.ui.Window')
 local ItemPicker = require('scripts.Immersive-Crafting.ui.ItemPicker')
@@ -581,23 +582,32 @@ end
 
 --- Strip entries for the recipe guide: one per recipe, output icon + count.
 --- The tooltip carries the recipe name plus its ingredient summary.
+--- Progression gating: recipes tagged with a `milestone` stay HIDDEN from the
+--- guide until the player has built (or used) that station tier — raw molds
+--- before the first kiln would only be noise. Matching is never gated: placed
+--- items still craft. "Show all recipes" bypasses the filter.
 local function recipeEntries()
+    local progressState = require('scripts.Immersive-Crafting.progressState')
+    local showAll = storage.playerSection('SettingsImmersiveCrafting'):get('ShowAllRecipes') == true
     local entries = {}
     for _, r in ipairs(stationRecipes()) do
-        local icon, n
-        if r.sdMeal then
-            icon, n = r.sdMeal.icon, r.sdMeal.count or 1
-        else
-            icon, n = recordIconPath(r.output.id), r.output.count or 1
+        local hidden = r.milestone and not showAll and not progressState.has(r.milestone)
+        if not hidden then
+            local icon, n
+            if r.sdMeal then
+                icon, n = r.sdMeal.icon, r.sdMeal.count or 1
+            else
+                icon, n = recordIconPath(r.output.id), r.output.count or 1
+            end
+            local name = r.label or r.id
+            entries[#entries + 1] = {
+                recordId = r.id,
+                icon = icon,
+                count = n,
+                label = name,
+                tooltip = ('%s\n%s'):format(name, recipeIngredientSummary(r)),
+            }
         end
-        local name = r.label or r.id
-        entries[#entries + 1] = {
-            recordId = r.id,
-            icon = icon,
-            count = n,
-            label = name,
-            tooltip = ('%s\n%s'):format(name, recipeIngredientSummary(r)),
-        }
     end
     return entries
 end
@@ -917,6 +927,9 @@ local function resultSection()
         end
         if matched.batch and matched.batch > 1 then
             notes[#notes + 1] = ('(batch of %d)'):format(matched.batch)
+        end
+        if matched.failChance and matched.failChance > 0 then
+            notes[#notes + 1] = '(pit-fired — may crack)'
         end
         local hasReturned = matched.returned and #matched.returned > 0
         for _, line in ipairs(matched.inputs or {}) do
@@ -1331,6 +1344,8 @@ function this.onCraft()
             returned = returned,
             output = matched.output,
             duration = matched.duration,
+            batch = matched.batch,
+            failChance = matched.failChance, -- pit firing: each batch may crack
         })
         this.close() -- the run lives at the station now; its card shows progress
         return
@@ -1392,6 +1407,16 @@ function this.open(handlerCtx)
     stripMode = 'materials'
     isOpen = true
     ItemPicker.reset()
+    -- progression: USING a station counts like building one (a kiln found in
+    -- the world unlocks kiln recipes too — you stood at a kiln either way)
+    do
+        local progressState = require('scripts.Immersive-Crafting.progressState')
+        local id = ctx.context and ctx.context.id
+        if id and GRegistries.milestones and GRegistries.milestones[id]
+            and progressState.grant(id) then
+            require('scripts.Immersive-Crafting.ui.Popup').milestone(id)
+        end
+    end
     stationTools = collectStationTools()
     ensureSelection()
     -- cursor active, NO vanilla windows (the materials strip replaces the

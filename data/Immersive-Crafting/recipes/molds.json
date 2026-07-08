@@ -42,7 +42,8 @@
     "output": {
       "id": "ic_mold_boots_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_bracer_left_burnt",
@@ -87,7 +88,8 @@
     "output": {
       "id": "ic_mold_bracer_left_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_bracer_right_burnt",
@@ -132,7 +134,8 @@
     "output": {
       "id": "ic_mold_bracer_right_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_cuirass_burnt",
@@ -177,7 +180,8 @@
     "output": {
       "id": "ic_mold_cuirass_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_dagger_burnt",
@@ -223,7 +227,8 @@
     "output": {
       "id": "ic_mold_dagger_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_gauntlet_left_burnt",
@@ -268,7 +273,8 @@
     "output": {
       "id": "ic_mold_gauntlet_left_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_gauntlet_right_burnt",
@@ -313,7 +319,8 @@
     "output": {
       "id": "ic_mold_gauntlet_right_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_greaves_burnt",
@@ -358,7 +365,8 @@
     "output": {
       "id": "ic_mold_greaves_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_helm_burnt",
@@ -403,7 +411,8 @@
     "output": {
       "id": "ic_mold_helm_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_ingot_burnt",
@@ -440,7 +449,8 @@
     "output": {
       "id": "ic_mold_ingot_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_longsword_burnt",
@@ -485,7 +495,8 @@
     "output": {
       "id": "ic_mold_longsword_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_pauldron_left_burnt",
@@ -530,7 +541,8 @@
     "output": {
       "id": "ic_mold_pauldron_left_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_pauldron_right_burnt",
@@ -575,7 +587,8 @@
     "output": {
       "id": "ic_mold_pauldron_right_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_shield_burnt",
@@ -620,7 +633,8 @@
     "output": {
       "id": "ic_mold_shield_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_spear_burnt",
@@ -666,7 +680,8 @@
     "output": {
       "id": "ic_mold_spear_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_tower_shield_burnt",
@@ -711,7 +726,8 @@
     "output": {
       "id": "ic_mold_tower_shield_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_waraxe_burnt",
@@ -757,7 +773,8 @@
     "output": {
       "id": "ic_mold_waraxe_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   },
   {
     "id": "ic_mold_warhammer_burnt",
@@ -802,6 +819,7 @@
     "output": {
       "id": "ic_mold_warhammer_raw",
       "count": 1
-    }
+    },
+    "milestone": "kiln"
   }
 ]

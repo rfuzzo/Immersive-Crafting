@@ -18,6 +18,7 @@ local log = require('scripts.Immersive-Crafting.log')
 ---@field duration number|nil process time in seconds (timing deferred)
 ---@field tools string[]|nil tool tags/ids required in inventory (NOT consumed)
 ---@field output { id: string, count: integer }|nil produced item (real record). Omitted for sdMeal recipes.
+---@field failChance number|nil pit firing: chance (0..1) that a batch CRACKS on collect (rolled per batch; cracked batches yield nothing). The firepit's ceramics tier below the kiln.
 ---@field sdMeal CRecipe.SdMeal|nil Sun's Dusk meal output — crafted via the SunsDusk_createStew event instead of a static record (see docs; requires SD; inputs must be Ingredient-type records)
 local CProcessRecipe = {}
 

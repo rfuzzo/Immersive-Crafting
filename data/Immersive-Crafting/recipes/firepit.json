@@ -1,26 +1,23 @@
 [
   {
-    "id": "ic_station_kiln",
-    "label": "Kiln",
+    "id": "ic_clay_brick_pit",
+    "label": "Clay Bricks (pit-fired)",
     "context": "firepit",
     "action": "processing",
     "inputs": [
-      {
-        "id": "Stone",
-        "count": 3
-      },
       {
         "id": "Clay",
         "count": 2
       },
       {
-        "id": "ic_stick",
-        "count": 2
+        "fuel": 3
       }
     ],
+    "duration": 3600,
+    "failChance": 0.25,
     "output": {
-      "id": "ic_station_kiln",
-      "count": 1
+      "id": "ic_clay_brick",
+      "count": 2
     }
   }
 ]
