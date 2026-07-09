@@ -1,0 +1,147 @@
+[
+  {
+    "id": "t_kha_copper_dagger_01",
+    "label": "T_Kha_Copper_Dagger_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_copper",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_dagger_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Kha_Copper_Dagger_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_kha_copper_longsword_01",
+    "label": "T_Kha_Copper_Longsword_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_copper",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_longsword_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Kha_Copper_Longsword_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_kha_copper_shield_01",
+    "label": "T_Kha_Copper_Shield_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_copper",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Kha_Copper_Shield_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_kha_copper_spear_01",
+    "label": "T_Kha_Copper_Spear_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_copper",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_spear_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Kha_Copper_Spear_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_kha_copper_axe_01",
+    "label": "T_Kha_Copper_Axe_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_copper",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_waraxe_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Kha_Copper_Axe_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_kha_copper_warhammer_01",
+    "label": "T_Kha_Copper_Warhammer_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_copper",
+        "count": 3
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_warhammer_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Kha_Copper_Warhammer_01",
+      "count": 1
+    }
+  }
+]

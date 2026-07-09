@@ -81,6 +81,7 @@ local icSettings = storage.playerSection('SettingsImmersiveCrafting')
 local function pushOptions()
     core.sendGlobalEvent('ImmersiveCrafting_SetOptions', {
         stationLoading = icSettings:get('StationLoading') ~= false,
+        craftedBonus = icSettings:get('CraftedBonus') ~= false,
     })
 end
 icSettings:subscribe(async:callback(function() pushOptions() end))

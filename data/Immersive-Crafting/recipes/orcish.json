@@ -1,0 +1,227 @@
+[
+  {
+    "id": "orcish_boots",
+    "label": "Orcish Boots",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_boots_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "orcish_bracer_left",
+    "label": "Orcish Bracer Left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_bracer_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_bracer_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "orcish_bracer_right",
+    "label": "Orcish Bracer Right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_bracer_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_bracer_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "orcish_cuirass",
+    "label": "Orcish Cuirass",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 4
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_cuirass_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "orcish_greaves",
+    "label": "Orcish Greaves",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_greaves_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "orcish_helm",
+    "label": "Orcish Helm",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_helm_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "orcish_pauldron_left",
+    "label": "Orcish Pauldron Left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_pauldron_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "orcish_pauldron_right",
+    "label": "Orcish Pauldron Right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_pauldron_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "orcish_towershield",
+    "label": "Orcish Towershield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_orichalcum",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_tower_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "orcish_towershield",
+      "count": 1
+    }
+  }
+]

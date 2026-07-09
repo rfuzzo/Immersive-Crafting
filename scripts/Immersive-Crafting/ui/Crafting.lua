@@ -100,6 +100,7 @@ local matchedList = {} ---@type (CShapedRecipe|CProcessRecipe)[] all recipes the
 local matchedIndex = 1 ---@type integer which match the Result panel shows (cycle with < >)
 local matched = nil ---@type CShapedRecipe|CProcessRecipe|nil matchedList[matchedIndex]
 local canCraft = false
+local armorerNeed = nil ---@type integer? Armorer level the shown match's output demands (craft gate; nil = none/met)
 local iconTextureCache = {} ---@type table<string, any>
 
 -- ── layout registry ─────────────────────────────────────────────────────────
@@ -518,6 +519,23 @@ local function resolve()
     end
 
     canCraft = matched ~= nil and haveEnough() and #missingTools(matched) == 0
+
+    -- ARMORER craft gate: making tiered gear needs the same material level the
+    -- equip gate uses (data/gating/materials.json) — but on the ARMORER skill:
+    -- wearing daedric needs the training, forging it needs the hands. Modified
+    -- skill, so Fortify Skill lets a smith overreach while it lasts.
+    armorerNeed = nil
+    if matched and matched.output and matched.output.id then
+        local equipGate = require('scripts.Immersive-Crafting.equipGate')
+        local req = equipGate.materialRequirement(matched.output.id)
+        if req and req > 0 then
+            local stat = types.NPC.stats.skills.armorer(self)
+            if ((stat and stat.modified) or 0) < req then
+                armorerNeed = req
+                canCraft = false
+            end
+        end
+    end
 end
 
 -- ── recipe guide (the strip's second mode: pick an outcome) ──────────────────
@@ -1020,9 +1038,12 @@ local function resultSection()
         end
         if hasReturned then notes[#notes + 1] = '(mold returned)' end
         local missing = missingTools(matched)
+        if armorerNeed then
+            notes[#notes + 1] = ('(needs Armorer %d)'):format(armorerNeed)
+        end
         if #missing > 0 then
             notes[#notes + 1] = ('(needs %s)'):format(table.concat(missing, ', '))
-        elseif not canCraft then
+        elseif not canCraft and not armorerNeed then
             notes[#notes + 1] = '(not enough materials)'
         end
     else
@@ -1448,6 +1469,7 @@ function this.onCraft()
             actor = self.object,
             consume = consume,
             output = matched.output,
+            crafted = true, -- real craft: equipment comes out "Wrought"
         })
     end
     local label = matched.label or matched.id

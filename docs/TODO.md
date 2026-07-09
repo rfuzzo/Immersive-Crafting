@@ -51,9 +51,10 @@ Newest first — each CHANGELOG entry has the detailed checklist:
   waiting on this one deliberately.
 - **Recipe guide niceties, round 2**: craft-again button; open grid stations
   on the Recipes strip by default. (Ghost slots + Craftable filter: DONE.)
-- **Equipment sets from the new ingots** (copper/bronze/orichalcum/
-  adamantium/ebony/daedric weapons + armor via the mold system) — user-owned
-  design + balance.
+- **Ebony/daedric equipment sets** (the other four ingots got theirs;
+  ebony/daedric casting is a balance call — vanilla sets exist as outputs).
+- **Wrought gear** carries no tags (dynamic records): tag-matching melt-down
+  recipes skip it — extend matchesTag with the mesh fallback if it matters.
 - **Debuff-instead-of-block equip gate mode** (setting) — see the gating
   entry in CHANGELOG for the design fork.
 - AC "menus-off" ESP patch when the mwscript UI wears thin; HW bloods/fats

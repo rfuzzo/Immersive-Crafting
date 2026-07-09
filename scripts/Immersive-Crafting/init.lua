@@ -9,6 +9,7 @@ local globalLiquids = require('scripts.Immersive-Crafting.globalLiquids')
 local globalStations = require('scripts.Immersive-Crafting.globalStations')
 local globalDressing = require('scripts.Immersive-Crafting.globalDressing')
 local globalBuilding = require('scripts.Immersive-Crafting.globalBuilding')
+local craftedBonus = require('scripts.Immersive-Crafting.craftedBonus')
 
 local function onSave() return saveData end
 
@@ -22,7 +23,9 @@ end
 --- createRecordDraft/createRecord first — deferred (D1).
 ---@param actor any
 ---@param output { id: string, count: integer }
-local function grantOutput(actor, output)
+---@param crafted boolean? true for real player crafts: equipment outputs are
+--- granted as their boosted "Wrought" clone (craftedBonus)
+local function grantOutput(actor, output, crafted)
     if not (output and output.id) then
         log.error('grant: no output in commit payload')
         return
@@ -31,8 +34,9 @@ local function grantOutput(actor, output)
         log.error(('grant: no actor in commit payload (output "%s")'):format(tostring(output.id)))
         return
     end
+    local grantId = crafted and craftedBonus.boostedOutput(output.id) or output.id
     local ok, err = pcall(function()
-        local created = world.createObject(output.id, output.count or 1)
+        local created = world.createObject(grantId, output.count or 1)
         -- move into the actor's inventory (moveInto wants an Inventory, not the actor)
         created:moveInto(types.Actor.inventory(actor))
     end)
@@ -68,7 +72,9 @@ end
 --- Shaped-crafting executor: consume placed items from the actor's INVENTORY
 --- (by record id), then grant the output. Consumed Sun's Dusk liquid bottles
 --- give the empty container back (the water is used; the waterskin remains).
----@param data table { actor: any, consume: { id: string, count: integer }[], output: { id: string, count: integer } }
+--- `crafted` marks REAL player crafts: their equipment outputs are granted
+--- as boosted "Wrought" clones (debug grants leave it unset).
+---@param data table { actor: any, consume: { id: string, count: integer }[], output: { id: string, count: integer }, crafted: boolean? }
 local function onCraftShaped(data)
     if not (data and data.actor) then
         log.error('craft: event without actor')
@@ -104,7 +110,7 @@ local function onCraftShaped(data)
         end
     end
 
-    grantOutput(data.actor, data.output)
+    grantOutput(data.actor, data.output, data.crafted)
 end
 
 -- ── activation ───────────────────────────────────────────────────────────────
@@ -222,6 +228,7 @@ return {
         ImmersiveCrafting_SetOptions = function(data)
             globalProcessing.onSetOptions(data)
             globalFarming.onSetOptions(data)
+            craftedBonus.onSetOptions(data)
         end,
     }
 }

@@ -1510,3 +1510,48 @@ ModTags/ImmersiveCrafting.yaml.
 
 Verify in-game: mine tin/orichalcum (SimplyMining) -> smelt; bronze needs
 both metals now; melt an orcish pauldron; glass melt yields the component.
+
+## Alloy equipment, Armorer craft gate, "Wrought" crafted bonus (built 2026-07-07)
+
+**Alloy equipment** (from the tes3-records survey): four new material files,
+all furnace + molds, per-part counts cloned from iron/steel (bracers cast
+like gauntlets):
+- copper.json (6): TD Khajiit copper weapons (dagger/longsword/spear/waraxe/
+  warhammer) + the copper shield — from ic_ingot_copper;
+- bronze.json (12): TD Nibenese bronze armor set (8 pieces) + Qy bronze
+  weapons — from T_Com_MetalPieceBronze_01;
+- orcish.json (9): the VANILLA orcish armor set incl. towershield — from
+  ic_ingot_orichalcum (orichalcum IS the orcish metal; no orcish-named gear
+  exists anywhere, melt_orcish already mapped the reverse);
+- adamant.json (14): Tribunal adamantium armor set + TD Adamant weapons +
+  shields — from ic_ingot_adamantium.
+Linter: MATERIAL_FILES += orcish/adamant; placement accepts the material as
+an id SUBSTRING (T_Kha_Copper_*, T_Imp_NibBronze_*); fused BracerL/PauldronR
+suffixes added to the armour keywords.
+
+**Armorer craft gate** (ratified: gate crafting like equipping, on ARMORER):
+resolve() checks the matched output's material requirement (same
+data/gating/materials.json tiers) against the MODIFIED Armorer skill —
+forging daedric needs Armorer 80 the way wearing it needs the weapon skill.
+Result panel says "(needs Armorer N)"; matching/guide unaffected (the recipe
+stays visible as a goal). Covers furnace casting AND the shaped finishing
+steps (steel roughs). AC chitin quality variants land at chitin 5 =
+effectively ungated, per user (no per-variant tiers wanted).
+
+**Crafted-gear bonus** (user's founding idea: crafted > bought):
+craftedBonus.lua (global) mints a "Wrought" record clone per crafted
+equipment output — +15% damage / armor rating (min +2 AR), +25% durability
+and value, name-prefixed — cached per base record in the save
+(saveData.bonusRecords; dynamic records persist on 0.51 per the SD-meal
+precedent). Instant crafts pass `crafted=true` (debug giveMaterials does
+NOT boost); timed-run collects always boost; ingots/molds/ceramics pass
+through. pcall-guarded: if record drafting fails, the base item is granted.
+The clone keeps the base MESH, so the equip gate's mesh lookup still
+classifies it (Wrought daedric gates at 80). Setting: "Crafted gear is
+finer" (default on). Known caveat: Wrought gear carries no tags, so
+tag-matching melt-down recipes skip it (TODO if it matters).
+
+Verify in-game: createRecordDraft(Armor/Weapon) on 0.51 mints + persists
+across save/load; Wrought stats in the tooltip; Armorer gate blocks the take
+with the note; copper/bronze/orcish/adamant casts produce the right records;
+bracers cast in gauntlet-count.

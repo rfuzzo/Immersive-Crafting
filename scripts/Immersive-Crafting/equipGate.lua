@@ -110,9 +110,11 @@ end
 
 --- Material requirement for a record id: the HIGHEST matching entry in the
 --- gating table, or nil when no material matches (-> value fallback).
+--- PUBLIC: the crafting window reuses the same tiers for its ARMORER craft
+--- gate (crafting daedric needs the hands, wearing it needs the training).
 ---@param recordId string
 ---@return number?
-local function materialRequirement(recordId)
+function this.materialRequirement(recordId)
     local best = nil
     for tag, req in pairs((GRegistries and GRegistries.gating) or {}) do
         if type(req) == 'number' and (best == nil or req > best)
@@ -122,6 +124,7 @@ local function materialRequirement(recordId)
     end
     return best
 end
+local materialRequirement = this.materialRequirement
 
 --- Gate info for an equipped item, or false when it is ungated.
 ---@param item any equipped armor or weapon item

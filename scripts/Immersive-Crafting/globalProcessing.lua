@@ -463,12 +463,16 @@ local function collect(actor, stationId)
     end
 
     if grantCount > 0 then
+        -- timed runs are always real crafts: equipment outputs come out as
+        -- the boosted "Wrought" clone (craftedBonus; pass-through otherwise)
+        local craftedBonus = require('scripts.Immersive-Crafting.craftedBonus')
+        local grantId = craftedBonus.boostedOutput(e.output.id)
         local ok, err = pcall(function()
-            local created = world.createObject(e.output.id, grantCount)
+            local created = world.createObject(grantId, grantCount)
             created:moveInto(types.Actor.inventory(actor))
         end)
         if not ok then
-            log.error(('process: collect failed for "%s": %s'):format(tostring(e.output.id), tostring(err)))
+            log.error(('process: collect failed for "%s": %s'):format(tostring(grantId), tostring(err)))
             return
         end
     end

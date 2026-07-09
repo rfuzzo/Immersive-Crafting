@@ -77,6 +77,15 @@ interfaces.Settings.registerGroup {
             default = true,
         },
         {
+            key = 'CraftedBonus',
+            renderer = 'checkbox',
+            name = 'Crafted gear is finer ("Wrought")',
+            description = 'Weapons and armor YOU forge come out as a Wrought version: '
+                .. 'a bit more damage or armor, more durability, more value — the '
+                .. 'reward for walking the whole chain instead of buying off a shelf.',
+            default = true,
+        },
+        {
             key = 'TutorialPopups',
             renderer = 'checkbox',
             name = 'Tutorial popups',

@@ -43,9 +43,11 @@ CONTEXT_FILES = {
     'charcoal_pit', 'tanning_rack', 'furnace', 'oven',
 }
 # cross-context EQUIPMENT files grouped by material (filename == material):
-# hold that material's weapons + armor, any context
+# hold that material's weapons + armor, any context. 'orcish' is the
+# orichalcum-ingot set (orichalcum IS the orcish metal); 'adamant' covers
+# both vanilla adamantium_* and TD T_Com_Adamant_* ids.
 MATERIAL_FILES = {'chitin', 'iron', 'steel', 'bonemold', 'glass', 'bronze', 'copper',
-                  'hide', 'leather'}
+                  'hide', 'leather', 'orcish', 'adamant'}
 # all mold recipes (raw + burnt, weapon + armor + ingot) live here
 MOLDS_FILE = 'molds'
 # world-placement cooking + SD meals: not linted for placement
@@ -79,10 +81,12 @@ WEAPON_KW = ['dagger', 'war axe', 'waraxe', 'axe', 'spear', 'longsword',
              'staff', 'katana', 'tanto', 'wakizashi']
 # 'paul'/'tower'/'chest'/'band'/'glove' cover Ashlander Crafting's abbreviated
 # ids (a_ar_chitin_paul_left, a_ar_chitin_tower, a_ar_leather_chest/band/glove);
-# 'guantlet' is the vanilla record typo (chitin guantlet - left)
+# 'guantlet' is the vanilla record typo (chitin guantlet - left); the fused
+# L/R variants cover TD's suffixed ids (T_Imp_NibBronze_BracerL_01)
 ARMOUR_KW = ['cuirass', 'helm', 'helmet', 'boots', 'greaves', 'shield',
              'towershield', 'tower', 'pauldron', 'paul', 'gauntlet', 'guantlet',
-             'bracer', 'armor', 'armour', 'skirt', 'chest', 'band', 'glove']
+             'bracer', 'armor', 'armour', 'skirt', 'chest', 'band', 'glove',
+             'bracerl', 'bracerr', 'pauldronl', 'pauldronr']
 
 
 def category_of(output_id):
@@ -159,7 +163,9 @@ def lint(recipes):
                 errors.append(f'{rid}: mold "{out_id}" should live in molds.json, not {stem}.json')
             elif cat is None:
                 errors.append(f'{rid}: output "{out_id}" is not equipment — does not belong in {stem}.json')
-            elif material_of(out_id) != stem:
+            elif material_of(out_id) != stem and stem not in (out_id or '').lower():
+                # substring rule: TD ids embed the material mid-id
+                # (T_Kha_Copper_Dagger_01, T_Imp_NibBronze_Cuirass_01)
                 errors.append(f'{rid}: {material_of(out_id)} equipment "{out_id}" filed in {stem}.json')
         elif stem in CONTEXT_FILES:
             if is_mold:

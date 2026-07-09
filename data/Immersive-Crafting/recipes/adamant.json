@@ -1,0 +1,348 @@
+[
+  {
+    "id": "adamantium boots",
+    "label": "Adamantium Boots",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_boots_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "adamantium boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "adamantium_bracer_left",
+    "label": "Adamantium Bracer Left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_bracer_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "adamantium_bracer_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "adamantium_bracer_right",
+    "label": "Adamantium Bracer Right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_bracer_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "adamantium_bracer_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "adamantium_cuirass",
+    "label": "Adamantium Cuirass",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 4
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_cuirass_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "adamantium_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_adamant_dagger_01",
+    "label": "T_Com_Adamant_Dagger_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_dagger_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_Adamant_Dagger_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "adamantium_greaves",
+    "label": "Adamantium Greaves",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_greaves_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "adamantium_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "adamantium_helm",
+    "label": "Adamantium Helm",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_helm_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "adamantium_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_adamant_longsword_01",
+    "label": "T_Com_Adamant_Longsword_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_longsword_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_Adamant_Longsword_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "adamantium_pauldron_left",
+    "label": "Adamantium Pauldron Left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "adamantium_pauldron_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "adamantium_pauldron_right",
+    "label": "Adamantium Pauldron Right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "adamantium_pauldron_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_adamant_shield_01",
+    "label": "T_Com_Adamant_Shield_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_Adamant_Shield_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_adamant_towershield_01",
+    "label": "T_Com_Adamant_TowerShield_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_tower_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_Adamant_TowerShield_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_adamant_waraxe_01",
+    "label": "T_Com_Adamant_WarAxe_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_waraxe_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_Adamant_WarAxe_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_com_adamant_warhammer_01",
+    "label": "T_Com_Adamant_Warhammer_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_adamantium",
+        "count": 3
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_warhammer_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Com_Adamant_Warhammer_01",
+      "count": 1
+    }
+  }
+]

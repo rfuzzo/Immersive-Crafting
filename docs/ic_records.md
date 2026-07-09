@@ -90,6 +90,7 @@ ModTags FlexTag YAMLs.
 - `Resin`
 - `Salt`
 - `Stone`
+- `T_Com_MetalPieceBronze_01`
 - `T_Com_MetalPieceIron_01`
 - `T_Com_MetalPieceSteel_01`
 - `T_IngMine_OreCopper_01`

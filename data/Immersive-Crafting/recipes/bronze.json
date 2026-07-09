@@ -1,0 +1,298 @@
+[
+  {
+    "id": "t_imp_nibbronze_boots_01",
+    "label": "T_Imp_NibBronze_Boots_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_boots_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Imp_NibBronze_Boots_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_imp_nibbronze_bracerl_01",
+    "label": "T_Imp_NibBronze_BracerL_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_bracer_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Imp_NibBronze_BracerL_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_imp_nibbronze_bracerr_01",
+    "label": "T_Imp_NibBronze_BracerR_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_bracer_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Imp_NibBronze_BracerR_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_imp_nibbronze_cuirass_01",
+    "label": "T_Imp_NibBronze_Cuirass_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 4
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_cuirass_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Imp_NibBronze_Cuirass_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_qy_bronze_dagger_01",
+    "label": "T_Qy_Bronze_Dagger_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_dagger_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Qy_Bronze_Dagger_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_imp_nibbronze_greaves_01",
+    "label": "T_Imp_NibBronze_Greaves_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_greaves_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Imp_NibBronze_Greaves_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_imp_nibbronze_helm_01",
+    "label": "T_Imp_NibBronze_Helm_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_helm_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Imp_NibBronze_Helm_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_imp_nibbronze_pauldronl_01",
+    "label": "T_Imp_NibBronze_PauldronL_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Imp_NibBronze_PauldronL_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_imp_nibbronze_pauldronr_01",
+    "label": "T_Imp_NibBronze_PauldronR_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Imp_NibBronze_PauldronR_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_qy_bronze_spear_01",
+    "label": "T_Qy_Bronze_Spear_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_spear_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Qy_Bronze_Spear_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_qy_bronze_waraxe_01",
+    "label": "T_Qy_Bronze_Waraxe_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_waraxe_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Qy_Bronze_Waraxe_01",
+      "count": 1
+    }
+  },
+  {
+    "id": "t_qy_bronze_warhammer_01",
+    "label": "T_Qy_Bronze_Warhammer_01",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_Com_MetalPieceBronze_01",
+        "count": 3
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_warhammer_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "T_Qy_Bronze_Warhammer_01",
+      "count": 1
+    }
+  }
+]
