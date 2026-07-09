@@ -1,0 +1,12 @@
+type: MiscItem
+flags: ""
+id: ic_ingot_orichalcum
+name: Orichalcum Ingot
+script: ""
+# interim: TD bronze-piece mesh path by convention (orichalcum is greenish) — VERIFY
+mesh: t\t_com_metalpiecebronze_01.nif
+icon: t\t_com_metalpiecebronze_01.dds
+data:
+  weight: 6.0
+  value: 300
+  flags: ""

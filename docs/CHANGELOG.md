@@ -1484,3 +1484,29 @@ icons empty — activators need none; steel roughs' icon n/tx_scrap_metal_01
 unverified), 62 widen-to-tag candidates (ingots vs iron/steel tags too broad
 — an 'ingot' family tag may be worth authoring; AC tannin plants, leather
 crafting materials, ash salts vs salt(6) — all user calls).
+
+## Alloy close-out: tin, real bronze, orichalcum, adamantium, glass melt (built 2026-07-07)
+
+The old "TD has no tin" note was a TAG-DATA gap, not a record gap:
+T_IngMine_OreTin_01 (and OreZinc/OreSulfur, and OreOrichalcum_02) exist but
+predate the dataset 'ore' tag — upstream refresh note left in
+ModTags/ImmersiveCrafting.yaml.
+
+- NEW ic_ingot_tin (3 tin ore + fuel 6 + mold, 3600s).
+- alloy_bronze is a REAL alloy now: 2 copper ingots + 1 tin ingot + fuel ->
+  3 bronze ingots (mass-conserving; replaces the copper-only simplification).
+- NEW ic_ingot_orichalcum (3 ore via new `orichalcum_ore` tag covering both
+  TD variants + fuel 6 + mold) and melt_orcish (2 orcish items -> 1 ingot) —
+  orcish gear IS orichalcum.
+- NEW ic_ingot_adamantium (3 ingred_adamantium_ore_01 + fuel 9 + mold,
+  5400s) and melt_adamantium.
+- melt_glass: 2 glass items + fuel 3 -> 1 ic_glass_component (no mold —
+  glass isn't cast in the ingot mold).
+- Diamond dropped from the alloy list: gems don't smelt.
+- Interim meshes (audit-tracked): tin/adamantium on the TD silver-piece
+  path, orichalcum on the bronze-piece path — same VERIFY caveat as copper.
+- Consumers of the new ingots (orcish/adamantium/bronze/copper equipment
+  sets) remain user-owned, same as before.
+
+Verify in-game: mine tin/orichalcum (SimplyMining) -> smelt; bronze needs
+both metals now; melt an orcish pauldron; glass melt yields the component.

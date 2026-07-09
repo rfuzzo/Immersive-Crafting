@@ -8,12 +8,18 @@ Report-only. Regenerate after mesh passes or tag-data updates.
 - `records/MiscItem/ic_clay_brick.yaml` icon: `m/tx_bread_01.tga`
 - `records/MiscItem/ic_fire_brick.yaml` mesh: `n/ingred_bread_01.nif`
 - `records/MiscItem/ic_fire_brick.yaml` icon: `m/tx_bread_01.tga`
+- `records/MiscItem/ic_ingot_adamantium.yaml` mesh: `t/t_com_metalpiecesilver_01.nif`
+- `records/MiscItem/ic_ingot_adamantium.yaml` icon: `t/t_com_metalpiecesilver_01.dds`
 - `records/MiscItem/ic_ingot_copper.yaml` mesh: `t/t_com_metalpiecebronze_01.nif`
 - `records/MiscItem/ic_ingot_copper.yaml` icon: `t/t_com_metalpiecebronze_01.dds`
 - `records/MiscItem/ic_ingot_daedric.yaml` mesh: `n/ingred_rawebony_01.nif`
 - `records/MiscItem/ic_ingot_daedric.yaml` icon: `n/tx_rawebony.tga`
 - `records/MiscItem/ic_ingot_ebony.yaml` mesh: `n/ingred_rawebony_01.nif`
 - `records/MiscItem/ic_ingot_ebony.yaml` icon: `n/tx_rawebony.tga`
+- `records/MiscItem/ic_ingot_orichalcum.yaml` mesh: `t/t_com_metalpiecebronze_01.nif`
+- `records/MiscItem/ic_ingot_orichalcum.yaml` icon: `t/t_com_metalpiecebronze_01.dds`
+- `records/MiscItem/ic_ingot_tin.yaml` mesh: `t/t_com_metalpiecesilver_01.nif`
+- `records/MiscItem/ic_ingot_tin.yaml` icon: `t/t_com_metalpiecesilver_01.dds`
 
 ## Records whose mesh/icon path is UNKNOWN to the load order
 
@@ -76,6 +82,8 @@ shipping the needed entries in this repo's ModTags/)
 - `furnace.json` / `t_com_metalpiecegold_01` [input]: `T_IngMine_OreGold_01` -> mineral(160), ore(21)
 - `furnace.json` / `ic_ingot_copper` [input]: `T_IngMine_OreCopper_01` -> mineral(160), ore(21)
 - `furnace.json` / `ic_ingot_ebony` [input]: `ingred_raw_ebony_01` -> mineral(160), ore(21)
+- `furnace.json` / `ic_ingot_tin` [input]: `T_IngMine_OreTin_01` -> mineral(160)
+- `furnace.json` / `ic_ingot_adamantium` [input]: `ingred_adamantium_ore_01` -> mineral(160), ore(21)
 - `glass.json` / `glass arrow` [ingredient]: `ingred_raw_glass_01` -> mineral(160), ore(21), raw_glass(2)
 - `iron.json` / `iron boots` [input]: `T_Com_MetalPieceIron_01` -> iron(366), metal(13)
 - `iron.json` / `iron dagger` [input]: `T_Com_MetalPieceIron_01` -> iron(366), metal(13)

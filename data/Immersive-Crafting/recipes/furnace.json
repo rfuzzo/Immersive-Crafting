@@ -139,6 +139,10 @@
         "count": 2
       },
       {
+        "id": "ic_ingot_tin",
+        "count": 1
+      },
+      {
         "fuel": 3
       },
       {
@@ -150,7 +154,7 @@
     "duration": 3600,
     "output": {
       "id": "T_Com_MetalPieceBronze_01",
-      "count": 1
+      "count": 3
     }
   },
   {
@@ -422,6 +426,151 @@
       }
     ],
     "duration": 3600,
+    "output": {
+      "id": "ic_glass_component",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_ingot_tin",
+    "label": "Tin Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "T_IngMine_OreTin_01",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "ic_ingot_tin",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_ingot_orichalcum",
+    "label": "Orichalcum Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "orichalcum_ore",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 3600,
+    "output": {
+      "id": "ic_ingot_orichalcum",
+      "count": 1
+    }
+  },
+  {
+    "id": "ic_ingot_adamantium",
+    "label": "Adamantium Ingot",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ingred_adamantium_ore_01",
+        "count": 3
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 5400,
+    "output": {
+      "id": "ic_ingot_adamantium",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_orcish",
+    "label": "Melt Down Orcish",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "orcish",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_ingot_orichalcum",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_adamantium",
+    "label": "Melt Down Adamantium",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "adamantium",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_ingot_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ic_ingot_adamantium",
+      "count": 1
+    }
+  },
+  {
+    "id": "melt_glass",
+    "label": "Melt Down Glass",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "glass",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      }
+    ],
+    "duration": 1800,
     "output": {
       "id": "ic_glass_component",
       "count": 1

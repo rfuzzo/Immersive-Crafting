@@ -14,9 +14,12 @@ ModTags FlexTag YAMLs.
 - `ic_fire_brick`
 - `ic_glass_component`
 - `ic_grill`
+- `ic_ingot_adamantium`
 - `ic_ingot_copper`
 - `ic_ingot_daedric`
 - `ic_ingot_ebony`
+- `ic_ingot_orichalcum`
+- `ic_ingot_tin`
 - `ic_mold_boots_burnt`
 - `ic_mold_boots_raw`
 - `ic_mold_bracer_left_burnt`
@@ -93,6 +96,7 @@ ModTags FlexTag YAMLs.
 - `T_IngMine_OreGold_01`
 - `T_IngMine_OreIron_01`
 - `T_IngMine_OreSilver_01`
+- `T_IngMine_OreTin_01`
 - `Vegetable`
 - `Wood`
 
@@ -102,6 +106,7 @@ ModTags FlexTag YAMLs.
 - `a_msc_hide_01`
 - `a_msc_leather_01`
 - `a_msc_tannin`
+- `adamantium`
 - `axe`
 - `boots`
 - `bracer`
@@ -114,11 +119,13 @@ ModTags FlexTag YAMLs.
 - `dagger`
 - `ebony`
 - `gauntlet`
+- `glass`
 - `gold`
 - `greaves`
 - `hammer`
 - `helmet`
 - `hide`
+- `ingred_adamantium_ore_01`
 - `ingred_ash_salts_01`
 - `ingred_corkbulb_root_01`
 - `ingred_hackle-lo_leaf_01`
@@ -131,6 +138,8 @@ ModTags FlexTag YAMLs.
 - `knife`
 - `longsword`
 - `mortar`
+- `orcish`
+- `orichalcum_ore`
 - `pauldron`
 - `pelt`
 - `plank`

@@ -109,3 +109,8 @@ hammer:
   - AB_Repair_DwrvHammer
   - AB_Repair_Mallet_01
   - AB_Repair_Flatter_01
+# both TD orichalcum ore variants (the dataset 'ore' tag predates _02 — and
+# tin/zinc/sulfur ores entirely; note for an upstream tes3-records refresh)
+orichalcum_ore:
+  - T_IngMine_OreOrichalcum_01
+  - T_IngMine_OreOrichalcum_02

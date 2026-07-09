@@ -1,0 +1,12 @@
+type: MiscItem
+flags: ""
+id: ic_ingot_tin
+name: Tin Ingot
+script: ""
+# interim: TD silver-piece mesh path by convention (tin is silvery) — VERIFY
+mesh: t\t_com_metalpiecesilver_01.nif
+icon: t\t_com_metalpiecesilver_01.dds
+data:
+  weight: 4.0
+  value: 40
+  flags: ""
