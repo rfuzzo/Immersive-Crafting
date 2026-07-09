@@ -578,7 +578,7 @@
       "  "
     ],
     "key": {
-      "A": "chitin_plate",
+      "A": "chitin_fragment",
       "B": "ic_stick"
     },
     "output": {
@@ -750,7 +750,7 @@
       "C "
     ],
     "key": {
-      "A": "chitin_plate",
+      "A": "chitin_fragment",
       "B": "plank",
       "C": "ic_stick"
     },

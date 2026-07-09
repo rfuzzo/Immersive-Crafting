@@ -36,7 +36,7 @@
       "B": "ic_netch_leather"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass claymore",
@@ -58,7 +58,7 @@
       "B": "ic_netch_leather"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass dagger",
@@ -80,7 +80,7 @@
       "B": "ic_plank"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass halberd",
@@ -102,7 +102,7 @@
       "B": "ic_netch_leather"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass longsword",
@@ -124,7 +124,7 @@
       "B": "ic_plank"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass war axe",
@@ -146,7 +146,7 @@
       "B": "ic_netch_leather"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass_boots",
@@ -168,7 +168,7 @@
       "B": "ic_netch_leather"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass_cuirass",
@@ -190,7 +190,7 @@
       "B": "ic_netch_leather"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass_greaves",
@@ -212,7 +212,7 @@
       "B": "ic_netch_leather"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass_helm",
@@ -234,7 +234,7 @@
       "B": "ic_netch_leather"
     },
     "tools": [
-      "steel warhammer"
+      "hammer"
     ],
     "output": {
       "id": "glass_shield",

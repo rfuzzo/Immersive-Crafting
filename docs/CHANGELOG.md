@@ -1461,3 +1461,26 @@ Verify in-game: ghosts render + clear on fill; Craftable filter with a poor
 inventory; tab persists after searching + applying; prongs need a real
 armorer's hammer now; kiln build card hidden before the first firepit even
 with bricks dropped; furnace wants fire bricks; bucket craftable.
+
+## Asset & matcher audit tool (built 2026-07-07)
+
+tools/audit_assets.py -> docs/asset_audit.md (regenerate after mesh passes /
+tag updates). Audits: records with interim-flagged or load-order-unknown
+mesh/icon paths; recipe+construction matchers that resolve to nothing;
+tags only present upstream; exact record ids where a multi-member tag
+exists (candidates to widen — report-only, they're judgment calls; salvage
+and the part-specific mold ids are excluded by design).
+
+First run found and FIXED: chitin dagger/spear used 'chitin_plate' (never a
+tag or record — the family tag is chitin_fragment; latent bug #6) and the 10
+glass shaping recipes still used 'steel warhammer' as their tool from before
+the smith-hammer retag -> 'hammer'. False positive worth noting:
+Hb_brokenhunterknife is real — upstream tes3-records has no Hunterwind dump
+(consider adding it; allowlisted in the tool meanwhile).
+
+Current report: 10 interim mesh/icons (bricks=bread, copper ingot=bronze
+path, ebony/daedric ingots=raw ebony), 18 unknown paths (station activator
+icons empty — activators need none; steel roughs' icon n/tx_scrap_metal_01
+unverified), 62 widen-to-tag candidates (ingots vs iron/steel tags too broad
+— an 'ingot' family tag may be worth authoring; AC tannin plants, leather
+crafting materials, ash salts vs salt(6) — all user calls).

@@ -108,7 +108,6 @@ ModTags FlexTag YAMLs.
 - `bronze`
 - `chitin`
 - `chitin_fragment`
-- `chitin_plate`
 - `clay`
 - `cuirass`
 - `daedric`
@@ -143,7 +142,6 @@ ModTags FlexTag YAMLs.
 - `soul gem`
 - `spear`
 - `steel`
-- `steel warhammer`
 - `war axe`
 - `warhammer`
 - `wood`
