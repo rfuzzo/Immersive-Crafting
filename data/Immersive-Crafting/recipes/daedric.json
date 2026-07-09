@@ -1,0 +1,372 @@
+[
+  {
+    "id": "daedric_boots",
+    "label": "Daedric Boots",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_boots_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_cuirass",
+    "label": "Daedric Cuirass",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 4
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_cuirass_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric dagger",
+    "label": "Daedric Dagger",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_dagger_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric dagger",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_gauntlet_left",
+    "label": "Daedric Gauntlet Left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_gauntlet_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_gauntlet_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_gauntlet_right",
+    "label": "Daedric Gauntlet Right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_gauntlet_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_gauntlet_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_greaves",
+    "label": "Daedric Greaves",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_greaves_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_fountain_helm",
+    "label": "Daedric Fountain Helm",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_helm_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_fountain_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric longsword",
+    "label": "Daedric Longsword",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_longsword_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric longsword",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_pauldron_left",
+    "label": "Daedric Pauldron Left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_pauldron_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_pauldron_right",
+    "label": "Daedric Pauldron Right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_pauldron_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_shield",
+    "label": "Daedric Shield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_shield",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric spear",
+    "label": "Daedric Spear",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_spear_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric spear",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric_towershield",
+    "label": "Daedric Towershield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_tower_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric_towershield",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric war axe",
+    "label": "Daedric War Axe",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_waraxe_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric war axe",
+      "count": 1
+    }
+  },
+  {
+    "id": "daedric warhammer",
+    "label": "Daedric Warhammer",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_daedric",
+        "count": 3
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_warhammer_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "daedric warhammer",
+      "count": 1
+    }
+  }
+]

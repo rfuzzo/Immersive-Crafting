@@ -8,6 +8,10 @@ the authoritative engine design is `docs/SPEC.md`.
 
 Newest first — each CHANGELOG entry has the detailed checklist:
 
+- **Alloy + ebony/daedric casting, Armorer gate, Wrought bonus**: cast a
+  copper/bronze/orcish/adamant/ebony/daedric piece; "(needs Armorer N)"
+  blocks the take; Wrought stats in the tooltip and persist across
+  save/load; daedric ingot needs a FILLED soul gem.
 - **Equip gating rework** (material-first, weapons too — see CHANGELOG).
 - **Round 2**: welcome popup on fresh load; build firepit (drop 2 stone +
   2 wood, hold F) -> popup; pit-fire bricks (some crack); kiln from 6 bricks
@@ -52,8 +56,6 @@ Newest first — each CHANGELOG entry has the detailed checklist:
   waiting on this one deliberately.
 - **Recipe guide niceties, round 2**: craft-again button; open grid stations
   on the Recipes strip by default. (Ghost slots + Craftable filter: DONE.)
-- **Ebony/daedric equipment sets** (the other four ingots got theirs;
-  ebony/daedric casting is a balance call — vanilla sets exist as outputs).
 - **Wrought gear** carries no tags (dynamic records): tag-matching melt-down
   recipes skip it — extend matchesTag with the mesh fallback if it matters.
 - **Debuff-instead-of-block equip gate mode** (setting) — see the gating

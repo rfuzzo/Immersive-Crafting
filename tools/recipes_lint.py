@@ -47,7 +47,7 @@ CONTEXT_FILES = {
 # orichalcum-ingot set (orichalcum IS the orcish metal); 'adamant' covers
 # both vanilla adamantium_* and TD T_Com_Adamant_* ids.
 MATERIAL_FILES = {'chitin', 'iron', 'steel', 'bonemold', 'glass', 'bronze', 'copper',
-                  'hide', 'leather', 'orcish', 'adamant'}
+                  'hide', 'leather', 'orcish', 'adamant', 'ebony', 'daedric'}
 # all mold recipes (raw + burnt, weapon + armor + ingot) live here
 MOLDS_FILE = 'molds'
 # world-placement cooking + SD meals: not linted for placement

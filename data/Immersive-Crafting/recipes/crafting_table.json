@@ -129,28 +129,6 @@
     ]
   },
   {
-    "id": "ebony arrow",
-    "label": "Ebony Arrows",
-    "context": "crafting_table",
-    "action": "shaping",
-    "pattern": [
-      "AB ",
-      "   ",
-      "   "
-    ],
-    "key": {
-      "A": "ingred_raw_ebony_01",
-      "B": "ic_stick"
-    },
-    "output": {
-      "id": "ebony arrow",
-      "count": 10
-    },
-    "tools": [
-      "hammer"
-    ]
-  },
-  {
     "id": "hb_hunters_knife",
     "label": "Hunter Knife",
     "context": "crafting_table",

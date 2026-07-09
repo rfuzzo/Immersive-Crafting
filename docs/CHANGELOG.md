@@ -1555,3 +1555,36 @@ Verify in-game: createRecordDraft(Armor/Weapon) on 0.51 mints + persists
 across save/load; Wrought stats in the tooltip; Armorer gate blocks the take
 with the note; copper/bronze/orcish/adamant casts produce the right records;
 bracers cast in gauntlet-count.
+
+## Ebony & daedric casting sets (built 2026-07-09)
+
+Prompted by "where do the daedric ingots GO?" — the sources existed
+(ic_ingot_daedric = 2 ebony ingots + a FILLED soul gem + fuel 9 + mold;
+melt_ebony/melt_daedric recycling; ebony ingots from raw ebony), but
+nothing consumed them. Now the sinks:
+
+- ebony.json (14): the vanilla ebony armor set (cuirass, closed helm,
+  greaves, boots, both pauldrons, both bracers, shield + towershield) and
+  the weapons vanilla actually has as plain records — longsword, spear,
+  war axe (no vanilla ebony dagger/warhammer without enchantments). The
+  old "ebony arrow" shaped recipe moved here from crafting_table.json
+  (material files own their material's gear whatever the context; recipe
+  unchanged).
+- daedric.json (15): full daedric armor set with daedric_fountain_helm as
+  the standard cast (the god/terrifying faces read as unique — swap if you
+  disagree), gauntlets, shield + towershield, and all five weapon molds:
+  dagger, longsword, spear, war axe, warhammer.
+- Per-part ingot counts, fuel and durations follow the iron/steel
+  templates (bracers cast like gauntlets); returned burnt armor molds /
+  consumed weapon molds as everywhere else. Counts are first-draft
+  balance like the rest.
+- No new code: the Armorer craft gate auto-applies from materials.json
+  (ebony 65, daedric 80), the furnace milestone hides them until then,
+  and crafted casts come out Wrought.
+- Linter: MATERIAL_FILES += ebony/daedric (which is what flushed the
+  misfiled arrow recipe out of crafting_table.json).
+
+Verify in-game: cast an ebony cuirass (needs Armorer 65 to take); forge a
+daedric ingot from 2 ebony ingots + a filled gem, then cast a daedric
+longsword (Armorer 80); melt the result back down (2 -> 1 ingot); Wrought
+daedric gates at skill 80 when equipping.

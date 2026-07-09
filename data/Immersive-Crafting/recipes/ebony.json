@@ -1,0 +1,346 @@
+[
+  {
+    "id": "ebony arrow",
+    "label": "Ebony Arrows",
+    "context": "crafting_table",
+    "action": "shaping",
+    "pattern": [
+      "AB ",
+      "   ",
+      "   "
+    ],
+    "key": {
+      "A": "ingred_raw_ebony_01",
+      "B": "ic_stick"
+    },
+    "output": {
+      "id": "ebony arrow",
+      "count": 10
+    },
+    "tools": [
+      "hammer"
+    ]
+  },
+  {
+    "id": "ebony_boots",
+    "label": "Ebony Boots",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_boots_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_boots",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_bracer_left",
+    "label": "Ebony Bracer Left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_bracer_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_bracer_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_bracer_right",
+    "label": "Ebony Bracer Right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_bracer_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_bracer_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_cuirass",
+    "label": "Ebony Cuirass",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 4
+      },
+      {
+        "fuel": 9
+      },
+      {
+        "id": "ic_mold_cuirass_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_cuirass",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_greaves",
+    "label": "Ebony Greaves",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_greaves_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_greaves",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_closed_helm",
+    "label": "Ebony Closed Helm",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_helm_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_closed_helm",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony longsword",
+    "label": "Ebony Longsword",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_longsword_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony longsword",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_pauldron_left",
+    "label": "Ebony Pauldron Left",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_left_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_pauldron_left",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_pauldron_right",
+    "label": "Ebony Pauldron Right",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 1
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_pauldron_right_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_pauldron_right",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_shield",
+    "label": "Ebony Shield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 2
+      },
+      {
+        "fuel": 3
+      },
+      {
+        "id": "ic_mold_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_shield",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony spear",
+    "label": "Ebony Spear",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_spear_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony spear",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony_towershield",
+    "label": "Ebony Towershield",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 3
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_tower_shield_burnt",
+        "count": 1,
+        "returned": true
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony_towershield",
+      "count": 1
+    }
+  },
+  {
+    "id": "ebony war axe",
+    "label": "Ebony War Axe",
+    "context": "furnace",
+    "action": "processing",
+    "inputs": [
+      {
+        "id": "ic_ingot_ebony",
+        "count": 2
+      },
+      {
+        "fuel": 6
+      },
+      {
+        "id": "ic_mold_waraxe_burnt",
+        "count": 1
+      }
+    ],
+    "duration": 1800,
+    "output": {
+      "id": "ebony war axe",
+      "count": 1
+    }
+  }
+]
