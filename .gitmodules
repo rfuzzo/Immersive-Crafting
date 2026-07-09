@@ -1,0 +1,4 @@
+[submodule "extern/tes3-records"]
+	path = extern/tes3-records
+	url = https://github.com/rfuzzo/tes3-records
+	shallow = true
