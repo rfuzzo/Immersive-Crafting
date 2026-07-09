@@ -44,8 +44,9 @@ Newest first — each CHANGELOG entry has the detailed checklist:
 
 ## Deferred features
 
-- **Skill gating follow-ups**: AC quality tiers behind Armorer skill;
-  tool QUALITY tiers (steel vs chitin axe -> speed/yield).
+- **Tool QUALITY tiers** (steel vs chitin axe -> speed/yield). (AC quality
+  variants: resolved — the Armorer material gate covers them, no per-variant
+  tiers wanted.)
 - **Cooking doneness** (simmer/cooked/burnt); SD meal path stays parallel.
 - **Farming Phase 2**: terrain planting (gaze at bare ground) — user is
   waiting on this one deliberately.
