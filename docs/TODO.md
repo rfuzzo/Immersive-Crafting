@@ -46,18 +46,14 @@ Newest first — each CHANGELOG entry has the detailed checklist:
 
 - **Skill gating follow-ups**: AC quality tiers behind Armorer skill;
   tool QUALITY tiers (steel vs chitin axe -> speed/yield).
-- **`hammer` tag** still holds WEAPON hammers — retag to smithing hammers
-  (steel finishing recipes reference it).
-- **Alloys**: bronze wants tin if a tin record ever exists; orichalcum/
-  adamantium/diamond have no ingot targets; glass could melt into
-  `ic_glass_component`.
 - **Cooking doneness** (simmer/cooked/burnt); SD meal path stays parallel.
-- **Farming Phase 2**: terrain planting (gaze at bare ground).
-- **Recipe guide niceties**: ghost icons for missing ingredients;
-  craft-again button; open grid stations on the Recipes strip by default
-  (the "more clicking than Minecraft" note — parked).
-- **Milestone reveal order**: build recipes are all visible from the start;
-  option to stage the reveal (firepit -> bricks -> kiln...) if wanted.
+- **Farming Phase 2**: terrain planting (gaze at bare ground) — user is
+  waiting on this one deliberately.
+- **Recipe guide niceties, round 2**: craft-again button; open grid stations
+  on the Recipes strip by default. (Ghost slots + Craftable filter: DONE.)
+- **Equipment sets from the new ingots** (copper/bronze/orichalcum/
+  adamantium/ebony/daedric weapons + armor via the mold system) — user-owned
+  design + balance.
 - **Debuff-instead-of-block equip gate mode** (setting) — see the gating
   entry in CHANGELOG for the design fork.
 - AC "menus-off" ESP patch when the mwscript UI wears thin; HW bloods/fats
