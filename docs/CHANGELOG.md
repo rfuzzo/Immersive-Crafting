@@ -1393,3 +1393,21 @@ skill potion lets it stay until it expires; chitin staff gates on Blunt
 Weapon; arrows never gate; toggle off works; skill-up while wearing nothing
 odd (cache); FlexTag stagger — an item equipped in the first seconds may
 gate by fallback until relog (accepted, conservative).
+
+## Mesh-based material gating for enchanted items (built 2026-07-07)
+
+User's trick: dynamic records (player-enchanted items) can never be
+pre-tagged — but they keep the base item's MESH, and meshes classify
+material perfectly. tools/gen_mesh_gating.py scans the extern/tes3-records
+dumps for every Armor/Weapon record with a material tag and writes
+gating/meshes.json (mesh path -> material; 1222 meshes from 1978 tagged
+records across Morrowind/OAAB/TR/TD + the integrated mods; shared-mesh
+conflicts keep the higher tier — all reviewed benign: tanto iron/steel,
+imperial studded leather 10). equipGate resolution is now: record TAG ->
+MESH -> value fallback; an enchanted daedric claymore gates at 80, an
+enchanted iron sword stays 10. Regenerate meshes.json when materials.json
+gains materials or the tag data grows.
+
+Verify in-game: enchant an iron weapon at low skill (should stay wearable),
+a daedric one (should strip); pre-enchanted uniques with tagged base ids
+unaffected.
