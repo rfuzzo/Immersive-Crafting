@@ -1203,15 +1203,6 @@ halberd:
   - T_Rea_Regular_Halberd_Bloodlett
   - T_Rga_Yoku_Halberd_01
   - T_We_Wenbone_Halberd_01
-hammer:
-  - T_Com_Farm_Sledgehammer_01
-  - T_Com_Iron_Longhammer_01
-  - T_Com_Steel_Longhammer_01
-  - T_De_Ind_BellHammer_01
-  - T_Imp_Silver_Longhammer_01
-  - T_Nor_UNI_HammerOlfor
-  - T_Nor_UNI_HammerStorig
-  - T_Nor_UNI_Runic_Hammer_01
 imperial:
   - T_Imp_Legion_Arrow_01
   - T_Imp_Legion_Battleaxe_01

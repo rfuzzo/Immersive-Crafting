@@ -87,6 +87,8 @@ local layout = nil ---@type CContext.Layout?
 local windowSize = WINDOW_SIZE ---@type any initial size for THIS station's layout (set on open)
 local element = nil
 local placed = {} ---@type table<string, {recordId:string, icon:string?, count:integer}> slotId -> placed stack (grid slots always hold 1; process slots stack)
+local ghosts = {} ---@type table<string, string> slotId -> ingredient matcher the applied recipe still wants there (rendered as a translucent "ghost" in the empty slot)
+local guideCraftable = false ---@type boolean recipe guide filter: only recipes craftable from the current inventory
 local selectedSlot = nil ---@type string? input slot the next picked material goes into
 local toolSlots = {} ---@type table<integer, {recordId:string?, icon:string?}> 1..TOOL_SLOTS -> player-slotted tool (alchemy apparatus style; never consumed)
 local selectedToolSlot = nil ---@type integer? tool slot awaiting a pick (mutually exclusive with selectedSlot)
@@ -580,18 +582,91 @@ local function recipeIngredientSummary(r)
     return '- ' .. table.concat(parts, '\n- ')
 end
 
+--- Snapshot of the inventory as a claimable pool { recordId, icon, available }.
+local function inventoryPool()
+    local pool, order = {}, {}
+    for _, item in ipairs(types.Actor.inventory(self):getAll()) do
+        local rid = item.recordId
+        local e = pool[rid]
+        if not e then
+            e = { recordId = rid, icon = itemIconPath(item), available = 0 }
+            pool[rid] = e
+            order[#order + 1] = e
+        end
+        e.available = e.available + (item.count or 1)
+    end
+    return order
+end
+
+--- Can this recipe be crafted from the CURRENT inventory? Ingredient counts
+--- only (greedy tag claiming, fuel by burn value) — missing TOOLS still show
+--- as "(needs X)" and shouldn't hide the recipe from the Craftable filter.
+---@param r CShapedRecipe|CProcessRecipe
+---@return boolean
+local function canMakeNow(r)
+    local pool = inventoryPool()
+    local function claim(matcher, n)
+        for _, e in ipairs(pool) do
+            if n <= 0 then break end
+            if e.available > 0 and lib.matchesTag(e.recordId, matcher) then
+                local take = math.min(e.available, n)
+                e.available = e.available - take
+                n = n - take
+            end
+        end
+        return n <= 0
+    end
+    if r.pattern then
+        -- count each grid symbol's cells
+        local needs = {}
+        for _, rowStr in ipairs(r.pattern) do
+            for col = 1, #rowStr do
+                local sym = rowStr:sub(col, col)
+                if sym ~= ' ' and sym ~= '.' then
+                    needs[r.key[sym]] = (needs[r.key[sym]] or 0) + 1
+                end
+            end
+        end
+        for matcher, n in pairs(needs) do
+            if not claim(matcher, n) then return false end
+        end
+    elseif r.inputs then
+        local fuelNeed = 0
+        for _, line in ipairs(r.inputs) do
+            if line.fuel then
+                fuelNeed = fuelNeed + line.fuel
+            elseif not claim(line.id, line.count or 1) then
+                return false
+            end
+        end
+        if fuelNeed > 0 then
+            local have = 0
+            for _, e in ipairs(pool) do
+                if e.available > 0 then
+                    have = have + lib.fuelValue(e.recordId) * e.available
+                end
+            end
+            if have < fuelNeed then return false end
+        end
+    end
+    return true
+end
+
 --- Strip entries for the recipe guide: one per recipe, output icon + count.
 --- The tooltip carries the recipe name plus its ingredient summary.
 --- Progression gating: recipes tagged with a `milestone` stay HIDDEN from the
 --- guide until the player has built (or used) that station tier — raw molds
 --- before the first kiln would only be noise. Matching is never gated: placed
 --- items still craft. "Show all recipes" bypasses the filter.
+--- The guide's Craftable toggle (guideCraftable) additionally filters to
+--- recipes the current inventory can pay for.
 local function recipeEntries()
     local progressState = require('scripts.Immersive-Crafting.progressState')
     local showAll = storage.playerSection('SettingsImmersiveCrafting'):get('ShowAllRecipes') == true
     local entries = {}
     for _, r in ipairs(stationRecipes()) do
         local hidden = r.milestone and not showAll and not progressState.has(r.milestone)
+        if not hidden and guideCraftable and not canMakeNow(r) then hidden = true end
         if not hidden then
             local icon, n
             if r.sdMeal then
@@ -610,22 +685,6 @@ local function recipeEntries()
         end
     end
     return entries
-end
-
---- Snapshot of the inventory as a claimable pool { recordId, icon, available }.
-local function inventoryPool()
-    local pool, order = {}, {}
-    for _, item in ipairs(types.Actor.inventory(self):getAll()) do
-        local rid = item.recordId
-        local e = pool[rid]
-        if not e then
-            e = { recordId = rid, icon = itemIconPath(item), available = 0 }
-            pool[rid] = e
-            order[#order + 1] = e
-        end
-        e.available = e.available + (item.count or 1)
-    end
-    return order
 end
 
 --- "Pick an outcome": auto-place the recipe's ingredients from the inventory
@@ -647,6 +706,7 @@ local function applyRecipe(recipeId)
     if not recipe then return end
 
     placed = {}
+    ghosts = {}
     selectedSlot = nil
     selectedToolSlot = nil
     autoFilled = {} -- the recipe's tools may auto-slot on the next resolve
@@ -680,6 +740,8 @@ local function applyRecipe(recipeId)
                         placed[('%d:%d'):format(r, col)] =
                         { recordId = got[1].recordId, icon = got[1].icon, count = 1 }
                     else
+                        -- ghost: show what the recipe wants in the empty cell
+                        ghosts[('%d:%d'):format(r, col)] = matcher
                         missing[matcher] = (missing[matcher] or 0) + 1
                     end
                 end
@@ -687,21 +749,33 @@ local function applyRecipe(recipeId)
         end
     elseif recipe.inputs then
         for _, line in ipairs(recipe.inputs) do
-            local got, short = claim(line.id, line.count or 1)
-            if short > 0 then missing[line.id] = (missing[line.id] or 0) + short end
-            for _, stack in ipairs(got) do
-                for _, sid in ipairs(slotOrder()) do
-                    if not placed[sid] and slotAccepts(sid, stack.recordId) then
-                        placed[sid] = { recordId = stack.recordId, icon = stack.icon, count = stack.count }
-                        break
+            if line.id then -- fuel lines have no matcher; the Fuel slot guides them
+                local got, short = claim(line.id, line.count or 1)
+                if short > 0 then missing[line.id] = (missing[line.id] or 0) + short end
+                for _, stack in ipairs(got) do
+                    for _, sid in ipairs(slotOrder()) do
+                        if not placed[sid] and slotAccepts(sid, stack.recordId) then
+                            placed[sid] = { recordId = stack.recordId, icon = stack.icon, count = stack.count }
+                            break
+                        end
+                    end
+                end
+                -- ghost the shortfall into the next free accepting slot
+                if short > 0 then
+                    for _, sid in ipairs(slotOrder()) do
+                        if not placed[sid] and not ghosts[sid] and slotAccepts(sid, line.id) then
+                            ghosts[sid] = line.id
+                            break
+                        end
                     end
                 end
             end
         end
     end
 
-    stripMode = 'materials' -- back to materials: fill the gaps, then craft
-    ItemPicker.reset()
+    -- stay on the current strip tab: flipping back to Materials here lost the
+    -- player's Recipes choice on every apply (the old "forgot my tab" bug);
+    -- the ghosts show what still needs filling either way
     ensureSelection()
 
     if next(missing) then
@@ -725,6 +799,15 @@ end
 ---@type CraftingSlotView
 local view = {
     selectedSlot = nil, -- refreshed each rebuild
+    -- what an applied recipe still WANTS in an empty slot (translucent ghost)
+    ghostView = function(slotId)
+        local matcher = ghosts[slotId]
+        if not matcher or placed[slotId] then return nil end
+        return {
+            resource = textureForPath(recordIconPath(matcher)), -- nil for tags
+            label = recordDisplayName(matcher),
+        }
+    end,
     slotView = function(slotId)
         local cell = placed[slotId]
         if not cell then return nil end
@@ -1151,7 +1234,17 @@ function this.rebuild()
                         refresh = function() this.rebuild() end,
                     }, stripSpace, {
                         title = 'Recipes',
-                        button = { label = 'Materials', onClick = toggleStrip },
+                        buttons = {
+                            -- Craftable filter: only what the inventory can pay for
+                            {
+                                label = guideCraftable and 'Craftable' or 'All',
+                                onClick = function()
+                                    guideCraftable = not guideCraftable
+                                    this.rebuild()
+                                end,
+                            },
+                            { label = 'Materials', onClick = toggleStrip },
+                        },
                     })
                     or ItemPicker.Body(availableMaterials(), {
                         onPick = view.onPick,
@@ -1400,11 +1493,13 @@ function this.open(handlerCtx)
     windowSize = v2(WINDOW_SIZE.x,
         math.max(WINDOW_SIZE.y, 170 + inputRows * 48 + 56 + STRIP_MIN_ROWS * 42))
     placed = {}
+    ghosts = {}
     selectedSlot = nil
     toolSlots = {}
     selectedToolSlot = nil
     autoFilled = {}
     stripMode = 'materials'
+    guideCraftable = false
     isOpen = true
     ItemPicker.reset()
     -- progression: USING a station counts like building one (a kiln found in

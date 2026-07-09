@@ -19,6 +19,7 @@ local self = require('openmw.self')
 
 local conditions = require('scripts.Immersive-Crafting.conditions')
 local lib = require('scripts.Immersive-Crafting.lib')
+local progressState = require('scripts.Immersive-Crafting.progressState')
 
 local SCAN_RADIUS = 200 -- components must lie within this range of the player
 
@@ -83,10 +84,14 @@ function this.rescan()
     if #items == 0 then return false end
 
     for _, def in ipairs(defs) do
-        local candidate = tryConstruction(def, items)
-        if candidate then
-            this.current = candidate
-            return true
+        -- sequential reveal: a tier's construction only becomes buildable once
+        -- its prerequisite milestone is unlocked (firepit -> kiln -> furnace)
+        if not def.requires or progressState.has(def.requires) then
+            local candidate = tryConstruction(def, items)
+            if candidate then
+                this.current = candidate
+                return true
+            end
         end
     end
     return false

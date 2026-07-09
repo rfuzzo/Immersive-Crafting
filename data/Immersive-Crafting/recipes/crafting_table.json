@@ -246,7 +246,7 @@
       "   "
     ],
     "key": {
-      "A": "iron_ingot",
+      "A": "T_Com_MetalPieceIron_01",
       "B": "plank"
     },
     "output": {
@@ -287,7 +287,7 @@
       "B": "ic_stick"
     },
     "tools": [
-      "chitin club"
+      "hammer"
     ],
     "output": {
       "id": "ic_grill",

@@ -4,12 +4,21 @@
     "label": "Firepit",
     "activator": "ic_station_firepit_a",
     "components": [
-      { "id": "Stone", "count": 2 },
-      { "id": "Wood", "count": 2 }
+      {
+        "id": "Stone",
+        "count": 2
+      },
+      {
+        "id": "Wood",
+        "count": 2
+      }
     ],
     "holdTime": 2.5,
     "salvage": [
-      { "id": "ic_stone", "count": 2 }
+      {
+        "id": "ic_stone",
+        "count": 2
+      }
     ]
   },
   {
@@ -17,42 +26,75 @@
     "label": "Charcoal Pit",
     "activator": "ic_station_charcoalpit_a",
     "components": [
-      { "id": "Wood", "count": 4 },
-      { "id": "Stone", "count": 2 }
+      {
+        "id": "Wood",
+        "count": 4
+      },
+      {
+        "id": "Stone",
+        "count": 2
+      }
     ],
     "tools": [
       "shovel"
     ],
     "holdTime": 3,
     "salvage": [
-      { "id": "ic_wood", "count": 2 }
-    ]
+      {
+        "id": "ic_wood",
+        "count": 2
+      }
+    ],
+    "requires": "firepit"
   },
   {
     "id": "kiln",
     "label": "Kiln",
     "activator": "ic_station_kiln_a",
     "components": [
-      { "id": "ic_clay_brick", "count": 6 },
-      { "id": "Clay", "count": 2 }
+      {
+        "id": "ic_clay_brick",
+        "count": 8
+      },
+      {
+        "id": "Clay",
+        "count": 2
+      }
     ],
     "holdTime": 4,
     "salvage": [
-      { "id": "ic_clay_brick", "count": 3 }
-    ]
+      {
+        "id": "ic_clay_brick",
+        "count": 4
+      }
+    ],
+    "requires": "firepit"
   },
   {
     "id": "furnace",
     "label": "Furnace",
     "activator": "ic_station_furnace_a",
     "components": [
-      { "id": "ic_clay_brick", "count": 8 },
-      { "id": "crucible", "count": 1 }
+      {
+        "id": "ic_fire_brick",
+        "count": 8
+      },
+      {
+        "id": "crucible",
+        "count": 1
+      }
     ],
     "holdTime": 4,
     "salvage": [
-      { "id": "ic_clay_brick", "count": 4 },
-      { "id": "T_Rga_Crucible_01", "count": 1 }
-    ]
+      {
+        "id": "ic_fire_brick",
+        "count": 4
+      },
+      {
+        "id": "T_Rga_Crucible_01",
+        "count": 1
+      }
+    ],
+    "requires": "kiln"
   }
 ]

@@ -223,15 +223,23 @@ function this.Body(items, view, space, header)
         headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(6, 0) } })
         headerChildren[#headerChildren + 1] = pageButton('>', page < pages, 1, view)
     end
-    if header and header.button then
-        -- grow spacer pushes the toggle to the header's right edge (the header
-        -- row is given `stretch` below so this fills)
+    -- right-aligned header buttons (grow spacer pushes them to the edge; the
+    -- header row is given `stretch` below so it fills). `button` is single-
+    -- button sugar; `buttons` renders several (the guide's Craftable filter
+    -- next to the Materials/Recipes toggle).
+    local buttons = header and (header.buttons or (header.button and { header.button })) or nil
+    if buttons and #buttons > 0 then
         headerChildren[#headerChildren + 1] = { type = ui.TYPE.Widget, external = { grow = 1 }, props = { size = v2(0, 0) } }
-        headerChildren[#headerChildren + 1] = c.button({
-            name = 'strip_toggle',
-            label = header.button.label,
-            onClick = header.button.onClick,
-        })
+        for i, b in ipairs(buttons) do
+            if i > 1 then
+                headerChildren[#headerChildren + 1] = spacer({ props = { size = v2(6, 0) } })
+            end
+            headerChildren[#headerChildren + 1] = c.button({
+                name = 'strip_button_' .. i,
+                label = b.label,
+                onClick = b.onClick,
+            })
+        end
     end
 
     -- item slots for the current page

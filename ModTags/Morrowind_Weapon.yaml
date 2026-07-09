@@ -631,11 +631,6 @@ halberd:
   - iron halberd
   - shockbite halberd
   - steel halberd
-hammer:
-  - 6th bell hammer
-  - banhammer_unique
-  - stendar_hammer_unique
-  - stendar_hammer_unique_x
 imperial:
   - imperial broadsword
   - imperial netch blade

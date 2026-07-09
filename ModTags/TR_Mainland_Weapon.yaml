@@ -318,10 +318,6 @@ halberd:
   - TR_m7_Kundasirai_Halberd
   - TR_m7_Ns_SkewerHalberd
   - TR_m7_q_UssiranHalberd
-hammer:
-  - TR_m1_Adadpaliki_Vhammer
-  - TR_m3_Kaladanhammer_i3-591-imp
-  - TR_m3_OE_ICHereticHammer
 imperial:
   - TR_m1_ShalathChampBlade
   - TR_m3_OE_CuriaVaultDagger02

@@ -11,6 +11,7 @@ ModTags FlexTag YAMLs.
 - `ic_chitin_dust`
 - `ic_clay_brick`
 - `ic_cloth`
+- `ic_fire_brick`
 - `ic_glass_component`
 - `ic_grill`
 - `ic_ingot_copper`
@@ -106,7 +107,6 @@ ModTags FlexTag YAMLs.
 - `bracer`
 - `bronze`
 - `chitin`
-- `chitin club`
 - `chitin_fragment`
 - `chitin_plate`
 - `clay`
@@ -120,6 +120,7 @@ ModTags FlexTag YAMLs.
 - `hammer`
 - `helmet`
 - `hide`
+- `ingred_ash_salts_01`
 - `ingred_corkbulb_root_01`
 - `ingred_hackle-lo_leaf_01`
 - `ingred_netch_leather_01`
@@ -128,7 +129,6 @@ ModTags FlexTag YAMLs.
 - `ingred_scrap_metal_01`
 - `ingred_trama_root_01`
 - `iron`
-- `iron_ingot`
 - `knife`
 - `longsword`
 - `mortar`

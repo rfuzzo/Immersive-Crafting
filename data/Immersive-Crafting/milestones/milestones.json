@@ -14,7 +14,7 @@
     "lines": [
       "You can cook here — and pit-fire clay into bricks (slowly,",
       "and some will crack). Dig clay at the waterside with a shovel.",
-      "Six good bricks and some clay build a kiln."
+      "Eight good bricks and some clay build a kiln."
     ]
   },
   {
@@ -23,7 +23,8 @@
     "lines": [
       "The kiln fires ceramics and molds reliably. Shape raw molds",
       "at a crafting table, burn them here, then cast metal in them.",
-      "Eight bricks and a crucible build a furnace."
+      "Fire bricks (clay and ash salts, kiln-fired) and a crucible",
+      "build a furnace."
     ]
   },
   {

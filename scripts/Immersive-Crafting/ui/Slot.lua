@@ -22,7 +22,7 @@ local COLORS = {
     missing = util.color.rgb(0.62, 0.20, 0.16),  -- required but not owned
 }
 
----@param opts { name: string, resource: any?, count: integer|string?, size: any?, state: string?, onClick: fun()?, noborder: boolean?, tooltip: string? }
+---@param opts { name: string, resource: any?, count: integer|string?, size: any?, state: string?, onClick: fun()?, noborder: boolean?, tooltip: string?, alpha: number? } alpha < 1 renders the icon translucent (recipe-ghost slots)
 ---@return table layout
 function this.Slot(opts)
     local iconProps = { size = opts.size or DEFAULT_SIZE }
@@ -31,6 +31,7 @@ function this.Slot(opts)
         resource = whiteTexture
         iconProps.color = COLORS[opts.state or 'empty'] or COLORS.empty
     end
+    if opts.alpha then iconProps.alpha = opts.alpha end -- ghost rendering
 
     iconProps.resource = resource
 

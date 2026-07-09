@@ -53,18 +53,23 @@ function this.Body(layout, view)
         if not inp.aside then
             local slotId = inp.key
             local placed = view.slotView(slotId)
+            -- an applied recipe's unfilled slot shows a translucent GHOST of
+            -- the wanted ingredient
+            local ghost = (not placed) and view.ghostView and view.ghostView(slotId) or nil
             -- selected even when FILLED: process slots keep their selection so
             -- picking the same material stacks — the highlight must show that
             local state = (view.selectedSlot == slotId) and 'selected' or 'empty'
             local inputSlot = Slot.Slot({
                 name = 'slot_' .. slotId,
-                resource = placed and placed.resource or nil,
+                resource = placed and placed.resource or (ghost and ghost.resource) or nil,
                 count = placed and placed.count or nil,
                 size = ICON_SIZE,
                 state = state,
-                -- filled: the placed item's name; empty: the slot's role, so
-                -- the Input/Fuel row explains itself on hover
-                tooltip = placed and placed.label or inp.label,
+                alpha = (not placed and ghost and ghost.resource) and 0.45 or nil,
+                -- filled: the placed item's name; ghosted: what is needed;
+                -- empty: the slot's role, so the Input/Fuel row explains itself
+                tooltip = placed and placed.label
+                    or (ghost and ('Needs: ' .. (ghost.label or '?'))) or inp.label,
                 onClick = function() view.onSlotClick(slotId) end,
             })
             slots[#slots + 1] = labelled(inp.label, inputSlot)

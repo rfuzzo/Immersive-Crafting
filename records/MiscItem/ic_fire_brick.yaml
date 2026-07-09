@@ -1,0 +1,12 @@
+type: MiscItem
+flags: ""
+id: ic_fire_brick
+name: Fire Brick
+script: ""
+# interim: bread loaf again (see ic_clay_brick) — replace in the mesh pass
+mesh: n\Ingred_bread_01.NIF
+icon: m\Tx_bread_01.tga
+data:
+  weight: 4.0
+  value: 20
+  flags: ""

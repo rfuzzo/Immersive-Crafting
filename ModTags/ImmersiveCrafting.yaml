@@ -89,3 +89,23 @@ chitin_fragment:
 
 plank:
   - ic_plank
+# ── smithing hammers (the `hammer` TOOL tag) ──
+# The per-plugin Weapon files no longer tag warhammers as 'hammer' — a
+# banhammer is not a smithing tool. These are the repair/armorer's hammers
+# (vanilla tiers, TD/TR/OAAB smith hammers incl. the flatter and mallet).
+# Mirror this change upstream in tes3-records when convenient.
+hammer:
+  - hammer_repair
+  - repair_journeyman_01
+  - repair_master_01
+  - repair_grandmaster_01
+  - repair_secretmaster_01
+  - T_Com_Hammer_Repair_01
+  - T_Com_Hammer_Repair_02
+  - T_Dwe_Hammer_Repair_01
+  - T_Dwe_UNI_HammerGharen_01
+  - TR_m4_TJ_RepairHammer
+  - TR_m4_AndothDweRuinHammer02
+  - AB_Repair_DwrvHammer
+  - AB_Repair_Mallet_01
+  - AB_Repair_Flatter_01

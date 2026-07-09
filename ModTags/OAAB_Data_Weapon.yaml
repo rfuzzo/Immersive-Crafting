@@ -279,10 +279,6 @@ halberd:
   - AB_w_DreughHalberd
   - AB_w_EbonyHalberd
   - AB_w_SilverHalberd
-hammer:
-  - AB_w_DwrvSpectreHammer
-  - AB_w_ToolHammer
-  - AB_w_ToolSmithHammer
 imperial:
   - AB_w_ImpArrow
   - AB_w_ImpBow

@@ -1411,3 +1411,53 @@ gains materials or the tag data grows.
 Verify in-game: enchant an iron weapon at low skill (should stay wearable),
 a daedric one (should strip); pre-enchanted uniques with tagged base ids
 unaffected.
+
+## Guide QoL, smithing hammers, sequential reveal, cost pass (built 2026-07-07)
+
+**Recipe guide / grid QoL**:
+- GHOST slots: applying a recipe now leaves a translucent icon (tooltip
+  "Needs: X") in every cell/slot it could not fill from the inventory —
+  grid AND process layouts (incl. after crafting: placed clears, ghosts
+  stay for the re-craft). Tag matchers without a resolvable icon ghost as
+  tooltip-only.
+- Craftable filter: the Recipes strip gained an All/Craftable toggle —
+  Craftable hides recipes the current inventory cannot pay for (ingredients
+  + fuel by burn value; missing TOOLS don't hide, they still show as
+  "needs"). ItemPicker headers support multiple right-aligned buttons now.
+- Tab bug FIXED: applyRecipe no longer force-flips the strip back to
+  Materials and no longer wipes the search/page (the "forgot my tab choice
+  after searching/crafting" report).
+
+**Smithing hammer tag** (done HERE — ModTags/ in this repo is what FlexTag
+loads; mirror upstream in tes3-records when convenient): the four
+*_Weapon.yaml 'hammer' sections are GONE (warhammers are not smithing
+tools); ImmersiveCrafting.yaml now tags the real ones — vanilla armorer's
+hammer tiers (hammer_repair, repair_journeyman/master/grandmaster/
+secretmaster_01), TD smith/dwemer repair hammers, TR repair hammers, OAAB
+dwemer hammer + mallet + flatter. MiscItem clutter hammers stay tagged
+(a wall hammer works a forge). All 'hammer' tool recipes (prongs, ebony
+arrows, miner's pick, grill, steel finishing) now truly want a smith hammer.
+
+**Sequential reveal** (ratified): constructions carry `requires` —
+charcoal pit + kiln need the firepit milestone, the furnace needs the kiln;
+buildScan won't offer a locked tier even with a complete set dropped.
+
+**Cost/progression pass** (user: kiln too cheap, wants real progression):
+- kiln: 8 bricks + 2 clay (was 6; salvage 4);
+- NEW ic_fire_brick (kiln-ONLY: 2 clay + 1 ash salts + fuel -> 2), and the
+  furnace now takes 8 FIRE bricks + crucible — the furnace is genuinely
+  kiln-tier now (pit-fired bricks cannot skip it). Interim mesh: bread
+  (again — mesh pass).
+- milestone popup texts updated to match.
+- Review findings fixed: bucket recipe used the nonexistent 'iron_ingot'
+  tag (LATENT BUG #5 — bucket was uncraftable) -> T_Com_MetalPieceIron_01;
+  grill's leftover 'chitin club' tool -> hammer.
+- Review notes left for balance (unchanged): ic_cloth woven from 3 ROPE
+  reads coarse (was string pre-rope-merge); mortar+pestle from 3 stones is
+  cheap vs its apparatus value; ebony arrows need only a table + hammer
+  (raw ebony is the real gate).
+
+Verify in-game: ghosts render + clear on fill; Craftable filter with a poor
+inventory; tab persists after searching + applying; prongs need a real
+armorer's hammer now; kiln build card hidden before the first firepit even
+with bricks dropped; furnace wants fire bricks; bucket craftable.

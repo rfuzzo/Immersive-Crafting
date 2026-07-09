@@ -291,6 +291,7 @@ end
 ---@field tools string[]|nil tools required in the inventory (NOT consumed; e.g. a shovel for the pit)
 ---@field holdTime number|nil hold-F seconds (default 3)
 ---@field salvage { id: string, count: integer }[]|nil granted when the built station is packed up (concrete record ids)
+---@field requires string|nil milestone that must be unlocked before this construction becomes buildable (sequential reveal: firepit -> kiln -> furnace)
 local function loadConstructions()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "constructions/") do
         if filename:match("%.json$") then
