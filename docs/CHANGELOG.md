@@ -1351,3 +1351,45 @@ shovel; molds hidden in table guide until kiln built/used; found world kiln
 unlocks on open; ShowAllRecipes bypass; legacy station items still swap+pack.
 Open: mesh for ic_clay_brick (bread interim!); balance failChance/durations;
 gaze-context-switch branch still unmerged (contextManager conflicts).
+
+## Equip gating rework: material-first, weapons too (built 2026-07-07)
+
+Design (user): gate by MATERIAL first, fall back to armor value / weapon
+damage only for untagged items; the gate skill is the item's OWN governing
+skill (chitin staff -> Blunt Weapon, glass tower shield -> Light Armor).
+Verified against the record data that material-first is NOT redundant:
+a daedric dagger (max dmg 12) must gate as daedric while an iron warhammer
+(max dmg 28) stays entry-tier — raw stats order them backwards.
+
+- data/gating/materials.json: material tag -> required skill level (iron 10,
+  steel 15, bonemold 20, silver 20, dwemer 35, dreugh/orcish 40,
+  stalhrim/adamantium 50, glass 55, ebony 65, daedric 80). 0 entries (fur,
+  hide, leather, wood, chitin 5...) explicitly NEVER gate, so cheap-material
+  uniques don't fall through to the fallback. Multiple matches take the MAX.
+  ('nordic' deliberately absent: the tag spans junk nordic fur AND mid nordic
+  mail — fur resolves via 'fur' 0, mail falls back by its AR.)
+- equipGate.lua rewritten: WEAPONS now gate too (weapon type -> skill:
+  short/long blade, blunt, axe, spear, marksman; ammo never); armor keeps the
+  engine's weight-class formula. Fallback for untagged items: baseArmor /
+  best max damage, ungated at/below 15. Gate checks the MODIFIED skill —
+  Fortify Skill effects let you overreach while they last (the watcher
+  strips the piece when they expire).
+- HARD BLOCK (strip + message) kept over a debuff: vanilla ALREADY has the
+  soft penalties (hit chance by weapon skill, armor rating scaled by armor
+  skill) — a debuff would duplicate them; the tier gate is the mod's
+  value-add and directly kills the run-to-Vivec daedric-at-level-1 classic.
+  A "penalty instead of block" setting stays on the TODO as a possible mode.
+- Settings: "Skill-gate armor and weapons" checkbox (default on).
+- Sanity table (script over extern/tes3-records + ModTags): chitin cuirass 5,
+  iron warhammer 10, steel longbow 15, indoril cuirass 45 (fallback by AR),
+  glass 55, ebony 65, daedric dagger/longsword/towershield 80.
+
+Also this session: docs/TODO.md split into docs/CHANGELOG.md (this build log)
++ a lean forward-looking TODO; rfuzzo/tes3-records added as a shallow
+reference submodule at extern/ (opt-in, not runtime data).
+
+Verify in-game: daedric loot strips at low skill with the message; fortify
+skill potion lets it stay until it expires; chitin staff gates on Blunt
+Weapon; arrows never gate; toggle off works; skill-up while wearing nothing
+odd (cache); FlexTag stagger — an item equipped in the first seconds may
+gate by fallback until relog (accepted, conservative).

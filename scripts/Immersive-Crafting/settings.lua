@@ -66,6 +66,17 @@ interfaces.Settings.registerGroup {
             default = false,
         },
         {
+            key = 'EquipGating',
+            renderer = 'checkbox',
+            name = 'Skill-gate armor and weapons',
+            description = 'Gear above your skill cannot be worn or wielded: the '
+                .. 'requirement comes from the item\'s material tier (iron 10 ... '
+                .. 'ebony 65, daedric 80), checked against its own governing skill '
+                .. '(armor weight class / weapon skill). Fortify Skill effects '
+                .. 'count while they last.',
+            default = true,
+        },
+        {
             key = 'TutorialPopups',
             renderer = 'checkbox',
             name = 'Tutorial popups',

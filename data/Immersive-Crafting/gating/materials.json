@@ -1,0 +1,22 @@
+{
+  "fur": 0,
+  "hide": 0,
+  "leather": 0,
+  "wood": 0,
+  "netch leather": 5,
+  "chitin": 5,
+  "imperial": 10,
+  "iron": 10,
+  "chainmail": 15,
+  "steel": 15,
+  "bonemold": 20,
+  "silver": 20,
+  "dwemer": 35,
+  "dreugh": 40,
+  "orcish": 40,
+  "stalhrim": 50,
+  "adamantium": 50,
+  "glass": 55,
+  "ebony": 65,
+  "daedric": 80
+}

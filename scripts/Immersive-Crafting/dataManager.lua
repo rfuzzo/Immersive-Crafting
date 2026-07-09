@@ -50,6 +50,7 @@ local this = {}
 ---@field fuels table<string, number> -- fuel matcher (tag or record id) -> burn units (see lib.fuelValue)
 ---@field constructions CConstruction[] -- build-in-place stations (see globalBuilding/buildScan)
 ---@field milestones table<string, { id: string, title: string, lines: string[] }> -- tutorial popup texts by milestone id
+---@field gating table<string, number> -- equip gating: material tag -> required skill level (0 = never gated; see equipGate)
 
 ---@type Registries
 GRegistries = {
@@ -65,6 +66,7 @@ GRegistries = {
     fuels = {},    -- fuel matcher (tag or record id) -> burn units
     constructions = {},
     milestones = {},
+    gating = {},   -- material tag -> required skill level (equip gating)
 }
 
 local DATA_ROOT = constants.DATA_ROOT
@@ -303,6 +305,20 @@ local function loadConstructions()
     log.info(('Loaded %d constructions'):format(#GRegistries.constructions))
 end
 
+--- Equip gating table (gating/*.json): `{ "<material tag>": <required skill> }`
+--- maps. The gate skill LEVEL comes from the item's material; the gate SKILL
+--- comes from the item itself (armor weight class / weapon type) — see
+--- equipGate.lua. A value of 0 explicitly marks a material as never gated.
+local function loadGating()
+    for filename in vfs.pathsWithPrefix(DATA_ROOT .. "gating/") do
+        if filename:match("%.json$") then
+            local data = io.loadJsonFile(filename)
+            if data then mergeMap(GRegistries.gating, data) end
+        end
+    end
+    log.info(('Loaded %d gating materials'):format(len(GRegistries.gating)))
+end
+
 --- Milestone popup texts (milestones/*.json): { id, title, lines[] }.
 local function loadMilestones()
     for filename in vfs.pathsWithPrefix(DATA_ROOT .. "milestones/") do
@@ -321,6 +337,7 @@ function this.loadAllData()
     loadCrops()
     loadDressing()
     loadFuels()
+    loadGating()
     loadConstructions()
     loadMilestones()
     loadHandlers()

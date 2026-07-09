@@ -1,34 +1,53 @@
 --[[
-    Equipment skill gating (player-side, ALL armor — looted, bought or crafted).
+    Equipment skill gating (player-side, ALL armor AND weapons — looted,
+    bought or crafted).
 
-    Natural progression: armor above the player's skill cannot be worn. A
-    throttled watcher compares the worn equipment against the governing armor
-    skill and strips anything the player is not skilled enough for, with a
-    message saying what is needed. (Vanilla already scales armor RATING by
-    skill — this adds the hard gate on top.)
+    Natural progression: gear above the player's skill cannot be equipped. A
+    throttled watcher compares the worn/wielded equipment against the item's
+    governing skill and strips anything the player is not skilled enough for,
+    with a message saying what is needed. (Vanilla already scales armor
+    RATING by skill and hit chance by weapon skill — this adds the hard tier
+    gate on top, killing the run-to-Vivec-for-a-daedric-longsword classic.)
 
-    The required skill is derived from the item itself, so it covers every
-    armor mod without authored data: in Morrowind every piece of a set shares
-    the set's base armor value (iron 10 ... glass 50, ebony 60, daedric 80),
-    which maps directly onto a 0-100 skill requirement.
+    Requirement resolution, MATERIAL FIRST:
+    1. The item's material tag (data/gating/materials.json: iron 10 ... glass
+       55, ebony 65, daedric 80) sets the requirement — every piece of a set
+       gates at the same level, and a daedric DAGGER (max dmg 12) gates as
+       daedric, not below an iron warhammer (max dmg 28) the way raw stats
+       would order them. A 0 entry marks a material as never gated (fur, hide,
+       chitin...) so cheap-material uniques don't fall through to the value
+       fallback. Multiple matching materials take the HIGHEST requirement.
+    2. Untagged items (mods without tag data) fall back to the item's own
+       numbers: armor -> base armor rating, weapons -> best max damage.
+       Anything at/below MIN_REQUIREMENT stays ungated.
 
-    The governing skill (Light/Medium/Heavy Armor) is computed the same way
-    the engine does it: item weight vs the slot's reference-weight GMST
-    (iHelmWeight etc.) times fLightMaxMod / fMedMaxMod.
+    The governing SKILL comes from the item itself:
+    - armor: Light/Medium/Heavy Armor via the engine's weight-class formula
+      (item weight vs the slot's reference-weight GMST x fLightMaxMod /
+      fMedMaxMod) — a chitin cuirass gates on Light Armor;
+    - weapons: the weapon type's skill — a chitin STAFF gates on Blunt
+      Weapon, a bonemold long bow on Marksman. Ammo is never gated.
+
+    The gate checks the MODIFIED skill: Fortify Skill effects let you
+    overreach while they last (and the watcher strips the piece when they
+    run out) — very Morrowind.
 ]]
 
 local core = require('openmw.core')
+local storage = require('openmw.storage')
 local types = require('openmw.types')
 local omwSelf = require('openmw.self')
 local ui = require('openmw.ui')
 
+local lib = require('scripts.Immersive-Crafting.lib')
 local log = require('scripts.Immersive-Crafting.log')
 
-local CHECK_INTERVAL = 0.5 -- seconds between equipment checks
-local SKILL_FACTOR = 1.0   -- requiredSkill = baseArmor * factor
-local MIN_REQUIREMENT = 15 -- anything at/below is always wearable (iron, chitin, hide)
+local CHECK_INTERVAL = 0.5  -- seconds between equipment checks
+local MIN_REQUIREMENT = 15  -- fallback path: at/below is always equippable
 
--- slot type -> reference-weight GMST (the engine's light/medium/heavy formula)
+local settings = storage.playerSection('SettingsImmersiveCrafting')
+
+-- armor slot type -> reference-weight GMST (the engine's light/medium/heavy formula)
 local REF_WEIGHT_GMST = {
     [types.Armor.TYPE.Helmet]    = 'iHelmWeight',
     [types.Armor.TYPE.Cuirass]   = 'iCuirassWeight',
@@ -43,14 +62,33 @@ local REF_WEIGHT_GMST = {
     [types.Armor.TYPE.Shield]    = 'iShieldWeight',
 }
 
+-- weapon type -> its governing skill (ammo types are absent = never gated)
+local WEAPON_SKILL = {
+    [types.Weapon.TYPE.ShortBladeOneHand] = { id = 'shortblade', name = 'Short Blade' },
+    [types.Weapon.TYPE.LongBladeOneHand]  = { id = 'longblade', name = 'Long Blade' },
+    [types.Weapon.TYPE.LongBladeTwoHand]  = { id = 'longblade', name = 'Long Blade' },
+    [types.Weapon.TYPE.BluntOneHand]      = { id = 'bluntweapon', name = 'Blunt Weapon' },
+    [types.Weapon.TYPE.BluntTwoClose]     = { id = 'bluntweapon', name = 'Blunt Weapon' },
+    [types.Weapon.TYPE.BluntTwoWide]      = { id = 'bluntweapon', name = 'Blunt Weapon' },
+    [types.Weapon.TYPE.AxeOneHand]        = { id = 'axe', name = 'Axe' },
+    [types.Weapon.TYPE.AxeTwoHand]        = { id = 'axe', name = 'Axe' },
+    [types.Weapon.TYPE.SpearTwoWide]      = { id = 'spear', name = 'Spear' },
+    [types.Weapon.TYPE.MarksmanBow]       = { id = 'marksman', name = 'Marksman' },
+    [types.Weapon.TYPE.MarksmanCrossbow]  = { id = 'marksman', name = 'Marksman' },
+    [types.Weapon.TYPE.MarksmanThrown]    = { id = 'marksman', name = 'Marksman' },
+}
+
 local this = {}
 
 local timer = 0
-local gateCache = {} ---@type table<string, { req: integer, skillId: string, skillName: string }|false> recordId -> gate info (false = ungated)
+-- recordId -> gate info (false = ungated). NOTE: FlexTag tag files stagger in
+-- after load; an item gated before its tags arrive caches its FALLBACK gate —
+-- conservative and roughly right, so the cache is kept simple.
+local gateCache = {} ---@type table<string, { req: integer, skillId: string, skillName: string, name: string? }|false>
 
 ---@param rec any armor record
 ---@return string? skillId, string? skillName
-local function governingSkill(rec)
+local function armorSkill(rec)
     local gmst = REF_WEIGHT_GMST[rec.type]
     if not gmst then return nil, nil end
     local ref = core.getGMST(gmst)
@@ -65,10 +103,24 @@ local function governingSkill(rec)
     return 'heavyarmor', 'Heavy Armor'
 end
 
---- Gate info for an armor record id, or false when the piece is ungated
---- (requirement at/below MIN_REQUIREMENT, or no classifiable slot).
----@param item any equipped armor item
----@return { req: integer, skillId: string, skillName: string }|false
+--- Material requirement for a record id: the HIGHEST matching entry in the
+--- gating table, or nil when no material matches (-> value fallback).
+---@param recordId string
+---@return number?
+local function materialRequirement(recordId)
+    local best = nil
+    for tag, req in pairs((GRegistries and GRegistries.gating) or {}) do
+        if type(req) == 'number' and (best == nil or req > best)
+            and lib.matchesTag(recordId, tag) then
+            best = req
+        end
+    end
+    return best
+end
+
+--- Gate info for an equipped item, or false when it is ungated.
+---@param item any equipped armor or weapon item
+---@return { req: integer, skillId: string, skillName: string, name: string? }|false
 local function gateFor(item)
     local cached = gateCache[item.recordId]
     if cached ~= nil then return cached end
@@ -76,10 +128,30 @@ local function gateFor(item)
     local gate = false
     local ok, rec = pcall(function() return item.type.record(item) end)
     if ok and rec then
-        local req = math.min(100, math.floor((rec.baseArmor or 0) * SKILL_FACTOR + 0.5))
-        if req > MIN_REQUIREMENT then
-            local skillId, skillName = governingSkill(rec)
-            if skillId then
+        -- the item's governing skill
+        local skillId, skillName
+        if item.type == types.Armor then
+            skillId, skillName = armorSkill(rec)
+        elseif item.type == types.Weapon then
+            local skill = WEAPON_SKILL[rec.type]
+            if skill then skillId, skillName = skill.id, skill.name end
+        end
+
+        if skillId then
+            -- 1. material tier; 2. the item's own numbers (untagged mods)
+            local req = materialRequirement(item.recordId)
+            if req == nil then
+                local value = 0
+                if item.type == types.Armor then
+                    value = rec.baseArmor or 0
+                else
+                    value = math.max(rec.chopMaxDamage or 0,
+                        rec.slashMaxDamage or 0, rec.thrustMaxDamage or 0)
+                end
+                req = value > MIN_REQUIREMENT and value or 0
+            end
+            req = math.min(100, math.floor(req + 0.5))
+            if req > 0 then
                 gate = { req = req, skillId = skillId, skillName = skillName, name = rec.name }
             end
         end
@@ -88,21 +160,23 @@ local function gateFor(item)
     return gate
 end
 
---- Throttled equipment check: strip any worn armor above the player's skill.
+--- Throttled equipment check: strip any worn/wielded gear above the player's
+--- (modified) skill.
 ---@param dt number
 function this.onUpdate(dt)
     timer = timer + dt
     if timer < CHECK_INTERVAL then return end
     timer = 0
+    if settings:get('EquipGating') == false then return end
 
     local equipment = types.Actor.getEquipment(omwSelf)
     local changed = false
     for slot, item in pairs(equipment) do
-        if item and item.type == types.Armor then
+        if item and (item.type == types.Armor or item.type == types.Weapon) then
             local gate = gateFor(item)
             if gate then
                 local stat = types.NPC.stats.skills[gate.skillId](omwSelf)
-                local level = stat and stat.base or 0
+                local level = stat and stat.modified or 0
                 if level < gate.req then
                     equipment[slot] = nil
                     changed = true

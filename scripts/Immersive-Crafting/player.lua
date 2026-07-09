@@ -234,6 +234,7 @@ local function reloadData()
     GRegistries.fuels = {}
     GRegistries.constructions = {}
     GRegistries.milestones = {}
+    GRegistries.gating = {}
     dataManager.loadAllData()
     registerActivateContexts()
     -- an open crafting window may hold references into the old registries
