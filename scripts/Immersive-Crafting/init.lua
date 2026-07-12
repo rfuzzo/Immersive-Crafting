@@ -16,51 +16,111 @@ local function onLoad(data)
     saveData = data or {}
 end
 
+--- Normalize a count received through a player event.
+---@param value any
+---@return integer?
+local function normalizeCount(value)
+    local count = tonumber(value or 1)
+    if not count or count < 1 or count % 1 ~= 0 then return nil end
+    return count
+end
+
 --- Create the output record and grant it to the actor.
 --- NOTE: world.createObject requires an existing record id. Custom outputs need
 --- createRecordDraft/createRecord first — deferred (D1).
 ---@param actor any
 ---@param output { id: string, count: integer }
+---@return boolean
 local function grantOutput(actor, output)
     if not (output and output.id) then
         log.error('grant: no output in commit payload')
-        return
+        return false
     end
     if not actor then
         log.error(('grant: no actor in commit payload (output "%s")'):format(tostring(output.id)))
-        return
+        return false
     end
+
+    local count = normalizeCount(output.count)
+    if not count then
+        log.error(('grant: invalid output count for "%s"'):format(tostring(output.id)))
+        return false
+    end
+
     local ok, err = pcall(function()
-        local created = world.createObject(output.id, output.count or 1)
+        local created = world.createObject(output.id, count)
         -- move into the actor's inventory (moveInto wants an Inventory, not the actor)
         created:moveInto(types.Actor.inventory(actor))
     end)
     if ok then
-        log.info(('grant: %d x "%s" -> %s'):format(output.count or 1, output.id, tostring(actor.recordId)))
-    else
-        log.error(('grant: failed to create output "%s": %s'):format(tostring(output.id), tostring(err)))
+        log.info(('grant: %d x "%s" -> %s'):format(count, output.id, tostring(actor.recordId)))
+        return true
     end
+
+    log.error(('grant: failed to create output "%s": %s'):format(tostring(output.id), tostring(err)))
+    return false
 end
 
---- GLOBAL commit executor (D1): trusts the player request and performs the
---- world/inventory mutation that player scripts cannot do themselves.
+--- Validate world-object removals before mutating anything.
+---@param consume { object: any, count: integer }[]
+---@return { object: any, count: integer }[]?
+local function buildWorldRemovalPlan(consume)
+    local plan = {}
+    for _, entry in ipairs(consume or {}) do
+        local obj = entry and entry.object
+        local count = entry and normalizeCount(entry.count)
+        if not obj or not count then
+            return nil
+        end
+
+        local ok, available = pcall(function() return obj.count or 1 end)
+        if not ok or available < count then
+            return nil
+        end
+
+        plan[#plan + 1] = { object = obj, count = count }
+    end
+    return plan
+end
+
+--- Execute an already validated removal plan.
+---@param plan { object: any, count: integer }[]
+---@param operation string
+---@return boolean
+local function executeRemovalPlan(plan, operation)
+    for _, entry in ipairs(plan) do
+        local ok, err = pcall(function()
+            entry.object:remove(entry.count)
+        end)
+        if not ok then
+            log.error(('%s: failed to remove ingredient: %s'):format(operation, tostring(err)))
+            return false
+        end
+    end
+    return true
+end
+
+--- GLOBAL commit executor (D1): performs the world/inventory mutation that
+--- player scripts cannot do themselves.
 --- Dispatched from lib.commitRecipe via core.sendGlobalEvent.
 ---@param data table { consume: { object: any, count: integer }[], output: { id: string, count: integer }, actor: any }
 local function onCommit(data)
-    if not data then return end
-
-    -- 1. consume ingredients (remove the matched stacks from the world)
-    for _, entry in ipairs(data.consume or {}) do
-        local obj = entry.object
-        if obj then
-            local ok, err = pcall(function() obj:remove(entry.count or 1) end)
-            if not ok then
-                log.error(('commit: failed to remove ingredient: %s'):format(tostring(err)))
-            end
-        end
+    if not (data and data.actor and data.output and data.output.id) then
+        log.error('commit: malformed payload')
+        return
     end
 
-    -- 2. produce output and grant it to the actor
+    local plan = buildWorldRemovalPlan(data.consume)
+    if not plan then
+        log.warn('commit: ingredients changed before the craft could be committed')
+        return
+    end
+
+    if not executeRemovalPlan(plan, 'commit') then
+        log.error('commit: aborted output because ingredient removal failed')
+        return
+    end
+
     grantOutput(data.actor, data.output)
 end
 
@@ -69,37 +129,68 @@ end
 --- give the empty container back (the water is used; the waterskin remains).
 ---@param data table { actor: any, consume: { id: string, count: integer }[], output: { id: string, count: integer } }
 local function onCraftShaped(data)
-    if not (data and data.actor) then
-        log.error('craft: event without actor')
+    if not (data and data.actor and data.output and data.output.id) then
+        log.error('craft: malformed payload')
         return
     end
+    if not normalizeCount(data.output.count) then
+        log.error('craft: invalid output count')
+        return
+    end
+
     log.info(('craft: %d inputs -> "%s"'):format(
-        #(data.consume or {}), tostring(data.output and data.output.id)))
+        #(data.consume or {}), tostring(data.output.id)))
     local inv = types.Actor.inventory(data.actor)
 
+    -- Aggregate duplicate input lines first, then build one complete removal plan.
+    -- Nothing is removed until every requirement is satisfied.
+    local requirements = {}
     for _, entry in ipairs(data.consume or {}) do
-        local needed = entry.count or 1
-        local removed = 0
+        local id = entry and type(entry.id) == 'string' and entry.id or nil
+        local count = entry and normalizeCount(entry.count)
+        if not id or not count then
+            log.error('craft: invalid consume entry')
+            return
+        end
+
+        local key = id:lower()
+        local req = requirements[key]
+        if req then
+            req.count = req.count + count
+        else
+            requirements[key] = { id = id, count = count }
+        end
+    end
+
+    local plan = {}
+    for key, req in pairs(requirements) do
+        local needed = req.count
         for _, item in ipairs(inv:getAll()) do
             if needed <= 0 then break end
-            if item.recordId == entry.id then
+            if item.recordId:lower() == key then
                 local take = math.min(needed, item.count or 1)
-                local ok, err = pcall(function() item:remove(take) end)
-                if ok then
-                    needed = needed - take
-                    removed = removed + take
-                else
-                    log.error(('craft: failed to remove "%s": %s'):format(tostring(entry.id), tostring(err)))
-                end
+                plan[#plan + 1] = { object = item, count = take }
+                needed = needed - take
             end
         end
+
         if needed > 0 then
-            log.warn(('craft: not enough "%s" in inventory'):format(tostring(entry.id)))
+            log.warn(('craft: not enough "%s" in inventory (missing %d)'):format(
+                tostring(req.id), needed))
+            return
         end
-        -- SD water interop: an emptied bottle leaves its container behind
-        local orig = removed > 0 and globalLiquids.emptyContainerFor(entry.id)
+    end
+
+    if not executeRemovalPlan(plan, 'craft') then
+        log.error('craft: aborted output because ingredient removal failed')
+        return
+    end
+
+    -- SD water interop: an emptied bottle leaves its container behind.
+    for _, req in pairs(requirements) do
+        local orig = globalLiquids.emptyContainerFor(req.id)
         if orig then
-            grantOutput(data.actor, { id = orig, count = removed })
+            grantOutput(data.actor, { id = orig, count = req.count })
         end
     end
 
